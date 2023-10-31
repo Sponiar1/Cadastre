@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cadastre", "Cadastre\Cadastre.csproj", "{919A6EA3-C277-4B33-B3A4-E61C688DEFC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadastreTests", "CadastreTests\CadastreTests.csproj", "{BD58D316-EA1A-4362-A9CC-D863BD71D7B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{919A6EA3-C277-4B33-B3A4-E61C688DEFC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{919A6EA3-C277-4B33-B3A4-E61C688DEFC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{919A6EA3-C277-4B33-B3A4-E61C688DEFC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{919A6EA3-C277-4B33-B3A4-E61C688DEFC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD58D316-EA1A-4362-A9CC-D863BD71D7B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD58D316-EA1A-4362-A9CC-D863BD71D7B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD58D316-EA1A-4362-A9CC-D863BD71D7B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD58D316-EA1A-4362-A9CC-D863BD71D7B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3CB14D58-1730-4DFB-9E36-81BB8C68F3E7}
+	EndGlobalSection
+EndGlobal
