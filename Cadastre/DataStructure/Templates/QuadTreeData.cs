@@ -20,7 +20,10 @@ namespace Cadastre.DataStructure.Templates
         {
             return 0;
         }
-
+        public int CompareIntersections(QuadTreeRectangle other)
+        {
+            return 0;
+        }
         public int ChangePossible()
         {
             return IsInMinimalZone;

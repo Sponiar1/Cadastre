@@ -85,7 +85,7 @@
             // 
             numericUpDownStart.Location = new Point(206, 38);
             numericUpDownStart.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
-            numericUpDownStart.Minimum = new decimal(new int[] { 10000, 0, 0, 0 });
+            numericUpDownStart.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDownStart.Name = "numericUpDownStart";
             numericUpDownStart.Size = new Size(120, 23);
             numericUpDownStart.TabIndex = 2;
@@ -95,7 +95,7 @@
             // 
             numericUpDownSize.Location = new Point(350, 39);
             numericUpDownSize.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
-            numericUpDownSize.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numericUpDownSize.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDownSize.Name = "numericUpDownSize";
             numericUpDownSize.Size = new Size(120, 23);
             numericUpDownSize.TabIndex = 3;

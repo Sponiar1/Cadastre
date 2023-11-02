@@ -23,12 +23,13 @@ namespace Cadastre.DataStructure.Templates
 
         public bool IsInside(QuadTreeRectangle other)
         {
-            if (widthPosition > other.BottomLeftY && widthPosition < other.UpperRightY &&
-                lengthPosition > other.BottomLeftX && lengthPosition < other.UpperRightX)
+            if (widthPosition >= other.BottomLeftY && widthPosition <= other.UpperRightY &&
+                lengthPosition >= other.BottomLeftX && lengthPosition <= other.UpperRightX)
             {
                 return true;
             }
             return false;
         }
+
     }
 }

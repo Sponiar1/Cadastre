@@ -50,7 +50,7 @@ namespace Cadastre
                     FindTest();
                     break;
                 case 3:
-                    if(numericUpDownDelete.Value + numericUpDownFind.Value + numericUpDownInsert.Value != 1)
+                    if (numericUpDownDelete.Value + numericUpDownFind.Value + numericUpDownInsert.Value != 1)
                     {
                         labelResult.Text = "Sum of chances has to be 1";
                     }
@@ -125,7 +125,7 @@ namespace Cadastre
                 for (int i = 0; i < numberOfOperations + sizeOfTree; i++)
                 {
                     Area foundArea = treeItems.Find(item => item.Id == i);
-                    if(foundArea == null)
+                    if (foundArea == null)
                     {
                         labelResult.Text = "Tree is missing items";
                     }
@@ -138,7 +138,7 @@ namespace Cadastre
                 {
                     labelResult.Text = "Test successful";
                 }
-                else if(treeItems.Count > items.Count)
+                else if (treeItems.Count > items.Count)
                 {
                     labelResult.Text = "Tree contains duplicates";
                 }
@@ -207,7 +207,7 @@ namespace Cadastre
                 helpArea = items[index];
                 items.RemoveAt(index);
                 tree.remove(helpArea);
-            } 
+            }
 
             List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             if (checkBoxItems.Checked)
@@ -256,8 +256,10 @@ namespace Cadastre
             int xupper = 0;
             int yupper = 0;
             QuadTree<Area> tree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
-            Random rand = new Random();
+
+            Random rand = new Random(30);
             List<Area> items = new List<Area>();
+            List<Area> itemsToFind = new List<Area>();
             if (sizeOfItem != 0)
             {
                 for (int i = 0; i < initialSize; i++)
@@ -286,7 +288,7 @@ namespace Cadastre
                     items.Add(test);
                 }
             }
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(sizeOfTree / 2, 0, sizeOfTree, sizeOfTree));
+            List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             Area helpArea;
             if (checkBoxItems.Checked)
             {
@@ -341,7 +343,7 @@ namespace Cadastre
             List<Area> usedLands = new List<Area>();
             Area helpArea;
 
-            
+
 
             if (sizeOfItem != 0)
             {
@@ -502,7 +504,7 @@ namespace Cadastre
             }
             tree.changeMaxHeight(newHeight);
             List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
-    
+
             if (checkBoxItems.Checked)
             {
                 for (int i = 0; i < sizeOfTree; i++)

@@ -26,6 +26,20 @@ namespace Cadastre.DataItems
             return -1;
         }
 
+        public int CompareIntersections(QuadTreeRectangle other)
+        {
+            if (GpsLocation[1].lengthPosition < other.BottomLeftX || other.UpperRightX < GpsLocation[0].lengthPosition)
+            {
+                return -1;
+            }
+
+            if (GpsLocation[0].widthPosition > other.UpperRightY || other.BottomLeftY > GpsLocation[1].widthDirection)
+            {
+                return -1;
+            }
+
+            return 0;
+        }
         int IComparator<Area>.CompareById(Area otherItem)
         {
             return CompareById(otherItem);

@@ -118,7 +118,7 @@ namespace Cadastre.DataStructure
 
                 foreach (T item in currentNode.Items)
                 {
-                    if (item.CompareTo(searchArea) == 0)
+                    if (item.CompareIntersections(searchArea) == 0)
                     {
                         results.Add(item);
                     }
@@ -272,7 +272,6 @@ namespace Cadastre.DataStructure
             else
             {
                 Queue<QuadTreeNode<T>> queue = new Queue<QuadTreeNode<T>>();
-                Queue<T> newTreeOrder = new Queue<T>();
                 Stack<QuadTreeNode<T>> stack = new Stack<QuadTreeNode<T>>();
                 Stack<QuadTreeNode<T>> stackNewLeafs = new Stack<QuadTreeNode<T>>();
 

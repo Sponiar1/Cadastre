@@ -9,6 +9,7 @@ namespace Cadastre.DataStructure.Templates
     public interface IComparator<T>
     {
         int CompareTo(QuadTreeRectangle rectangle);
+        int CompareIntersections(QuadTreeRectangle rectangle);
         int CompareById(T otherItem);
         int ChangePossible();
         void FoundSmallestZone();
