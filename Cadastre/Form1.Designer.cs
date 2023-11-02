@@ -34,11 +34,16 @@
             buttonNew = new Button();
             buttonFindProperty = new Button();
             buttonFindLand = new Button();
+            dataGridView1 = new DataGridView();
+            buttonGenerate = new Button();
+            buttonFindAll = new Button();
+            buttonInsert = new Button();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // buttonTest
             // 
-            buttonTest.Location = new Point(919, 512);
+            buttonTest.Location = new Point(32, 512);
             buttonTest.Name = "buttonTest";
             buttonTest.Size = new Size(124, 42);
             buttonTest.TabIndex = 0;
@@ -78,7 +83,7 @@
             // 
             // buttonFindProperty
             // 
-            buttonFindProperty.Location = new Point(270, 12);
+            buttonFindProperty.Location = new Point(47, 144);
             buttonFindProperty.Name = "buttonFindProperty";
             buttonFindProperty.Size = new Size(109, 34);
             buttonFindProperty.TabIndex = 4;
@@ -88,7 +93,7 @@
             // 
             // buttonFindLand
             // 
-            buttonFindLand.Location = new Point(270, 52);
+            buttonFindLand.Location = new Point(47, 184);
             buttonFindLand.Name = "buttonFindLand";
             buttonFindLand.Size = new Size(109, 31);
             buttonFindLand.TabIndex = 5;
@@ -96,11 +101,54 @@
             buttonFindLand.UseVisualStyleBackColor = true;
             buttonFindLand.Click += buttonFindLand_Click;
             // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(311, 12);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(732, 542);
+            dataGridView1.TabIndex = 6;
+            // 
+            // buttonGenerate
+            // 
+            buttonGenerate.Location = new Point(32, 472);
+            buttonGenerate.Name = "buttonGenerate";
+            buttonGenerate.Size = new Size(124, 34);
+            buttonGenerate.TabIndex = 7;
+            buttonGenerate.Text = "Generate Data";
+            buttonGenerate.UseVisualStyleBackColor = true;
+            buttonGenerate.Click += buttonGenerate_Click;
+            // 
+            // buttonFindAll
+            // 
+            buttonFindAll.Location = new Point(47, 221);
+            buttonFindAll.Name = "buttonFindAll";
+            buttonFindAll.Size = new Size(109, 35);
+            buttonFindAll.TabIndex = 8;
+            buttonFindAll.Text = "Find all";
+            buttonFindAll.UseVisualStyleBackColor = true;
+            buttonFindAll.Click += buttonFindAll_Click;
+            // 
+            // buttonInsert
+            // 
+            buttonInsert.Location = new Point(47, 262);
+            buttonInsert.Name = "buttonInsert";
+            buttonInsert.Size = new Size(109, 33);
+            buttonInsert.TabIndex = 9;
+            buttonInsert.Text = "Insert land/prop";
+            buttonInsert.UseVisualStyleBackColor = true;
+            buttonInsert.Click += buttonInsert_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1055, 566);
+            Controls.Add(buttonInsert);
+            Controls.Add(buttonFindAll);
+            Controls.Add(buttonGenerate);
+            Controls.Add(dataGridView1);
             Controls.Add(buttonFindLand);
             Controls.Add(buttonFindProperty);
             Controls.Add(buttonNew);
@@ -110,6 +158,7 @@
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
 
@@ -121,5 +170,9 @@
         private Button buttonNew;
         private Button buttonFindProperty;
         private Button buttonFindLand;
+        private DataGridView dataGridView1;
+        private Button buttonGenerate;
+        private Button buttonFindAll;
+        private Button buttonInsert;
     }
 }

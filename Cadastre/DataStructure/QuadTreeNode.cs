@@ -5,7 +5,7 @@ namespace Cadastre.DataStructure
 {
     public class QuadTreeNode<T>
     {
-        public ArrayList Items { get; }
+        public List<T> Items { get; }
         public QuadTreeNode<T>[] sons { get; set; }
         public QuadTreeNode<T> parent { get; set; }
         public QuadTreeRectangle Zone { get; }
@@ -13,7 +13,7 @@ namespace Cadastre.DataStructure
         public int Height { get; set; }
         public QuadTreeNode(QuadTreeRectangle zone)
         {
-            Items = new ArrayList();
+            Items = new List<T>();
             sons = new QuadTreeNode<T>[4];
             Zone = zone;
             isLeaf = true;

@@ -90,7 +90,7 @@ namespace Cadastre
             QuadTree<Area> tree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
             Random rand = new Random();
             List<Area> items = new List<Area>();
-            //Random rand = new Random(201,30);
+
             if (sizeOfItem != 0)
             {
                 for (int i = 0; i < initialSize + numberOfOperations; i++)
@@ -553,7 +553,6 @@ namespace Cadastre
             QuadTree<Area> tree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
             Random rand = new Random();
             List<Area> items = new List<Area>();
-            //Random rand = new Random(201,30);
             if (sizeOfItem != 0)
             {
                 for (int i = 0; i < initialSize; i++)
@@ -634,7 +633,7 @@ namespace Cadastre
             QuadTree<Area> tree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
             Random rand = new Random();
             List<Area> items = new List<Area>();
-            //Random rand = new Random(201,30);
+
             if (sizeOfItem != 0)
             {
                 for (int i = 0; i < initialSize / 2; i++)

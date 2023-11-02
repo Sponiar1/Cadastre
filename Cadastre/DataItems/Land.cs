@@ -10,16 +10,26 @@ namespace Cadastre.DataItems
 {
     public class Land : Area, IComparator<Land>
     {
-        ArrayList areas;
+        public List<Property> Properties { get; set; }
 
         public Land(int idNumber, string description, GPSPosition[] gpsLocation) : base(idNumber, description, gpsLocation)
         {
-            areas = new ArrayList();
+            Properties = new List<Property>();
         }
 
         int IComparator<Land>.CompareById(Land otherItem)
         {
             return CompareById(otherItem);
+        }
+
+        public string getListOfAreas()
+        {
+            string listOfAreas = "";
+            for(int i = 0; i < Properties.Count; i++)
+            {
+                listOfAreas += Properties[i].Id + ", ";
+            }
+            return listOfAreas;
         }
     }
 }

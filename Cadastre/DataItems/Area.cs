@@ -9,11 +9,11 @@ namespace Cadastre.DataItems
 {
     public class Area : QuadTreeData, IComparator<Area>
     {
-        protected string description;
+        public string Description { get; }
         public GPSPosition[] GpsLocation { get; }
         public Area(int id, string description, GPSPosition[] gpsLocation) : base(id)
         {
-            this.description = description;
+            this.Description = description;
             this.GpsLocation = gpsLocation;
         }
 
@@ -33,7 +33,7 @@ namespace Cadastre.DataItems
                 return -1;
             }
 
-            if (GpsLocation[0].widthPosition > other.UpperRightY || other.BottomLeftY > GpsLocation[1].widthDirection)
+            if (GpsLocation[0].widthPosition > other.UpperRightY || other.BottomLeftY > GpsLocation[1].widthPosition)
             {
                 return -1;
             }
@@ -43,6 +43,15 @@ namespace Cadastre.DataItems
         int IComparator<Area>.CompareById(Area otherItem)
         {
             return CompareById(otherItem);
+        }
+
+        public string getCoordinatesInReadable()
+        {
+            double x0 = Math.Round(GpsLocation[0].lengthPosition, 2);
+            double y0 = Math.Round(GpsLocation[0].widthPosition, 2);
+            double x1 = Math.Round(GpsLocation[1].lengthPosition, 2);
+            double y1 = Math.Round(GpsLocation[1].widthPosition, 2);
+            return "[" + x0 + " , " + y0 + "] [" + x1 + " , " + y1 + "]";
         }
     }
 }
