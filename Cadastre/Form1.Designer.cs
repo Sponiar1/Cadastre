@@ -38,6 +38,8 @@
             buttonGenerate = new Button();
             buttonFindAll = new Button();
             buttonInsert = new Button();
+            buttonEdit = new Button();
+            buttonDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -140,11 +142,33 @@
             buttonInsert.UseVisualStyleBackColor = true;
             buttonInsert.Click += buttonInsert_Click;
             // 
+            // buttonEdit
+            // 
+            buttonEdit.Location = new Point(47, 301);
+            buttonEdit.Name = "buttonEdit";
+            buttonEdit.Size = new Size(109, 29);
+            buttonEdit.TabIndex = 10;
+            buttonEdit.Text = "Edit item";
+            buttonEdit.UseVisualStyleBackColor = true;
+            buttonEdit.Click += buttonEdit_Click;
+            // 
+            // buttonDelete
+            // 
+            buttonDelete.Location = new Point(47, 336);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(109, 31);
+            buttonDelete.TabIndex = 11;
+            buttonDelete.Text = "Delete item";
+            buttonDelete.UseVisualStyleBackColor = true;
+            buttonDelete.Click += buttonDelete_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1055, 566);
+            Controls.Add(buttonDelete);
+            Controls.Add(buttonEdit);
             Controls.Add(buttonInsert);
             Controls.Add(buttonFindAll);
             Controls.Add(buttonGenerate);
@@ -174,5 +198,7 @@
         private Button buttonGenerate;
         private Button buttonFindAll;
         private Button buttonInsert;
+        private Button buttonEdit;
+        private Button buttonDelete;
     }
 }

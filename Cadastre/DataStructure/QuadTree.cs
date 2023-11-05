@@ -10,27 +10,31 @@ namespace Cadastre.DataStructure
     public class QuadTree<T> where T : IComparator<T>
     {
         QuadTreeNode<T> root;
-        int maxHeight;
+        public int MaxHeight {get; private set;}
         public int Size { get; set; }
 
         public QuadTree(double paSizeX1, double paSizeX2, double paSizeY1, double paSizeY2, int height)
         {
             root = new QuadTreeNode<T>(new QuadTreeRectangle(paSizeX1, paSizeX2, paSizeY1, paSizeY2));
             root.Height = 0;
-            maxHeight = height;
+            MaxHeight = height;
             Size = 0;
         }
         public QuadTree(double paSizeX1, double paSizeX2, double paSizeY1, double paSizeY2, int height, Queue<T> items)
         {
             root = new QuadTreeNode<T>(new QuadTreeRectangle(paSizeX1, paSizeX2, paSizeY1, paSizeY2));
             root.Height = 0;
-            maxHeight = height;
+            MaxHeight = height;
             Size = 0;
             int queueSize = items.Count;
             for (int i = 0; i < queueSize; i++)
             {
                 insert(items.Dequeue());
             }
+        }
+        public QuadTreeRectangle getBorders()
+        {
+            return root.Zone;
         }
         public Boolean insert(T item)
         {
@@ -51,7 +55,7 @@ namespace Cadastre.DataStructure
                 {
                     currentNode = startingNode.Peek();
                 }
-                if (currentNode.Height == maxHeight || (currentNode.getNumberOfItems() == 0 && currentNode.isLeaf))
+                if (currentNode.Height == MaxHeight || (currentNode.getNumberOfItems() == 0 && currentNode.isLeaf))
                 {
                     currentNode.insert(items.Dequeue());
                     startingNode.Dequeue();
@@ -59,7 +63,7 @@ namespace Cadastre.DataStructure
                 }
                 else
                 {
-                    if (currentNode.Items.Count == 1 && currentNode.Height != maxHeight && ((T)currentNode.Items[0]).ChangePossible() != 0)
+                    if (currentNode.Items.Count == 1 && currentNode.Height != MaxHeight && ((T)currentNode.Items[0]).ChangePossible() != 0)
                     {
                         items.Enqueue((T)currentNode.Items[0]);
                         currentNode.Items.RemoveAt(0);
@@ -236,8 +240,8 @@ namespace Cadastre.DataStructure
         }
         public void changeMaxHeight(int newHeight)
         {
-            int oldMaxHeight = maxHeight;
-            maxHeight = newHeight;
+            int oldMaxHeight = MaxHeight;
+            MaxHeight = newHeight;
 
             if (root == null)
             {
@@ -245,7 +249,7 @@ namespace Cadastre.DataStructure
             }
 
 
-            if (oldMaxHeight < maxHeight)
+            if (oldMaxHeight < MaxHeight)
             {
                 Queue<QuadTreeNode<T>> queue = new Queue<QuadTreeNode<T>>();
                 Queue<T> newTreeOrder = new Queue<T>();
@@ -289,11 +293,11 @@ namespace Cadastre.DataStructure
                         }
                     }
 
-                    if (currentNode.Height > maxHeight)
+                    if (currentNode.Height > MaxHeight)
                     {
                         stack.Push(currentNode);
                     }
-                    else if (currentNode.Height == maxHeight)
+                    else if (currentNode.Height == MaxHeight)
                     {
                         stackNewLeafs.Push(currentNode);
                     }
@@ -319,9 +323,9 @@ namespace Cadastre.DataStructure
             }
 
             QuadTreeNode<T> designatedNode = node;
-            if (node.Height > maxHeight)
+            if (node.Height > MaxHeight)
             {
-                while (designatedNode.Height != maxHeight)
+                while (designatedNode.Height != MaxHeight)
                 {
                     designatedNode = designatedNode.parent;
                 }
@@ -336,7 +340,7 @@ namespace Cadastre.DataStructure
                 }
                 node.deleteSons();
             }
-            else if (node.Height < maxHeight && node.isLeaf)
+            else if (node.Height < MaxHeight && node.isLeaf)
             {
                 if (node.Items.Count > 1)
                 {
@@ -431,7 +435,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY,
                                                     root.Zone.UpperRightX,
                                                     root.Zone.UpperRightY + ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
-                                                    maxHeight,
+                                                    MaxHeight,
                                                     items);
                 }
                 else if (treeInfo.Max() == treeInfo[1])
@@ -440,7 +444,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY,
                                                     root.Zone.UpperRightX + ((root.Zone.UpperRightX - root.Zone.BottomLeftX) / 3),
                                                     root.Zone.UpperRightY + ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
-                                                    maxHeight,
+                                                    MaxHeight,
                                                     items);
                 }
                 else if (treeInfo.Max() == treeInfo[2])
@@ -449,7 +453,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY - ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
                                                     root.Zone.UpperRightX + ((root.Zone.UpperRightX - root.Zone.BottomLeftX) / 3),
                                                     root.Zone.UpperRightY,
-                                                    maxHeight,
+                                                    MaxHeight,
                                                     items);
                 }
                 else
@@ -458,7 +462,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY - ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
                                                     root.Zone.UpperRightX,
                                                     root.Zone.UpperRightY,
-                                                    maxHeight,
+                                                    MaxHeight,
                                                     items);
                 }
                 return newTree;

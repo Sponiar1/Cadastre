@@ -22,6 +22,7 @@ namespace Cadastre.DataItems
             return CompareById(otherItem);
         }
 
+        override
         public string getListOfAreas()
         {
             string listOfAreas = "";

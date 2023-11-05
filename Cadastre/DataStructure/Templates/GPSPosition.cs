@@ -20,6 +20,21 @@ namespace Cadastre.DataStructure.Templates
             this.widthPosition = widthPosition;
             this.lengthPosition = lengthPosition;
         }
+        public GPSPosition(double lengthPosition, double widthPosition, int type)
+        {
+            if(type == 0)
+            {
+                this.widthDirection = 'N';
+                this.lengthDirection = 'W';
+            }
+            else if (type == 1) 
+            {
+                this.widthDirection = 'S';
+                this.lengthDirection = 'E';
+            }
+            this.widthPosition = widthPosition;
+            this.lengthPosition = lengthPosition;
+        }
 
         public bool IsInside(QuadTreeRectangle other)
         {

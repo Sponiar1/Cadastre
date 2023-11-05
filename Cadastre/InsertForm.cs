@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,6 +22,26 @@ namespace Cadastre
             InitializeComponent();
             comboBox1.Items.Add("Land");
             comboBox1.Items.Add("Property");
+        }
+
+        public InsertForm(int id, string description, double x0, double y0, double x1, double y1, int type) : this()
+        {
+            comboBox1.Visible = false;
+            numericUpDown1.Value = (decimal)x0;
+            numericUpDown2.Value = (decimal)y0;
+            numericUpDown3.Value = (decimal)x1;
+            numericUpDown4.Value = (decimal)y1;
+            numericUpDown5.Value = (decimal)id;
+            textBox1.Text = description;
+            switch (type)
+            {
+                case 0:
+                    TypeOfItem = 0;
+                    break;
+                case 1:
+                    TypeOfItem = 1;
+                    break;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

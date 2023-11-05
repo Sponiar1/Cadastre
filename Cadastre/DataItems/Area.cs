@@ -9,8 +9,8 @@ namespace Cadastre.DataItems
 {
     public class Area : QuadTreeData, IComparator<Area>
     {
-        public string Description { get; }
-        public GPSPosition[] GpsLocation { get; }
+        public string Description { get; set; }
+        public GPSPosition[] GpsLocation { get; set; }
         public Area(int id, string description, GPSPosition[] gpsLocation) : base(id)
         {
             this.Description = description;
@@ -52,6 +52,11 @@ namespace Cadastre.DataItems
             double x1 = Math.Round(GpsLocation[1].lengthPosition, 2);
             double y1 = Math.Round(GpsLocation[1].widthPosition, 2);
             return "[" + x0 + " , " + y0 + "] [" + x1 + " , " + y1 + "]";
+        }
+
+        virtual public string getListOfAreas()
+        {
+            return "";
         }
     }
 }
