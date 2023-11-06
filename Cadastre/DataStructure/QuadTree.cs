@@ -40,7 +40,7 @@ namespace Cadastre.DataStructure
         {
             return insertAt(item, root);
         }
-        public Boolean insertAt(T item, QuadTreeNode<T> node)
+        private Boolean insertAt(T item, QuadTreeNode<T> node)
         {
             QuadTreeNode<T> currentNode = node;
             QuadTreeNode<T> parent = node.parent;
@@ -55,7 +55,7 @@ namespace Cadastre.DataStructure
                 {
                     currentNode = startingNode.Peek();
                 }
-                if (currentNode.Height == MaxHeight || (currentNode.getNumberOfItems() == 0 && currentNode.isLeaf))
+                if (currentNode.Height == MaxHeight || (currentNode.Items.Count == 0 && currentNode.isLeaf))
                 {
                     currentNode.insert(items.Dequeue());
                     startingNode.Dequeue();
@@ -168,7 +168,7 @@ namespace Cadastre.DataStructure
             };
             return false;
         }
-        public Boolean remove(T item, QuadTreeNode<T> node)
+        private Boolean remove(T item, QuadTreeNode<T> node)
         {
             if (node.Items.Count > 1) //ak su tam 2 itemy, je dovod prečo su 2 prave tam
             {
@@ -321,7 +321,6 @@ namespace Cadastre.DataStructure
             {
                 return true;
             }
-
             QuadTreeNode<T> designatedNode = node;
             if (node.Height > MaxHeight)
             {
@@ -346,7 +345,7 @@ namespace Cadastre.DataStructure
                 {
                     for (int i = 0; i < node.Items.Count; i++)
                     {
-                        if (((T)node.Items[i]).ChangePossible() == 1) //pokial mrvok nemoze ist nizsie tak sa vrati loop
+                        if (((T)node.Items[i]).ChangePossible() == 1) //pokial prvok nemoze ist nizsie tak sa vrati loop
                         {
                             T item = (T)node.Items[i];
                             node.Items.RemoveAt(i);
@@ -356,7 +355,6 @@ namespace Cadastre.DataStructure
                     }
                 }
             }
-
             return true;
         }
         public double[] calculateHealth()
@@ -404,23 +402,7 @@ namespace Cadastre.DataStructure
             Queue<T> items = new Queue<T>();
             queue.Enqueue(root);
 
-            while (queue.Count > 0)
-            {
-                QuadTreeNode<T> currentNode = queue.Dequeue();
-
-                foreach (T item in currentNode.Items)
-                {
-                    items.Enqueue(item);
-                }
-
-                for (int i = 0; i < 4; i++)
-                {
-                    if (currentNode.sons[i] != null)
-                    {
-                        queue.Enqueue(currentNode.sons[i]);
-                    }
-                }
-            }
+           
 
             if (treeInfo[4] > 0.7)
             {
@@ -428,6 +410,24 @@ namespace Cadastre.DataStructure
             }
             else
             {
+                while (queue.Count > 0)
+                {
+                    QuadTreeNode<T> currentNode = queue.Dequeue();
+
+                    foreach (T item in currentNode.Items)
+                    {
+                        items.Enqueue(item);
+                    }
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (currentNode.sons[i] != null)
+                        {
+                            queue.Enqueue(currentNode.sons[i]);
+                        }
+                    }
+                }
+
                 QuadTree<T> newTree;
                 if (treeInfo.Max() == treeInfo[0])
                 {

@@ -45,9 +45,9 @@
             // 
             // buttonTest
             // 
-            buttonTest.Location = new Point(32, 512);
+            buttonTest.Location = new Point(12, 606);
             buttonTest.Name = "buttonTest";
-            buttonTest.Size = new Size(124, 42);
+            buttonTest.Size = new Size(124, 33);
             buttonTest.TabIndex = 0;
             buttonTest.Text = "Test structure";
             buttonTest.UseVisualStyleBackColor = true;
@@ -55,7 +55,7 @@
             // 
             // buttonSave
             // 
-            buttonSave.Location = new Point(47, 12);
+            buttonSave.Location = new Point(12, 12);
             buttonSave.Name = "buttonSave";
             buttonSave.Size = new Size(93, 23);
             buttonSave.TabIndex = 1;
@@ -65,7 +65,7 @@
             // 
             // buttonLoad
             // 
-            buttonLoad.Location = new Point(47, 41);
+            buttonLoad.Location = new Point(12, 41);
             buttonLoad.Name = "buttonLoad";
             buttonLoad.Size = new Size(93, 23);
             buttonLoad.TabIndex = 2;
@@ -75,7 +75,7 @@
             // 
             // buttonNew
             // 
-            buttonNew.Location = new Point(47, 70);
+            buttonNew.Location = new Point(12, 70);
             buttonNew.Name = "buttonNew";
             buttonNew.Size = new Size(93, 23);
             buttonNew.TabIndex = 3;
@@ -85,7 +85,7 @@
             // 
             // buttonFindProperty
             // 
-            buttonFindProperty.Location = new Point(47, 144);
+            buttonFindProperty.Location = new Point(12, 144);
             buttonFindProperty.Name = "buttonFindProperty";
             buttonFindProperty.Size = new Size(109, 34);
             buttonFindProperty.TabIndex = 4;
@@ -95,7 +95,7 @@
             // 
             // buttonFindLand
             // 
-            buttonFindLand.Location = new Point(47, 184);
+            buttonFindLand.Location = new Point(12, 184);
             buttonFindLand.Name = "buttonFindLand";
             buttonFindLand.Size = new Size(109, 31);
             buttonFindLand.TabIndex = 5;
@@ -109,12 +109,12 @@
             dataGridView1.Location = new Point(311, 12);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(732, 542);
+            dataGridView1.Size = new Size(901, 625);
             dataGridView1.TabIndex = 6;
             // 
             // buttonGenerate
             // 
-            buttonGenerate.Location = new Point(32, 472);
+            buttonGenerate.Location = new Point(12, 566);
             buttonGenerate.Name = "buttonGenerate";
             buttonGenerate.Size = new Size(124, 34);
             buttonGenerate.TabIndex = 7;
@@ -124,7 +124,7 @@
             // 
             // buttonFindAll
             // 
-            buttonFindAll.Location = new Point(47, 221);
+            buttonFindAll.Location = new Point(12, 221);
             buttonFindAll.Name = "buttonFindAll";
             buttonFindAll.Size = new Size(109, 35);
             buttonFindAll.TabIndex = 8;
@@ -134,7 +134,7 @@
             // 
             // buttonInsert
             // 
-            buttonInsert.Location = new Point(47, 262);
+            buttonInsert.Location = new Point(12, 262);
             buttonInsert.Name = "buttonInsert";
             buttonInsert.Size = new Size(109, 33);
             buttonInsert.TabIndex = 9;
@@ -144,7 +144,7 @@
             // 
             // buttonEdit
             // 
-            buttonEdit.Location = new Point(47, 301);
+            buttonEdit.Location = new Point(12, 301);
             buttonEdit.Name = "buttonEdit";
             buttonEdit.Size = new Size(109, 29);
             buttonEdit.TabIndex = 10;
@@ -154,7 +154,7 @@
             // 
             // buttonDelete
             // 
-            buttonDelete.Location = new Point(47, 336);
+            buttonDelete.Location = new Point(12, 336);
             buttonDelete.Name = "buttonDelete";
             buttonDelete.Size = new Size(109, 31);
             buttonDelete.TabIndex = 11;
@@ -166,7 +166,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1055, 566);
+            ClientSize = new Size(1224, 649);
             Controls.Add(buttonDelete);
             Controls.Add(buttonEdit);
             Controls.Add(buttonInsert);

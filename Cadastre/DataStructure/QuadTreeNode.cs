@@ -30,11 +30,6 @@ namespace Cadastre.DataStructure
             return item;
         }
 
-        public int getNumberOfItems()
-        {
-            return Items.Count;
-        }
-
         public void createSons()
         {
             if (sons[0] == null)

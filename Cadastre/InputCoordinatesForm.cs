@@ -16,6 +16,7 @@ namespace Cadastre
         public InputCoordinatesForm()
         {
             InitializeComponent();
+            this.Text = "Input Coordinates";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -26,9 +27,19 @@ namespace Cadastre
             double number4 = (double)numericUpDown4.Value;
 
             EnteredNumbers = new double[] { number1, number2, number3, number4 };
-
-            DialogResult = DialogResult.OK;
-            Close();
+            if(number1 > number3)
+            {
+                MessageBox.Show("Bottom X is bigger than Upper X", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else if (number2 > number4)
+            {
+                MessageBox.Show("Bottom Y is bigger than Upper Y", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                DialogResult = DialogResult.OK;
+                Close();
+            }
         }
     }
 }

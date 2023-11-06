@@ -35,7 +35,6 @@ namespace Cadastre.DataStructure.Templates
             this.widthPosition = widthPosition;
             this.lengthPosition = lengthPosition;
         }
-
         public bool IsInside(QuadTreeRectangle other)
         {
             if (widthPosition >= other.BottomLeftY && widthPosition <= other.UpperRightY &&

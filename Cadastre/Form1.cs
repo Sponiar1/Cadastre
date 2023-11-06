@@ -297,7 +297,7 @@ namespace Cadastre
                         dataGridView1.Rows.Remove(selectedRow);
                     }
                 }
-                
+
             }
         }
 
@@ -315,7 +315,15 @@ namespace Cadastre
         }
         private void buttonNew_Click(object sender, EventArgs e)
         {
-
+            using (var numberInputForm = new GenerateTreeForm(1))
+            {
+                if (numberInputForm.ShowDialog() == DialogResult.OK)
+                {
+                    double[] size = numberInputForm.EnteredNumbers;
+                    lands = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int)size[5]);
+                    properties = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int) size[5]);
+                }
+            }
         }
         private void InitializeTables(int operation)
         {
@@ -336,7 +344,6 @@ namespace Cadastre
             }
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
-
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
             using (var numberInputForm = new GenerateTreeForm())
@@ -367,13 +374,13 @@ namespace Cadastre
                     for (int i = 0; i < (int)size[4] * 10; i++)
                     {
                         GPSPosition[] gps = new GPSPosition[2];
-                        xbottom = (size[2] - size[6] / 2 - size[0]) * rand.NextDouble() + size[0];
-                        ybottom = (size[3] - size[6] / 2 - size[1]) * rand.NextDouble() + size[1];
+                        xbottom = (size[2] - size[7] - size[0]) * rand.NextDouble() + size[0];
+                        ybottom = (size[3] - size[7] - size[1]) * rand.NextDouble() + size[1];
                         gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
-                        gps[1] = new GPSPosition('S', 'W', xbottom + size[6] / 2, ybottom + size[6] / 2);
+                        gps[1] = new GPSPosition('S', 'W', xbottom + size[7], ybottom + size[7]);
                         Property property = new Property(i, generateString(), gps);
                         properties.insert(property);
-                        List<Area> landsInArea = lands.find(new QuadTreeRectangle(xbottom, ybottom, xbottom + (size[6] / 2), ybottom + (size[6] / 2)));
+                        List<Area> landsInArea = lands.find(new QuadTreeRectangle(xbottom, ybottom, xbottom + (size[7]), ybottom + (size[7])));
                         foreach (Land land in landsInArea)
                         {
                             land.Properties.Add(property);
@@ -383,7 +390,6 @@ namespace Cadastre
                 }
             }
         }
-
         private string generateString()
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

@@ -45,7 +45,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(333, 296);
+            button1.Location = new Point(213, 249);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
@@ -56,7 +56,7 @@
             // numericUpDown1
             // 
             numericUpDown1.DecimalPlaces = 2;
-            numericUpDown1.Location = new Point(314, 41);
+            numericUpDown1.Location = new Point(194, 39);
             numericUpDown1.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             numericUpDown1.Minimum = new decimal(new int[] { 1000000000, 0, 0, int.MinValue });
             numericUpDown1.Name = "numericUpDown1";
@@ -66,7 +66,7 @@
             // numericUpDown2
             // 
             numericUpDown2.DecimalPlaces = 2;
-            numericUpDown2.Location = new Point(314, 96);
+            numericUpDown2.Location = new Point(194, 94);
             numericUpDown2.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             numericUpDown2.Minimum = new decimal(new int[] { 1000000000, 0, 0, int.MinValue });
             numericUpDown2.Name = "numericUpDown2";
@@ -76,7 +76,7 @@
             // numericUpDown3
             // 
             numericUpDown3.DecimalPlaces = 2;
-            numericUpDown3.Location = new Point(314, 150);
+            numericUpDown3.Location = new Point(194, 140);
             numericUpDown3.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             numericUpDown3.Minimum = new decimal(new int[] { 1000000000, 0, 0, int.MinValue });
             numericUpDown3.Name = "numericUpDown3";
@@ -86,7 +86,7 @@
             // numericUpDown4
             // 
             numericUpDown4.DecimalPlaces = 2;
-            numericUpDown4.Location = new Point(314, 197);
+            numericUpDown4.Location = new Point(194, 187);
             numericUpDown4.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             numericUpDown4.Minimum = new decimal(new int[] { 1000000000, 0, 0, int.MinValue });
             numericUpDown4.Name = "numericUpDown4";
@@ -96,7 +96,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(134, 41);
+            label1.Location = new Point(99, 41);
             label1.Name = "label1";
             label1.Size = new Size(80, 15);
             label1.TabIndex = 5;
@@ -105,7 +105,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(134, 96);
+            label2.Location = new Point(99, 96);
             label2.Name = "label2";
             label2.Size = new Size(80, 15);
             label2.TabIndex = 6;
@@ -114,7 +114,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(134, 150);
+            label3.Location = new Point(99, 142);
             label3.Name = "label3";
             label3.Size = new Size(80, 15);
             label3.TabIndex = 7;
@@ -123,7 +123,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(134, 197);
+            label4.Location = new Point(99, 189);
             label4.Name = "label4";
             label4.Size = new Size(80, 15);
             label4.TabIndex = 8;
@@ -133,7 +133,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(464, 321);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);

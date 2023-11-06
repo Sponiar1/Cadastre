@@ -9,7 +9,7 @@ namespace Cadastre.DataStructure.Templates
     public class QuadTreeData : IComparator<QuadTreeData>
     {
         public int Id { get; set; }
-        public int IsInMinimalZone { get; set; } //0=ano, 1=neviem 
+        public int IsInMinimalZone { get; set; } //0=yes, 1=no/dont know
 
         public QuadTreeData(int id)
         {
