@@ -1,3 +1,4 @@
+using Cadastre.CadastreManager;
 using Cadastre.DataItems;
 using Cadastre.DataStructure;
 using Cadastre.DataStructure.Templates;
@@ -11,23 +12,20 @@ namespace Cadastre
 {
     public partial class Form1 : Form
     {
-        QuadTree<Area> lands;
-        QuadTree<Area> properties;
         int lastSearch;
         List<Area> lastSearchItem;
-        List<Property> lastSearchProperties;
         CSVHandler handler;
+        CadastreHandler cadastre;
         public Form1()
         {
             InitializeComponent();
             handler = new CSVHandler();
+            cadastre = new CadastreHandler();
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
-
         private void buttonTest_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
@@ -35,7 +33,6 @@ namespace Cadastre
             formTest.Show();
             this.Enabled = true;
         }
-
         private void buttonFindProperty_Click(object sender, EventArgs e)
         {
             using (var numberInputForm = new InputCoordinatesForm())
@@ -44,23 +41,21 @@ namespace Cadastre
                 {
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
 
-                    List<Area> results = properties.find(new QuadTreeRectangle(enteredNumbers[0], enteredNumbers[1], enteredNumbers[2], enteredNumbers[3]));
+                    lastSearchItem = cadastre.findProperty(enteredNumbers);
                     dataGridView1.Rows.Clear();
                     dataGridView1.Columns.Clear();
                     InitializeTables(1);
-                    if (results.Count != 0)
+                    if (lastSearchItem.Count != 0)
                     {
-                        foreach (var property in results)
+                        foreach (var property in lastSearchItem)
                         {
                             dataGridView1.Rows.Add(property.Id, property.Description, property.getCoordinatesInReadable(), property.getListOfAreas());
                         }
                     }
                     lastSearch = 1;
-                    lastSearchItem = results;
                 }
             }
         }
-
         private void buttonFindLand_Click(object sender, EventArgs e)
         {
             using (var numberInputForm = new InputCoordinatesForm())
@@ -68,7 +63,18 @@ namespace Cadastre
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
-
+                    lastSearchItem = cadastre.findLands(enteredNumbers);
+                    dataGridView1.Rows.Clear();
+                    dataGridView1.Columns.Clear();
+                    InitializeTables(2);
+                    if (lastSearchItem.Count != 0)
+                    {
+                        foreach (var land in lastSearchItem)
+                        {
+                            dataGridView1.Rows.Add(land.Id, land.Description, land.getCoordinatesInReadable(), land.getListOfAreas());
+                        }
+                    }
+                    /*
                     List<Area> results = lands.find(new QuadTreeRectangle(enteredNumbers[0], enteredNumbers[1], enteredNumbers[2], enteredNumbers[3]));
                     dataGridView1.Rows.Clear();
                     dataGridView1.Columns.Clear();
@@ -80,12 +86,11 @@ namespace Cadastre
                             dataGridView1.Rows.Add(land.Id, land.Description, land.getCoordinatesInReadable(), land.getListOfAreas());
                         }
                     }
+                    lastSearchItem = results;*/
                     lastSearch = 0;
-                    lastSearchItem = results;
                 }
             }
         }
-
         private void buttonFindAll_Click(object sender, EventArgs e)
         {
             using (var numberInputForm = new InputCoordinatesForm())
@@ -93,7 +98,7 @@ namespace Cadastre
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
-
+                    /*
                     List<Area> resultsLands = lands.find(new QuadTreeRectangle(enteredNumbers[0], enteredNumbers[1], enteredNumbers[2], enteredNumbers[3]));
                     List<Area> resultsProperties = properties.find(new QuadTreeRectangle(enteredNumbers[0], enteredNumbers[1], enteredNumbers[2], enteredNumbers[3]));
                     dataGridView1.Rows.Clear();
@@ -106,19 +111,31 @@ namespace Cadastre
                         {
                             dataGridView1.Rows.Add("Land", land.Id, land.Description, land.getCoordinatesInReadable(), land.getListOfAreas());
                         }
-                    }
-                    if (resultsProperties.Count != 0)
+                    }*/
+                    dataGridView1.Rows.Clear();
+                    dataGridView1.Columns.Clear();
+                    dataGridView1.Columns.Add("Type", "Type");
+                    InitializeTables(3);
+                    List<Area>[] result = cadastre.findAll(enteredNumbers);
+                    if (result[0].Count != 0)
                     {
-                        foreach (var property in resultsProperties)
+                        foreach (var area in result[0])
                         {
-                            dataGridView1.Rows.Add("Property", property.Id, property.Description, property.getCoordinatesInReadable(), property.getListOfAreas());
+                            dataGridView1.Rows.Add("Land", area.Id, area.Description, area.getCoordinatesInReadable(), area.getListOfAreas());
                         }
                     }
+                    if (result[1].Count != 0)
+                    {
+                        foreach (var area in result[1])
+                        {
+                            dataGridView1.Rows.Add("Property", area.Id, area.Description, area.getCoordinatesInReadable(), area.getListOfAreas());
+                        }
+                    }
+                    lastSearchItem = result[0].Concat(result[1]).ToList();
                     lastSearch = 2;
                 }
             }
         }
-
         private void buttonInsert_Click(object sender, EventArgs e)
         {
             using (var numberInputForm = new InsertForm())
@@ -128,7 +145,15 @@ namespace Cadastre
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
                     string description = numberInputForm.Description;
                     int type = numberInputForm.TypeOfItem;
-
+                    if(cadastre.insertItem(enteredNumbers, description, type))
+                    {
+                        MessageBox.Show("Item was inserted into register", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Item is too big", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    /*
                     if (type == 0)
                     {
                         GPSPosition[] gps = new GPSPosition[2];
@@ -156,14 +181,13 @@ namespace Cadastre
                             land.Properties.Add(property);
                             property.Lands.Add(land);
                         }
-                    }
+                    }*/
                 }
             }
         }
-
         private void buttonEdit_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
+            if (dataGridView1.SelectedRows.Count > 0 && lastSearch != 2)
             {
                 DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
 
@@ -171,15 +195,8 @@ namespace Cadastre
                 string description = selectedRow.Cells[1].Value.ToString();
                 string pattern = @"\d+";
 
-                Area item;
-                item = lastSearchItem.Find(item => item.Id == id);
-                /*
-                MatchCollection matches = Regex.Matches(selectedRow.Cells[2].Value.ToString(), pattern);
-                
-                double x0 = double.Parse(matches[0].Value);
-                double y0 = double.Parse(matches[1].Value);
-                double x1 = double.Parse(matches[2].Value);
-                double y1 = double.Parse(matches[3].Value);*/
+                Area item = lastSearchItem.Find(item => item.Id == id);
+
                 double x0 = item.GpsLocation[0].lengthPosition;
                 double y0 = item.GpsLocation[0].widthPosition;
                 double x1 = item.GpsLocation[1].lengthPosition;
@@ -191,7 +208,15 @@ namespace Cadastre
                     {
                         double[] enteredNumbers = numberInputForm.EnteredNumbers;
                         description = numberInputForm.Description;
-
+                        if(cadastre.editItem(enteredNumbers, description, lastSearch, item))
+                        {
+                            MessageBox.Show("Item was succesfully edited", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Item is too big", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        /*
                         if (enteredNumbers[0] == item.GpsLocation[0].lengthPosition && enteredNumbers[1] == item.GpsLocation[0].widthPosition
                             && enteredNumbers[2] == item.GpsLocation[1].lengthPosition && enteredNumbers[3] == item.GpsLocation[1].lengthPosition)
                         {
@@ -252,18 +277,15 @@ namespace Cadastre
                                     land.Properties.Add((Property)item);
                                 }
                             }
-                        }
+                        }*/
+
                     }
                 }
-
-
-                //editForm.Dispose();
             }
         }
-
         private void buttonDelete_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
+            if (dataGridView1.SelectedRows.Count > 0 && lastSearch != 2)
             {
                 DataGridViewRow selectedRow = dataGridView1.SelectedRows[0];
                 Area item;
@@ -274,6 +296,16 @@ namespace Cadastre
 
                 if (result == DialogResult.Yes)
                 {
+                    if(cadastre.deleteItem(item, lastSearch))
+                    {
+                        MessageBox.Show("Item was successfully deleted", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        dataGridView1.Rows.Remove(selectedRow);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Item was not found", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    /*
                     if (lastSearch == 0)
                     {
                         lands.remove(item);
@@ -295,23 +327,23 @@ namespace Cadastre
                             land.Properties.Remove((Property)item);
                         }
                         dataGridView1.Rows.Remove(selectedRow);
-                    }
+                    }*/
                 }
 
             }
         }
-
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            handler.SaveAreaToCSV(lands, "lands.csv");
-            handler.SaveAreaToCSV(properties, "properties.csv");
+            /*handler.SaveAreaToCSV(lands, "lands.csv");
+            handler.SaveAreaToCSV(properties, "properties.csv");*/
+            cadastre.saveToCSV("lands.csv", "properties.csv");
         }
         private void buttonLoad_Click(object sender, EventArgs e)
         {
-            QuadTree<Area>[] trees;
-            trees = handler.LoadTreeFromCSV("lands.csv", "properties.csv");
+            /*QuadTree<Area>[] trees=  handler.LoadTreeFromCSV("lands.csv", "properties.csv");
             lands = trees[0];
-            properties = trees[1];
+            properties = trees[1];*/
+            cadastre.loadFromCSV("lands.csv", "properties.csv");
         }
         private void buttonNew_Click(object sender, EventArgs e)
         {
@@ -319,9 +351,12 @@ namespace Cadastre
             {
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
-                    double[] size = numberInputForm.EnteredNumbers;
-                    lands = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int)size[5]);
-                    properties = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int) size[5]);
+                    double[] size = numberInputForm.EnteredNumbers; 
+                    
+                    cadastre.GenerateEmptyTrees(size);
+                    /*lands = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int)size[5]);
+                    properties = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int) size[5]);*/
+                    
                 }
             }
         }
@@ -339,7 +374,7 @@ namespace Cadastre
                     dataGridView1.Columns.Add("List", "List of properties");
                     break;
                 case 3:
-                    dataGridView1.Columns.Add("List", "List of items");
+                    dataGridView1.Columns.Add("List", "List of items in same coordinates");
                     break;
             }
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -351,9 +386,8 @@ namespace Cadastre
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
                     double[] size = numberInputForm.EnteredNumbers;
-
-
-                    double xbottom = 0;
+                    cadastre.GenerateCadastre(size);
+                    /*double xbottom = 0;
                     double ybottom = 0;
                     lands = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int)size[5]);
                     properties = new QuadTree<Area>(size[0], size[1], size[2], size[3], (int)size[5]);
@@ -386,11 +420,11 @@ namespace Cadastre
                             land.Properties.Add(property);
                             property.Lands.Add(land);
                         }
-                    }
+                    }*/
                 }
             }
         }
-        private string generateString()
+        /*private string generateString()
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -407,7 +441,7 @@ namespace Cadastre
 
             string randomString = sb.ToString();
             return randomString;
-        }
+        }*/
 
     }
 }

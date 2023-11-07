@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Cadastre.DataStructure
 {
@@ -38,11 +39,15 @@ namespace Cadastre.DataStructure
         }
         public Boolean insert(T item)
         {
+            if (item.CompareTo(root.Zone) != 0)
+            {
+                return false;
+            }
             return insertAt(item, root);
         }
         private Boolean insertAt(T item, QuadTreeNode<T> node)
         {
-            QuadTreeNode<T> currentNode = node;
+                QuadTreeNode<T> currentNode = node;
             QuadTreeNode<T> parent = node.parent;
             Queue<T> items = new Queue<T>();
             Queue<QuadTreeNode<T>> startingNode = new Queue<QuadTreeNode<T>>();
@@ -147,6 +152,13 @@ namespace Cadastre.DataStructure
             while (currentNode != previousNode)
             {
                 previousNode = currentNode;
+                foreach (T searchedItem in currentNode.Items)
+                {
+                    if (item.CompareById(searchedItem) == 0)
+                    {
+                        return remove(item, currentNode);
+                    }
+                }
                 if (currentNode.sons[0] != null)
                 {
                     for (int i = 0; i < 4; i++)
@@ -159,13 +171,6 @@ namespace Cadastre.DataStructure
                     }
                 }
             }
-            foreach (T searchedItem in currentNode.Items)
-            {
-                if (item.CompareById(searchedItem) == 0)
-                {
-                    return remove(item, currentNode);
-                }
-            };
             return false;
         }
         private Boolean remove(T item, QuadTreeNode<T> node)

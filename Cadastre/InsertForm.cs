@@ -28,7 +28,6 @@ namespace Cadastre
 
         public InsertForm(int id, string description, double x0, double y0, double x1, double y1, int type) : this()
         {
-            InitializeComponent();
             comboBox1.Visible = false;
             numericUpDown1.Value = (decimal)x0;
             numericUpDown2.Value = (decimal)y0;
