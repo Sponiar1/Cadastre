@@ -11,6 +11,9 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+using System.Diagnostics;
+using Cadastre.FileManager;
 
 namespace Cadastre
 {
@@ -26,6 +29,7 @@ namespace Cadastre
             comboBox1.Items.Add("Change Height");
             comboBox1.Items.Add("Check Health");
             comboBox1.Items.Add("Reorganize");
+            comboBox1.Items.Add("Insert/Delete measurement");
             labelInsert.Visible = false;
             numericUpDownInsert.Visible = false;
             labelRemove.Visible = false;
@@ -67,6 +71,9 @@ namespace Cadastre
                     break;
                 case 6:
                     ReorganizeTest();
+                    break;
+                case 7:
+                    compareTestMeasurement();
                     break;
             }
         }
@@ -793,6 +800,115 @@ namespace Cadastre
                 labelNewHeight.Visible = true;
                 numericUpDownNewHeight.Visible = true;
             }
+        }
+
+        private void compareTestMeasurement()
+        {
+            int initialSize = 1000000;
+            int sizeOfTree = 1000000;
+            int height = 20;
+            int sizeOfItem = 250;
+
+            double xbottom = 0;
+            double ybottom = 0;
+            QuadTree<Area> tree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
+            QuadTree<Area> reorganizedTree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
+            Random rand = new Random();
+
+            for (int i = 0; i < 800000; i++)
+            {
+                    GPSPosition[] gps = new GPSPosition[2];
+                    xbottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
+                    ybottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
+                    gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
+                    gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
+                    Area test = new Area(i, "nic", gps);
+                    tree.insert(test);
+                    reorganizedTree.insert(test);
+            }
+            for (int i = 0; i < 200000; i++)
+            {
+                GPSPosition[] gps = new GPSPosition[2];
+                xbottom = (sizeOfTree - sizeOfItem - (sizeOfTree/2)) * rand.NextDouble();
+                ybottom = ((sizeOfTree / 2) - sizeOfItem) * rand.NextDouble();
+                gps[0] = new GPSPosition('N', 'E', xbottom + (sizeOfTree/2), ybottom);
+                gps[1] = new GPSPosition('S', 'W', xbottom + (sizeOfTree / 2) + sizeOfItem, ybottom + sizeOfItem);
+                Area test = new Area(i + 800000, "nic", gps);
+                tree.insert(test);
+                reorganizedTree.insert(test);
+            }
+            reorganizedTree.rebuildTree();
+            CSVHandler handler = new CSVHandler();
+
+            handler.SaveMeasurementsToCSV(insertNormalTest(tree), insertReorganizedTest(reorganizedTree));
+        }
+
+        private double[] insertNormalTest(QuadTree<Area> tree)
+        {
+            Random rand = new Random();
+            int sizeOfTree = 1000000;
+            int sizeOfItem = 250;
+            Stopwatch stopwatchInsert = new Stopwatch();
+            Stopwatch stopwatchDelete = new Stopwatch();
+            int numberOfOperations = 100000;
+            for (int i = 0; i < numberOfOperations; i++)
+            {
+
+                double xbottom = 0;
+                double ybottom = 0;
+                GPSPosition[] gps = new GPSPosition[2];
+                xbottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
+                ybottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
+                gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
+                gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
+                Area test = new Area(i+ 1000000, "nic", gps);
+
+                stopwatchInsert.Start();
+                tree.insert(test);
+                stopwatchInsert.Stop();
+
+                stopwatchDelete.Start();
+                tree.remove(test);
+                stopwatchDelete.Stop();
+            }
+            double insertTime = (double)stopwatchInsert.Elapsed.TotalMilliseconds / 100000;
+            double deleteTime = (double)stopwatchDelete.Elapsed.TotalMilliseconds / 100000;
+            double[] measurements = new double[] { insertTime, deleteTime };
+            return measurements;
+        }
+
+        private double[] insertReorganizedTest(QuadTree<Area> tree)
+        {
+            Random rand = new Random();
+            int sizeOfTree = 1000000;
+            int sizeOfItem = 250;
+            Stopwatch stopwatchInsert = new Stopwatch();
+            Stopwatch stopwatchDelete = new Stopwatch();
+            int numberOfOperations = 100000;
+            for (int i = 0; i < numberOfOperations; i++)
+            {
+
+                double xbottom = 0;
+                double ybottom = 0;
+                GPSPosition[] gps = new GPSPosition[2];
+                xbottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
+                ybottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
+                gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
+                gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
+                Area test = new Area(i + 1000000, "nic", gps);
+                stopwatchInsert.Start();
+                tree.insert(test);
+                stopwatchInsert.Stop();
+
+                stopwatchDelete.Start();
+                tree.remove(test);
+                stopwatchDelete.Stop();
+
+            }
+            double insertTime = (double)stopwatchInsert.Elapsed.TotalMilliseconds / 100000;
+            double deleteTime = (double)stopwatchDelete.Elapsed.TotalMilliseconds / 100000;
+            double[] measurements = new double[] { insertTime, deleteTime };
+            return measurements;
         }
     }
 }

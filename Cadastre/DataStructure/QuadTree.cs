@@ -178,10 +178,12 @@ namespace Cadastre.DataStructure
             if (node.Items.Count > 1) //ak su tam 2 itemy, je dovod prečo su 2 prave tam
             {
                 node.remove(item);
+                Size--;
             }
             else if (node.isLeaf) //súrodenci sú tiež listy
             {
                 node.remove(item);
+            Size--;
                 Boolean hasUsedChildren = false;
                 Boolean moreChildsInOneNode = false;
                 int numberOfChildItems = 0;
@@ -217,6 +219,7 @@ namespace Cadastre.DataStructure
             else //môže mať synov čo nie/sú listy a majú 1/viac itemov
             {
                 node.remove(item);
+                Size--;
                 Boolean hasUsedChildren = false;
                 int numberOfChildItems = 0;
                 QuadTreeNode<T> childNodeWithItems = null;
@@ -240,7 +243,6 @@ namespace Cadastre.DataStructure
                     node.deleteSons();
                 }
             }
-            Size--;
             return true;
         }
         public void changeMaxHeight(int newHeight)
@@ -472,6 +474,10 @@ namespace Cadastre.DataStructure
                 }
                 return newTree;
             }
+        }
+        public QuadTreeRectangle getTreeSize()
+        {
+            return root.Zone;
         }
     }
 }

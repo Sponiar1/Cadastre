@@ -140,5 +140,34 @@ namespace Cadastre.FileManager
             return trees;
         }
 
+        public void SaveMeasurementsToCSV(double[] normal, double[] reorganized)
+        {
+            string filePath = Path.Combine(Application.StartupPath, "Measurements.csv");
+
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                //Tree information
+                writer.Write("Insert unorganized");
+                writer.Write(";");
+                writer.Write(normal[0]);
+                writer.Write(";");
+                writer.WriteLine();
+                writer.Write("Delete unorganized");
+                writer.Write(";");
+                writer.Write(normal[1]);
+                writer.Write(";");
+                writer.WriteLine();
+                writer.Write("Insert organized");
+                writer.Write(";");
+                writer.Write(reorganized[0]);
+                writer.Write(";");
+                writer.WriteLine();
+                writer.Write("Delete organized");
+                writer.Write(";");
+                writer.Write(reorganized[1]);
+                writer.Write(";");
+                writer.WriteLine();
+            }
+        }
     }
 }

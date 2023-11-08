@@ -205,5 +205,10 @@ namespace Cadastre.CadastreManager
             lands = trees[0];
             properties = trees[1];
         }
+        public double[] getSize()
+        {
+            QuadTreeRectangle size = lands.getTreeSize();
+            return new double[] { size.BottomLeftX, size.BottomLeftY, size.UpperRightX, size.UpperRightY };
+        }
     }
 }

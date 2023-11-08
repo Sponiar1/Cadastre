@@ -40,6 +40,7 @@
             buttonInsert = new Button();
             buttonEdit = new Button();
             buttonDelete = new Button();
+            labelArea = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -106,10 +107,10 @@
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(311, 12);
+            dataGridView1.Location = new Point(314, 12);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(901, 625);
+            dataGridView1.Size = new Size(959, 625);
             dataGridView1.TabIndex = 6;
             // 
             // buttonGenerate
@@ -162,11 +163,21 @@
             buttonDelete.UseVisualStyleBackColor = true;
             buttonDelete.Click += buttonDelete_Click;
             // 
+            // labelArea
+            // 
+            labelArea.AutoSize = true;
+            labelArea.Location = new Point(132, 12);
+            labelArea.Name = "labelArea";
+            labelArea.Size = new Size(31, 15);
+            labelArea.TabIndex = 12;
+            labelArea.Text = "Area";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1224, 649);
+            ClientSize = new Size(1285, 649);
+            Controls.Add(labelArea);
             Controls.Add(buttonDelete);
             Controls.Add(buttonEdit);
             Controls.Add(buttonInsert);
@@ -184,6 +195,7 @@
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -200,5 +212,6 @@
         private Button buttonInsert;
         private Button buttonEdit;
         private Button buttonDelete;
+        private Label labelArea;
     }
 }
