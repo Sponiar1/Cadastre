@@ -50,5 +50,10 @@ namespace Cadastre.DataStructure.Templates
                 return -1;
             }
         }
+
+        public double getSize()
+        {
+            return 0;
+        }
     }
 }

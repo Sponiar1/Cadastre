@@ -815,7 +815,7 @@ namespace Cadastre
             QuadTree<Area> reorganizedTree = new QuadTree<Area>(0, 0, sizeOfTree, sizeOfTree, height);
             Random rand = new Random();
 
-            for (int i = 0; i < 800000; i++)
+            for (int i = 0; i < 600000; i++)
             {
                     GPSPosition[] gps = new GPSPosition[2];
                     xbottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
@@ -826,21 +826,21 @@ namespace Cadastre
                     tree.insert(test);
                     reorganizedTree.insert(test);
             }
-            for (int i = 0; i < 200000; i++)
+            for (int i = 0; i < 400000; i++)
             {
                 GPSPosition[] gps = new GPSPosition[2];
                 xbottom = (sizeOfTree - sizeOfItem - (sizeOfTree/2)) * rand.NextDouble();
                 ybottom = ((sizeOfTree / 2) - sizeOfItem) * rand.NextDouble();
                 gps[0] = new GPSPosition('N', 'E', xbottom + (sizeOfTree/2), ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + (sizeOfTree / 2) + sizeOfItem, ybottom + sizeOfItem);
-                Area test = new Area(i + 800000, "nic", gps);
+                Area test = new Area(i + 600000, "nic", gps);
                 tree.insert(test);
                 reorganizedTree.insert(test);
             }
-            reorganizedTree.rebuildTree();
+            reorganizedTree = reorganizedTree.rebuildTree();
             CSVHandler handler = new CSVHandler();
-
             handler.SaveMeasurementsToCSV(insertNormalTest(tree), insertReorganizedTest(reorganizedTree));
+            labelResult.Text = "Test successfull";
         }
 
         private double[] insertNormalTest(QuadTree<Area> tree)

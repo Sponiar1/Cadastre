@@ -58,5 +58,10 @@ namespace Cadastre.DataItems
         {
             return "";
         }
+
+        public double getSize()
+        {
+            return GpsLocation[1].lengthPosition - GpsLocation[0].lengthPosition;
+        }
     }
 }

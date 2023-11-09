@@ -152,13 +152,6 @@ namespace Cadastre.DataStructure
             while (currentNode != previousNode)
             {
                 previousNode = currentNode;
-                foreach (T searchedItem in currentNode.Items)
-                {
-                    if (item.CompareById(searchedItem) == 0)
-                    {
-                        return remove(item, currentNode);
-                    }
-                }
                 if (currentNode.sons[0] != null)
                 {
                     for (int i = 0; i < 4; i++)
@@ -169,6 +162,14 @@ namespace Cadastre.DataStructure
                             break;
                         }
                     }
+                }
+            }
+
+            foreach (T searchedItem in currentNode.Items)
+            {
+                if (item.CompareById(searchedItem) == 0)
+                {
+                    return remove(item, currentNode);
                 }
             }
             return false;
@@ -408,7 +409,6 @@ namespace Cadastre.DataStructure
             Queue<QuadTreeNode<T>> queue = new Queue<QuadTreeNode<T>>();
             Queue<T> items = new Queue<T>();
             queue.Enqueue(root);
-
            
 
             if (treeInfo[4] > 0.7)
@@ -434,7 +434,11 @@ namespace Cadastre.DataStructure
                         }
                     }
                 }
-
+                int newHeight = smallestItemSize(items.Peek());
+                if( newHeight == 0 ) 
+                {
+                    newHeight = MaxHeight;
+                }
                 QuadTree<T> newTree;
                 if (treeInfo.Max() == treeInfo[0])
                 {
@@ -442,7 +446,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY,
                                                     root.Zone.UpperRightX,
                                                     root.Zone.UpperRightY + ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
-                                                    MaxHeight,
+                                                    newHeight,
                                                     items);
                 }
                 else if (treeInfo.Max() == treeInfo[1])
@@ -451,7 +455,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY,
                                                     root.Zone.UpperRightX + ((root.Zone.UpperRightX - root.Zone.BottomLeftX) / 3),
                                                     root.Zone.UpperRightY + ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
-                                                    MaxHeight,
+                                                    newHeight,
                                                     items);
                 }
                 else if (treeInfo.Max() == treeInfo[2])
@@ -460,7 +464,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY - ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
                                                     root.Zone.UpperRightX + ((root.Zone.UpperRightX - root.Zone.BottomLeftX) / 3),
                                                     root.Zone.UpperRightY,
-                                                    MaxHeight,
+                                                    newHeight,
                                                     items);
                 }
                 else
@@ -469,7 +473,7 @@ namespace Cadastre.DataStructure
                                                     root.Zone.BottomLeftY - ((root.Zone.UpperRightY - root.Zone.BottomLeftY) / 3),
                                                     root.Zone.UpperRightX,
                                                     root.Zone.UpperRightY,
-                                                    MaxHeight,
+                                                    newHeight,
                                                     items);
                 }
                 return newTree;
@@ -478,6 +482,45 @@ namespace Cadastre.DataStructure
         public QuadTreeRectangle getTreeSize()
         {
             return root.Zone;
+        }
+
+        public int smallestItemSize(T firstItem)
+        {
+            Queue<QuadTreeNode<T>> queue = new Queue<QuadTreeNode<T>>();
+            queue.Enqueue(root);
+            T smallestItem = firstItem;
+            int newHeight = 0;
+            while (queue.Count > 0)
+            {
+                QuadTreeNode<T> currentNode = queue.Dequeue();
+
+                if (currentNode.isLeaf)
+                {
+                    foreach (T item in currentNode.Items)
+                    {
+                        if (item.getSize() < smallestItem.getSize())
+                        {
+                            smallestItem = item;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (currentNode.sons[i] != null)
+                    {
+                        queue.Enqueue(currentNode.sons[i]);
+                    }
+                }
+            }
+            for (int i = 0; i < int.MaxValue; i++)
+            {
+                if (((root.Zone.UpperRightX - root.Zone.BottomLeftX) * 1.3) / Math.Pow(2, i) < smallestItem.getSize())
+                {
+                    return i-1;
+                }
+            }
+            return 0;
         }
     }
 }

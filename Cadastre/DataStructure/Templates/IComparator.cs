@@ -14,5 +14,6 @@ namespace Cadastre.DataStructure.Templates
         int ChangePossible();
         void FoundSmallestZone();
         void RelocatedToBiggerZone();
+        double getSize();
     }
 }
