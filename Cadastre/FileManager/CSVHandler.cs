@@ -21,7 +21,7 @@ namespace Cadastre.FileManager
         public void SaveAreaToCSV(QuadTree<Area> quadTree, string fileName)
         {
             string filePath = Path.Combine(Application.StartupPath, fileName);
-            QuadTreeRectangle treeBorder = quadTree.getBorders();
+            QuadTreeRectangle treeBorder = quadTree.GetBorders();
 
             using (StreamWriter writer = new StreamWriter(filePath))
             {
@@ -39,7 +39,7 @@ namespace Cadastre.FileManager
                 writer.WriteLine();
 
                 //Items
-                List<Area> landItems = quadTree.find(new QuadTreeRectangle(treeBorder.BottomLeftX, treeBorder.BottomLeftY, treeBorder.UpperRightX, treeBorder.UpperRightY));
+                List<Area> landItems = quadTree.Find(new QuadTreeRectangle(treeBorder.BottomLeftX, treeBorder.BottomLeftY, treeBorder.UpperRightX, treeBorder.UpperRightY));
                 foreach (Area area in landItems)
                 {
                     writer.Write(area.Id);
@@ -125,7 +125,7 @@ namespace Cadastre.FileManager
                     double itemY1 = double.Parse(values[5]);
                     GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(itemX0, itemY0, 0), new GPSPosition(itemX1, itemY1, 1) };
                     item = new Property(id, description, gps);
-                    landsWithProperty = lands.find(new QuadTreeRectangle(itemX0, itemY0, itemX1, itemY1));
+                    landsWithProperty = lands.Find(new QuadTreeRectangle(itemX0, itemY0, itemX1, itemY1));
                     foreach (Land land in landsWithProperty)
                     {
                         land.Properties.Add((Property)item);

@@ -6,31 +6,29 @@ namespace Cadastre.DataStructure
     public class QuadTreeNode<T>
     {
         public List<T> Items { get; }
-        public QuadTreeNode<T>[] sons { get; set; }
-        public QuadTreeNode<T> parent { get; set; }
+        public QuadTreeNode<T>[] sons { get; private set; }
+        public QuadTreeNode<T> parent { get; private set; }
         public QuadTreeRectangle Zone { get; }
-        public Boolean isLeaf { get; set; }
+        public Boolean IsLeaf { get; set; }
         public int Height { get; set; }
+
         public QuadTreeNode(QuadTreeRectangle zone)
         {
             Items = new List<T>();
             sons = new QuadTreeNode<T>[4];
             Zone = zone;
-            isLeaf = true;
+            IsLeaf = true;
         }
-
-        public void insert(T item)
+        public void Insert(T item)
         {
             Items.Add(item);
         }
-
-        public T remove(T item)
+        public T Remove(T item)
         {
             Items.Remove(item);
             return item;
         }
-
-        public void createSons()
+        public void CreateSons()
         {
             if (sons[0] == null)
             {
@@ -52,9 +50,9 @@ namespace Cadastre.DataStructure
                 sons[3].parent = this;
             }
         }
-        public void deleteSons()
+        public void DeleteSons()
         {
-            isLeaf = true;
+            IsLeaf = true;
             sons[0] = null;
             sons[1] = null;
             sons[2] = null;

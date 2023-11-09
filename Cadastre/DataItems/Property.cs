@@ -11,7 +11,7 @@ namespace Cadastre.DataItems
 {
     public class Property : Area, IComparator<Property>
     {
-        public List<Land> Lands {get; set;}
+        public List<Land> Lands { get; set;}
         public Property(int id, string description, GPSPosition[] gpsLocation) : base(id, description, gpsLocation)
         {
             Lands = new List<Land>();
@@ -23,7 +23,7 @@ namespace Cadastre.DataItems
         }
 
         override
-        public string getListOfAreas()
+        public string GetListOfAreas()
         {
             string listOfAreas = "";
             for (int i = 0; i < Lands.Count; i++)

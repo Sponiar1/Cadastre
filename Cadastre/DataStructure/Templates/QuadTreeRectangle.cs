@@ -21,7 +21,7 @@ namespace Cadastre.DataStructure.Templates
             UpperRightY = upperRightY;
         }
 
-        public Boolean blending(QuadTreeRectangle other)
+        public Boolean Blending(QuadTreeRectangle other)
         {
             if (UpperRightX < other.BottomLeftX || other.UpperRightX < BottomLeftX)
             {

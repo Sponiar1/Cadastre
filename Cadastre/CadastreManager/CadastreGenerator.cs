@@ -13,7 +13,7 @@ namespace Cadastre.CadastreManager
     internal class CadastreGenerator
     {
         public CadastreGenerator() { }
-        public QuadTree<Area>[] generateData(double[] size)
+        public QuadTree<Area>[] GenerateData(double[] size)
         {
             QuadTree<Area>[] trees = new QuadTree<Area>[2];
             QuadTree<Area> lands;
@@ -31,8 +31,8 @@ namespace Cadastre.CadastreManager
                 ybottom = (size[3] - size[6] - size[1]) * rand.NextDouble() + size[1];
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + size[6], ybottom + size[6]);
-                Land land = new Land(i, generateString(), gps);
-                lands.insert(land);
+                Land land = new Land(i, GenerateString(), gps);
+                lands.Insert(land);
 
             }
 
@@ -43,9 +43,9 @@ namespace Cadastre.CadastreManager
                 ybottom = (size[3] - size[7] - size[1]) * rand.NextDouble() + size[1];
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + size[7], ybottom + size[7]);
-                Property property = new Property(i, generateString(), gps);
-                properties.insert(property);
-                List<Area> landsInArea = lands.find(new QuadTreeRectangle(xbottom, ybottom, xbottom + (size[7]), ybottom + (size[7])));
+                Property property = new Property(i, GenerateString(), gps);
+                properties.Insert(property);
+                List<Area> landsInArea = lands.Find(new QuadTreeRectangle(xbottom, ybottom, xbottom + (size[7]), ybottom + (size[7])));
                 foreach (Land land in landsInArea)
                 {
                     land.Properties.Add(property);
@@ -56,7 +56,7 @@ namespace Cadastre.CadastreManager
             trees[1] = properties;
             return trees;
         }
-        private string generateString()
+        private string GenerateString()
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

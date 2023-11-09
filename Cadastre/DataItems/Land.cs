@@ -23,7 +23,7 @@ namespace Cadastre.DataItems
         }
 
         override
-        public string getListOfAreas()
+        public string GetListOfAreas()
         {
             string listOfAreas = "";
             for(int i = 0; i < Properties.Count; i++)

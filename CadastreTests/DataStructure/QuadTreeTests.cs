@@ -37,7 +37,7 @@ namespace Cadastre.DataStructure.Tests
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                 Area test = new Area(i, "nic", gps);
-                Assert.IsTrue(tree.insert(test));
+                Assert.IsTrue(tree.Insert(test));
                 /*
                 int pocet = tree.find(new Rectangle(0, 0, 1000000, 1000000)).Count;
                 if (tree.find(new Rectangle(0, 0, 1000000, 1000000)).Count != tree.Size || tree.Size % 1000 == 0 || tree.Size > 4115)
@@ -57,7 +57,7 @@ namespace Cadastre.DataStructure.Tests
                 }
             }*/
             Assert.IsTrue(tree.Size == numberOfOperations);
-            Assert.IsTrue(tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree)).Count == numberOfOperations);
+            Assert.IsTrue(tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree)).Count == numberOfOperations);
         }
 
         [TestMethod()]
@@ -84,7 +84,7 @@ namespace Cadastre.DataStructure.Tests
                 gps[1] = new GPSPosition('S', 'W', xbottom + 50, ybottom + 50);
                 Area test = new Area(i, "nic", gps);
                 list.Add(test);
-                Assert.IsTrue(tree.insert(test));
+                Assert.IsTrue(tree.Insert(test));
             }
             Area helpArea;
             int index;
@@ -93,9 +93,9 @@ namespace Cadastre.DataStructure.Tests
                 index = rand.Next(list.Count);
                 helpArea = list[index];
                 list.RemoveAt(index);
-                Assert.IsTrue(tree.remove(helpArea));
+                Assert.IsTrue(tree.Remove(helpArea));
             }
-            List<Area> items = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            List<Area> items = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             for (int i = 0; i < list.Count; i++)
             {
                 helpArea = list[i];
@@ -127,7 +127,7 @@ namespace Cadastre.DataStructure.Tests
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree / 2 - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                 Area test = new Area(i, "nic", gps);
-                tree.insert(test);
+                tree.Insert(test);
             }
 
             for (int i = 0; i < numberOfOperations / 4; i++)
@@ -138,11 +138,11 @@ namespace Cadastre.DataStructure.Tests
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                 Area test = new Area(i, "nic", gps);
-                tree.insert(test);
+                tree.Insert(test);
                 list.Add(test);
             }
-            List<Area> items = tree.find(new QuadTreeRectangle(sizeOfTree / 2, 0, sizeOfTree, sizeOfTree));
-            Assert.IsTrue(tree.find(new QuadTreeRectangle(sizeOfTree / 2, 0, sizeOfTree, sizeOfTree)).Count == numberOfOperations / 4);
+            List<Area> items = tree.Find(new QuadTreeRectangle(sizeOfTree / 2, 0, sizeOfTree, sizeOfTree));
+            Assert.IsTrue(tree.Find(new QuadTreeRectangle(sizeOfTree / 2, 0, sizeOfTree, sizeOfTree)).Count == numberOfOperations / 4);
             for (int i = 0; i < list.Count; i++)
             {
                 helpArea = list[i];
@@ -172,14 +172,14 @@ namespace Cadastre.DataStructure.Tests
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                 Area test = new Area(i, "nic", gps);
-                Assert.IsTrue(tree.insert(test));
+                Assert.IsTrue(tree.Insert(test));
                 list.Add(test);
             }
 
-            tree.changeMaxHeight(200);
+            tree.ChangeMaxHeight(200);
 
             Area helpArea;
-            List<Area> items = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            List<Area> items = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             Assert.IsTrue(items.Count == list.Count);
             for (int i = 0; i < list.Count; i++)
             {
@@ -187,8 +187,8 @@ namespace Cadastre.DataStructure.Tests
                 Assert.IsTrue(items.Find(item => item.Id == helpArea.Id) == helpArea);
             }
 
-            tree.changeMaxHeight(150);
-            items = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            tree.ChangeMaxHeight(150);
+            items = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             Assert.IsTrue(items.Count == list.Count);
             for (int i = 0; i < list.Count; i++)
             {
@@ -221,10 +221,10 @@ namespace Cadastre.DataStructure.Tests
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                 Area test = new Area(i, "nic", gps);
-                Assert.IsTrue(tree.insert(test));
+                Assert.IsTrue(tree.Insert(test));
                 list.Add(test);
             }
-            double[] health = tree.calculateHealth();
+            double[] health = tree.CalculateHealth();
             Assert.IsTrue(health[4] > 0 && health[4] < 1);
         }
 
@@ -250,15 +250,15 @@ namespace Cadastre.DataStructure.Tests
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                 Area test = new Area(i, "nic", gps);
-                Assert.IsTrue(tree.insert(test));
+                Assert.IsTrue(tree.Insert(test));
                 list.Add(test);
             }
-            double[] health = tree.calculateHealth();
+            double[] health = tree.CalculateHealth();
             Assert.IsTrue(health[4] > 0 && health[4] < 1);
 
             Area helpArea;
-            tree = tree.rebuildTree();
-            List<Area> items = tree.find(new QuadTreeRectangle(0 - (sizeOfTree / 4), 0 - (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4)));
+            tree = tree.RebuildTree();
+            List<Area> items = tree.Find(new QuadTreeRectangle(0 - (sizeOfTree / 4), 0 - (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4)));
             Assert.IsTrue(items.Count == list.Count);
             for (int i = 0; i < list.Count; i++)
             {
@@ -266,7 +266,7 @@ namespace Cadastre.DataStructure.Tests
                 Assert.IsTrue(items.Find(item => item.Id == helpArea.Id) == helpArea);
             }
 
-            double[] newHealth = tree.calculateHealth();
+            double[] newHealth = tree.CalculateHealth();
             Assert.IsTrue(health[4] > 0 && health[4] < 1);
         }
 
@@ -308,7 +308,7 @@ namespace Cadastre.DataStructure.Tests
                 helpLand = availableLands[i];
                 availableLands.RemoveAt(i);
                 usedLands.Add(helpLand);
-                Assert.IsTrue(tree.insert(helpLand));
+                Assert.IsTrue(tree.Insert(helpLand));
             }
 
             double action;
@@ -321,7 +321,7 @@ namespace Cadastre.DataStructure.Tests
                     helpLand = availableLands[index];
                     availableLands.RemoveAt(index);
                     usedLands.Add(helpLand);
-                    Assert.IsTrue(tree.insert(helpLand));
+                    Assert.IsTrue(tree.Insert(helpLand));
                 }
                 else if(action < insertChance + removeChance)
                 {
@@ -329,12 +329,12 @@ namespace Cadastre.DataStructure.Tests
                     helpLand = usedLands[index];
                     usedLands.RemoveAt(index);
                     availableLands.Add(helpLand);
-                    Assert.IsTrue(tree.remove(helpLand));
+                    Assert.IsTrue(tree.Remove(helpLand));
                 }
                 else
                 {
                     helpLand = usedLands[rand.Next(usedLands.Count)];
-                    List<Land> lands = tree.find(new QuadTreeRectangle(helpLand.GpsLocation[0].lengthPosition - 1, 
+                    List<Land> lands = tree.Find(new QuadTreeRectangle(helpLand.GpsLocation[0].lengthPosition - 1, 
                                                                         helpLand.GpsLocation[0].widthPosition - 1,
                                                                         helpLand.GpsLocation[1].lengthPosition + 1,
                                                                         helpLand.GpsLocation[1].widthPosition + 1));

@@ -16,10 +16,10 @@ namespace Cadastre.CadastreManager
     {
         QuadTree<Area> lands;
         QuadTree<Area> properties;
-        CSVHandler csvhandler;
+        CSVHandler csvHandler;
         public CadastreHandler() 
         {
-            csvhandler = new CSVHandler();
+            csvHandler = new CSVHandler();
         }
         public void GenerateEmptyTrees(double[] configuration)
         {
@@ -29,11 +29,11 @@ namespace Cadastre.CadastreManager
         public void GenerateCadastre(double[] configuration)
         {
             CadastreGenerator generator = new CadastreGenerator();
-            QuadTree<Area>[] trees = generator.generateData(configuration);
+            QuadTree<Area>[] trees = generator.GenerateData(configuration);
             lands = trees[0];
             properties = trees[1];
         }
-        public Boolean insertItem(double[] configuration, string description, int type)
+        public Boolean InsertItem(double[] configuration, string description, int type)
         {
 
             if (type == 0)
@@ -42,11 +42,11 @@ namespace Cadastre.CadastreManager
                 gps[0] = new GPSPosition('N', 'E', configuration[0], configuration[1]);
                 gps[1] = new GPSPosition('S', 'W', configuration[2], configuration[3]);
                 Land land = new Land((int)configuration[4], description, gps);
-                if(!lands.insert(land))
+                if(!lands.Insert(land))
                 {
                     return false;
                 }
-                List<Area> propertiesInArea = properties.find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
+                List<Area> propertiesInArea = properties.Find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
                 foreach (Property property in propertiesInArea)
                 {
                     land.Properties.Add(property);
@@ -60,11 +60,11 @@ namespace Cadastre.CadastreManager
                 gps[0] = new GPSPosition('N', 'E', configuration[0], configuration[1]);
                 gps[1] = new GPSPosition('S', 'W', configuration[2], configuration[3]);
                 Property property = new Property((int)configuration[4], description, gps);
-                if (!properties.insert(property))
+                if (!properties.Insert(property))
                 {
                     return false;
                 }
-                List<Area> landsInArea = lands.find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
+                List<Area> landsInArea = lands.Find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
                 foreach (Land land in landsInArea)
                 {
                     land.Properties.Add(property);
@@ -73,7 +73,7 @@ namespace Cadastre.CadastreManager
                 return true;
             }
         }
-        public Boolean editItem(double[] configuration, string description, int type, Area item)
+        public Boolean EditItem(double[] configuration, string description, int type, Area item)
         {
 
             if (configuration[0] == item.GpsLocation[0].lengthPosition && configuration[1] == item.GpsLocation[0].widthPosition
@@ -87,14 +87,14 @@ namespace Cadastre.CadastreManager
             {
                 if (type == 0)
                 {
-                    List<Area> propertiesInArea = properties.find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
+                    List<Area> propertiesInArea = properties.Find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
                                                                                         item.GpsLocation[1].lengthPosition, item.GpsLocation[1].widthPosition));
                     foreach (Property property in propertiesInArea)
                     {
                         property.Lands.Remove((Land)item);
                     }
                     ((Land)item).Properties.Clear();
-                    lands.remove(item);
+                    lands.Remove(item);
                     GPSPosition[] gps = new GPSPosition[2];
                     gps[0] = new GPSPosition('N', 'E', configuration[0], configuration[1]);
                     gps[1] = new GPSPosition('S', 'W', configuration[2], configuration[3]);
@@ -102,11 +102,11 @@ namespace Cadastre.CadastreManager
                     item.Id = (int)configuration[4];
                     item.Description = description;
 
-                    if(!lands.insert(item))
+                    if(!lands.Insert(item))
                     {
                         return false;
                     }
-                    propertiesInArea = properties.find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
+                    propertiesInArea = properties.Find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
                     foreach (Property property in propertiesInArea)
                     {
 
@@ -117,14 +117,14 @@ namespace Cadastre.CadastreManager
                 }
                 else
                 {
-                    List<Area> landsInArea = lands.find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
+                    List<Area> landsInArea = lands.Find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
                                                                               item.GpsLocation[1].lengthPosition, item.GpsLocation[1].widthPosition));
                     foreach (Land land in landsInArea)
                     {
                         land.Properties.Remove((Property)item);
                     }
                     ((Property)item).Lands.Clear();
-                    properties.remove(item);
+                    properties.Remove(item);
 
                     GPSPosition[] gps = new GPSPosition[2];
                     gps[0] = new GPSPosition('N', 'E', configuration[0], configuration[1]);
@@ -132,11 +132,11 @@ namespace Cadastre.CadastreManager
                     item.GpsLocation = gps;
                     item.Id = (int)configuration[4];
                     item.Description = description;
-                    if(!properties.insert(item))
+                    if(!properties.Insert(item))
                     {
                         return false;
                     }
-                    landsInArea = lands.find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
+                    landsInArea = lands.Find(new QuadTreeRectangle(configuration[0], configuration[1], configuration[2], configuration[3]));
                     foreach (Land land in landsInArea)
                     {
 
@@ -147,16 +147,16 @@ namespace Cadastre.CadastreManager
                 }
             }
         }
-        public Boolean deleteItem(Area item, int type)
+        public Boolean DeleteItem(Area item, int type)
         {
             List<Area> associatedItems;
             if (type == 0)
             {
-                if(!lands.remove(item))
+                if(!lands.Remove(item))
                 {
                     return false;
                 }
-                associatedItems = properties.find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
+                associatedItems = properties.Find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
                                                                         item.GpsLocation[1].lengthPosition, item.GpsLocation[1].widthPosition));
                 foreach (Property property in associatedItems)
                 {
@@ -166,11 +166,11 @@ namespace Cadastre.CadastreManager
             }
             else
             {
-                if(!properties.remove(item))
+                if(!properties.Remove(item))
                 { 
                     return false;
                 }
-                associatedItems = lands.find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
+                associatedItems = lands.Find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
                                                                         item.GpsLocation[1].lengthPosition, item.GpsLocation[1].widthPosition));
                 foreach (Land land in associatedItems)
                 {
@@ -179,35 +179,35 @@ namespace Cadastre.CadastreManager
                 return true;
             }
         }
-        public List<Area>[] findAll(double[] coordinates)
+        public List<Area>[] FindAll(double[] coordinates)
         {
             List<Area>[] results = new List<Area>[2];
-            results[0] = lands.find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
-            results[1] = properties.find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
+            results[0] = lands.Find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
+            results[1] = properties.Find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
             return results;
         }
-        public List<Area> findLands(double[] coordinates)
+        public List<Area> FindLands(double[] coordinates)
         {
-            return lands.find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
+            return lands.Find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
         }
-        public List<Area> findProperty(double[] coordinates)
+        public List<Area> FindProperty(double[] coordinates)
         {
-            return properties.find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
+            return properties.Find(new QuadTreeRectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3]));
         }
-        public void saveToCSV(string landName, string propertyName)
+        public void SaveToCSV(string landName, string propertyName)
         {
-            csvhandler.SaveAreaToCSV(lands, "lands.csv");
-            csvhandler.SaveAreaToCSV(properties, "properties.csv");
+            csvHandler.SaveAreaToCSV(lands, "lands.csv");
+            csvHandler.SaveAreaToCSV(properties, "properties.csv");
         }
-        public void loadFromCSV(string landName, string propertyName)
+        public void LoadFromCSV(string landName, string propertyName)
         {
-            QuadTree<Area>[] trees = csvhandler.LoadTreeFromCSV(landName, propertyName);
+            QuadTree<Area>[] trees = csvHandler.LoadTreeFromCSV(landName, propertyName);
             lands = trees[0];
             properties = trees[1];
         }
-        public double[] getSize()
+        public double[] GetSize()
         {
-            QuadTreeRectangle size = lands.getTreeSize();
+            QuadTreeRectangle size = lands.GetTreeSize();
             return new double[] { size.BottomLeftX, size.BottomLeftY, size.UpperRightX, size.UpperRightY };
         }
     }

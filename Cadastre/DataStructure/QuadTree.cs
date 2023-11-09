@@ -12,11 +12,11 @@ namespace Cadastre.DataStructure
     {
         QuadTreeNode<T> root;
         public int MaxHeight {get; private set;}
-        public int Size { get; set; }
+        public int Size { get; private set; }
 
-        public QuadTree(double paSizeX1, double paSizeX2, double paSizeY1, double paSizeY2, int height)
+        public QuadTree(double paSizeX1, double paSizeY1, double paSizeX2, double paSizeY2, int height)
         {
-            root = new QuadTreeNode<T>(new QuadTreeRectangle(paSizeX1, paSizeX2, paSizeY1, paSizeY2));
+            root = new QuadTreeNode<T>(new QuadTreeRectangle(paSizeX1, paSizeY1, paSizeX2, paSizeY2));
             root.Height = 0;
             MaxHeight = height;
             Size = 0;
@@ -30,22 +30,22 @@ namespace Cadastre.DataStructure
             int queueSize = items.Count;
             for (int i = 0; i < queueSize; i++)
             {
-                insert(items.Dequeue());
+                Insert(items.Dequeue());
             }
         }
-        public QuadTreeRectangle getBorders()
+        public QuadTreeRectangle GetBorders()
         {
             return root.Zone;
         }
-        public Boolean insert(T item)
+        public Boolean Insert(T item)
         {
             if (item.CompareTo(root.Zone) != 0)
             {
                 return false;
             }
-            return insertAt(item, root);
+            return InsertAt(item, root);
         }
-        private Boolean insertAt(T item, QuadTreeNode<T> node)
+        private Boolean InsertAt(T item, QuadTreeNode<T> node)
         {
                 QuadTreeNode<T> currentNode = node;
             QuadTreeNode<T> parent = node.parent;
@@ -60,9 +60,9 @@ namespace Cadastre.DataStructure
                 {
                     currentNode = startingNode.Peek();
                 }
-                if (currentNode.Height == MaxHeight || (currentNode.Items.Count == 0 && currentNode.isLeaf))
+                if (currentNode.Height == MaxHeight || (currentNode.Items.Count == 0 && currentNode.IsLeaf))
                 {
-                    currentNode.insert(items.Dequeue());
+                    currentNode.Insert(items.Dequeue());
                     startingNode.Dequeue();
                     currentNode = null;
                 }
@@ -78,7 +78,7 @@ namespace Cadastre.DataStructure
                     parent = currentNode;
                     if (currentNode.sons[0] == null)
                     {
-                        currentNode.createSons();
+                        currentNode.CreateSons();
                         createdSons = true;
                     }
 
@@ -86,7 +86,7 @@ namespace Cadastre.DataStructure
                     {
                         if (items.Peek().CompareTo(parent.sons[i].Zone) == 0)
                         {
-                            parent.isLeaf = false;
+                            parent.IsLeaf = false;
                             currentNode = currentNode.sons[i];
                             createdSons = false;
                             break;
@@ -95,13 +95,13 @@ namespace Cadastre.DataStructure
                         if (i == 3 && createdSons)
                         {
                             createdSons = false;
-                            currentNode.deleteSons();
+                            currentNode.DeleteSons();
                         }
                     }
                     if (currentNode == parent)
                     {
                         items.Peek().FoundSmallestZone();
-                        currentNode.insert(items.Dequeue());
+                        currentNode.Insert(items.Dequeue());
                         startingNode.Dequeue();
                         currentNode = null;
                     }
@@ -110,12 +110,12 @@ namespace Cadastre.DataStructure
             Size++;
             return true;
         }
-        public List<T> find(QuadTreeRectangle searchArea)
+        public List<T> Find(QuadTreeRectangle searchArea)
         {
             List<T> results = new List<T>();
             Queue<QuadTreeNode<T>> nodes = new Queue<QuadTreeNode<T>>();
 
-            if (root == null || !root.Zone.blending(searchArea))
+            if (root == null || !root.Zone.Blending(searchArea))
             {
                 return results;
             }
@@ -136,7 +136,7 @@ namespace Cadastre.DataStructure
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        if (currentNode.sons[i].Zone.blending(searchArea))
+                        if (currentNode.sons[i].Zone.Blending(searchArea))
                         {
                             nodes.Enqueue(currentNode.sons[i]);
                         }
@@ -145,7 +145,7 @@ namespace Cadastre.DataStructure
             }
             return results;
         }
-        public Boolean remove(T item)
+        public Boolean Remove(T item)
         {
             QuadTreeNode<T> currentNode = root;
             QuadTreeNode<T> previousNode = null;
@@ -169,21 +169,21 @@ namespace Cadastre.DataStructure
             {
                 if (item.CompareById(searchedItem) == 0)
                 {
-                    return remove(item, currentNode);
+                    return Remove(item, currentNode);
                 }
             }
             return false;
         }
-        private Boolean remove(T item, QuadTreeNode<T> node)
+        private Boolean Remove(T item, QuadTreeNode<T> node)
         {
             if (node.Items.Count > 1) //ak su tam 2 itemy, je dovod prečo su 2 prave tam
             {
-                node.remove(item);
+                node.Remove(item);
                 Size--;
             }
-            else if (node.isLeaf) //súrodenci sú tiež listy
+            else if (node.IsLeaf) //súrodenci sú tiež listy
             {
-                node.remove(item);
+                node.Remove(item);
             Size--;
                 Boolean hasUsedChildren = false;
                 Boolean moreChildsInOneNode = false;
@@ -192,7 +192,7 @@ namespace Cadastre.DataStructure
                 //zistiť či súrodenci majú max 1 item a sú listy, ak hej tak vymazať
                 for (int i = 0; i < 4; i++)
                 {
-                    if (!node.parent.sons[i].isLeaf)
+                    if (!node.parent.sons[i].IsLeaf)
                     {
                         hasUsedChildren = true;
                     }
@@ -204,7 +204,7 @@ namespace Cadastre.DataStructure
                 }
                 if (numberOfChildItems == 0 && !hasUsedChildren)
                 {
-                    node.parent.deleteSons();
+                    node.parent.DeleteSons();
                 }
                 else if (numberOfChildItems == 1 && !hasUsedChildren)
                 {
@@ -213,20 +213,20 @@ namespace Cadastre.DataStructure
                         ((T)childNodeWithItems.Items[0]).RelocatedToBiggerZone();
                         node.parent.Items.Add(childNodeWithItems.Items[0]);
                         childNodeWithItems.Items.RemoveAt(0);
-                        node.parent.deleteSons();
+                        node.parent.DeleteSons();
                     }
                 }
             }
             else //môže mať synov čo nie/sú listy a majú 1/viac itemov
             {
-                node.remove(item);
+                node.Remove(item);
                 Size--;
                 Boolean hasUsedChildren = false;
                 int numberOfChildItems = 0;
                 QuadTreeNode<T> childNodeWithItems = null;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (!node.sons[i].isLeaf)
+                    if (!node.sons[i].IsLeaf)
                     {
                         hasUsedChildren = true;
                     }
@@ -241,12 +241,12 @@ namespace Cadastre.DataStructure
                     ((T)childNodeWithItems.Items[0]).RelocatedToBiggerZone();
                     node.Items.Add(childNodeWithItems.Items[0]);
                     childNodeWithItems.Items.RemoveAt(0);
-                    node.deleteSons();
+                    node.DeleteSons();
                 }
             }
             return true;
         }
-        public void changeMaxHeight(int newHeight)
+        public void ChangeMaxHeight(int newHeight)
         {
             int oldMaxHeight = MaxHeight;
             MaxHeight = newHeight;
@@ -277,7 +277,7 @@ namespace Cadastre.DataStructure
 
                     if (currentNode.Height == oldMaxHeight)
                     {
-                        recheckItems(currentNode);
+                        RecheckItems(currentNode);
                     }
                 }
             }
@@ -314,16 +314,16 @@ namespace Cadastre.DataStructure
                 int nodesToDestroy = stack.Count;
                 for (int i = 0; i < nodesToDestroy; i++)
                 {
-                    recheckItems(stack.Pop());
+                    RecheckItems(stack.Pop());
                 }
                 int newLeafs = stackNewLeafs.Count;
                 for (int i = 0; i < newLeafs; i++)
                 {
-                    stackNewLeafs.Pop().deleteSons();
+                    stackNewLeafs.Pop().DeleteSons();
                 }
             }
         }
-        private Boolean recheckItems(QuadTreeNode<T> node)
+        private Boolean RecheckItems(QuadTreeNode<T> node)
         {
             if (node == null)
             {
@@ -341,13 +341,13 @@ namespace Cadastre.DataStructure
                 {
                     T item = (T)node.Items[i];
                     item.RelocatedToBiggerZone();
-                    designatedNode.insert(item);
+                    designatedNode.Insert(item);
                     node.Items.RemoveAt(i);
                     i--;
                 }
-                node.deleteSons();
+                node.DeleteSons();
             }
-            else if (node.Height < MaxHeight && node.isLeaf)
+            else if (node.Height < MaxHeight && node.IsLeaf)
             {
                 if (node.Items.Count > 1)
                 {
@@ -357,7 +357,7 @@ namespace Cadastre.DataStructure
                         {
                             T item = (T)node.Items[i];
                             node.Items.RemoveAt(i);
-                            insertAt(item, node);
+                            InsertAt(item, node);
                             i--;
                         }
                     }
@@ -365,7 +365,7 @@ namespace Cadastre.DataStructure
             }
             return true;
         }
-        public double[] calculateHealth()
+        public double[] CalculateHealth()
         {
             double[] items = new double[5];
             Stack<QuadTreeNode<T>> postOrderStack = new Stack<QuadTreeNode<T>>();
@@ -403,9 +403,9 @@ namespace Cadastre.DataStructure
 
             return items;
         }
-        public QuadTree<T> rebuildTree()
+        public QuadTree<T> RebuildTree()
         {
-            double[] treeInfo = this.calculateHealth();
+            double[] treeInfo = this.CalculateHealth();
             Queue<QuadTreeNode<T>> queue = new Queue<QuadTreeNode<T>>();
             Queue<T> items = new Queue<T>();
             queue.Enqueue(root);
@@ -434,7 +434,7 @@ namespace Cadastre.DataStructure
                         }
                     }
                 }
-                int newHeight = smallestItemSize(items.Peek());
+                int newHeight = SmallestItemSize(items.Peek());
                 if( newHeight == 0 ) 
                 {
                     newHeight = MaxHeight;
@@ -479,12 +479,11 @@ namespace Cadastre.DataStructure
                 return newTree;
             }
         }
-        public QuadTreeRectangle getTreeSize()
+        public QuadTreeRectangle GetTreeSize()
         {
             return root.Zone;
         }
-
-        public int smallestItemSize(T firstItem)
+        private int SmallestItemSize(T firstItem)
         {
             Queue<QuadTreeNode<T>> queue = new Queue<QuadTreeNode<T>>();
             queue.Enqueue(root);
@@ -494,11 +493,11 @@ namespace Cadastre.DataStructure
             {
                 QuadTreeNode<T> currentNode = queue.Dequeue();
 
-                if (currentNode.isLeaf)
+                if (currentNode.IsLeaf)
                 {
                     foreach (T item in currentNode.Items)
                     {
-                        if (item.getSize() < smallestItem.getSize())
+                        if (item.GetSize() < smallestItem.GetSize())
                         {
                             smallestItem = item;
                         }
@@ -515,7 +514,7 @@ namespace Cadastre.DataStructure
             }
             for (int i = 0; i < int.MaxValue; i++)
             {
-                if (((root.Zone.UpperRightX - root.Zone.BottomLeftX) * 1.3) / Math.Pow(2, i) < smallestItem.getSize())
+                if (((root.Zone.UpperRightX - root.Zone.BottomLeftX) * 1.3) / Math.Pow(2, i) < smallestItem.GetSize())
                 {
                     return i-1;
                 }

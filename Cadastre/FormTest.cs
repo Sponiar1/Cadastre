@@ -108,7 +108,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -122,11 +122,11 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             if (checkBoxItems.Checked)
             {
                 for (int i = 0; i < numberOfOperations + sizeOfTree; i++)
@@ -187,7 +187,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -201,7 +201,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -213,10 +213,10 @@ namespace Cadastre
                 index = rand.Next(items.Count);
                 helpArea = items[index];
                 items.RemoveAt(index);
-                tree.remove(helpArea);
+                tree.Remove(helpArea);
             }
 
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             if (checkBoxItems.Checked)
             {
                 for (int i = 0; i < items.Count; i++)
@@ -277,7 +277,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -291,11 +291,11 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             Area helpArea;
             if (checkBoxItems.Checked)
             {
@@ -386,7 +386,7 @@ namespace Cadastre
                 helpArea = availableLands[0];
                 availableLands.RemoveAt(0);
                 usedLands.Add(helpArea);
-                tree.insert(helpArea);
+                tree.Insert(helpArea);
             }
 
             double action;
@@ -399,7 +399,7 @@ namespace Cadastre
                     helpArea = availableLands[index];
                     availableLands.RemoveAt(index);
                     usedLands.Add(helpArea);
-                    tree.insert(helpArea);
+                    tree.Insert(helpArea);
                 }
                 else if (action < insertChance + removeChance)
                 {
@@ -407,7 +407,7 @@ namespace Cadastre
                     helpArea = usedLands[index];
                     usedLands.RemoveAt(index);
                     availableLands.Add(helpArea);
-                    if (!tree.remove(helpArea))
+                    if (!tree.Remove(helpArea))
                     {
                         labelResult.Text = "Item for delete not found";
                         return;
@@ -416,7 +416,7 @@ namespace Cadastre
                 else
                 {
                     helpArea = usedLands[rand.Next(usedLands.Count)];
-                    List<Area> areas = tree.find(new QuadTreeRectangle(helpArea.GpsLocation[0].lengthPosition - 1,
+                    List<Area> areas = tree.Find(new QuadTreeRectangle(helpArea.GpsLocation[0].lengthPosition - 1,
                                                                         helpArea.GpsLocation[0].widthPosition - 1,
                                                                         helpArea.GpsLocation[1].lengthPosition + 1,
                                                                         helpArea.GpsLocation[1].widthPosition + 1));
@@ -431,7 +431,7 @@ namespace Cadastre
 
             }
 
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
             if (checkBoxItems.Checked)
             {
                 for (int i = 0; i < usedLands.Count; i++)
@@ -491,7 +491,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -505,12 +505,12 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
-            tree.changeMaxHeight(newHeight);
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
+            tree.ChangeMaxHeight(newHeight);
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0, 0, sizeOfTree, sizeOfTree));
 
             if (checkBoxItems.Checked)
             {
@@ -570,7 +570,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -584,13 +584,13 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
-            double oldHealth = tree.calculateHealth()[4];
+            double oldHealth = tree.CalculateHealth()[4];
             oldHealth = Math.Round(oldHealth, 3);
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0 - (sizeOfTree / 4), 0 - (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4)));
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0 - (sizeOfTree / 4), 0 - (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4)));
 
             if (checkBoxItems.Checked)
             {
@@ -651,7 +651,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
 
@@ -663,7 +663,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
@@ -677,7 +677,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
 
@@ -689,16 +689,16 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
+                    tree.Insert(test);
                     items.Add(test);
                 }
             }
-            double oldHealth = tree.calculateHealth()[4];
-            tree = tree.rebuildTree();
-            double newHealth = tree.calculateHealth()[4];
+            double oldHealth = tree.CalculateHealth()[4];
+            tree = tree.RebuildTree();
+            double newHealth = tree.CalculateHealth()[4];
             oldHealth = Math.Round(oldHealth, 3);
             newHealth = Math.Round(newHealth, 3);
-            List<Area> treeItems = tree.find(new QuadTreeRectangle(0 - (sizeOfTree / 4), 0 - (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4)));
+            List<Area> treeItems = tree.Find(new QuadTreeRectangle(0 - (sizeOfTree / 4), 0 - (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4), sizeOfTree + (sizeOfTree / 4)));
 
             if (checkBoxItems.Checked)
             {
@@ -823,8 +823,8 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     Area test = new Area(i, "nic", gps);
-                    tree.insert(test);
-                    reorganizedTree.insert(test);
+                    tree.Insert(test);
+                    reorganizedTree.Insert(test);
             }
             for (int i = 0; i < 400000; i++)
             {
@@ -834,10 +834,10 @@ namespace Cadastre
                 gps[0] = new GPSPosition('N', 'E', xbottom + (sizeOfTree/2), ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + (sizeOfTree / 2) + sizeOfItem, ybottom + sizeOfItem);
                 Area test = new Area(i + 600000, "nic", gps);
-                tree.insert(test);
-                reorganizedTree.insert(test);
+                tree.Insert(test);
+                reorganizedTree.Insert(test);
             }
-            reorganizedTree = reorganizedTree.rebuildTree();
+            reorganizedTree = reorganizedTree.RebuildTree();
             CSVHandler handler = new CSVHandler();
             handler.SaveMeasurementsToCSV(insertNormalTest(tree), insertReorganizedTest(reorganizedTree));
             labelResult.Text = "Test successfull";
@@ -864,11 +864,11 @@ namespace Cadastre
                 Area test = new Area(i+ 1000000, "nic", gps);
 
                 stopwatchInsert.Start();
-                tree.insert(test);
+                tree.Insert(test);
                 stopwatchInsert.Stop();
 
                 stopwatchDelete.Start();
-                tree.remove(test);
+                tree.Remove(test);
                 stopwatchDelete.Stop();
             }
             double insertTime = (double)stopwatchInsert.Elapsed.TotalMilliseconds / 100000;
@@ -897,11 +897,11 @@ namespace Cadastre
                 gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                 Area test = new Area(i + 1000000, "nic", gps);
                 stopwatchInsert.Start();
-                tree.insert(test);
+                tree.Insert(test);
                 stopwatchInsert.Stop();
 
                 stopwatchDelete.Start();
-                tree.remove(test);
+                tree.Remove(test);
                 stopwatchDelete.Stop();
 
             }

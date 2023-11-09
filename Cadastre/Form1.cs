@@ -41,7 +41,7 @@ namespace Cadastre
                 {
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
 
-                    lastSearchItem = cadastre.findProperty(enteredNumbers);
+                    lastSearchItem = cadastre.FindProperty(enteredNumbers);
                     dataGridView1.Rows.Clear();
                     dataGridView1.Columns.Clear();
                     InitializeTables(1);
@@ -49,7 +49,7 @@ namespace Cadastre
                     {
                         foreach (var property in lastSearchItem)
                         {
-                            dataGridView1.Rows.Add(property.Id, property.Description, property.getCoordinatesInReadable(), property.getListOfAreas());
+                            dataGridView1.Rows.Add(property.Id, property.Description, property.GetCoordinates(), property.GetListOfAreas());
                         }
                     }
                     lastSearch = 1;
@@ -63,7 +63,7 @@ namespace Cadastre
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
-                    lastSearchItem = cadastre.findLands(enteredNumbers);
+                    lastSearchItem = cadastre.FindLands(enteredNumbers);
                     dataGridView1.Rows.Clear();
                     dataGridView1.Columns.Clear();
                     InitializeTables(2);
@@ -71,7 +71,7 @@ namespace Cadastre
                     {
                         foreach (var land in lastSearchItem)
                         {
-                            dataGridView1.Rows.Add(land.Id, land.Description, land.getCoordinatesInReadable(), land.getListOfAreas());
+                            dataGridView1.Rows.Add(land.Id, land.Description, land.GetCoordinates(), land.GetListOfAreas());
                         }
                     }
                     lastSearch = 0;
@@ -89,19 +89,19 @@ namespace Cadastre
                     dataGridView1.Columns.Clear();
                     dataGridView1.Columns.Add("Type", "Type");
                     InitializeTables(3);
-                    List<Area>[] result = cadastre.findAll(enteredNumbers);
+                    List<Area>[] result = cadastre.FindAll(enteredNumbers);
                     if (result[0].Count != 0)
                     {
                         foreach (var area in result[0])
                         {
-                            dataGridView1.Rows.Add("Land", area.Id, area.Description, area.getCoordinatesInReadable(), area.getListOfAreas());
+                            dataGridView1.Rows.Add("Land", area.Id, area.Description, area.GetCoordinates(), area.GetListOfAreas());
                         }
                     }
                     if (result[1].Count != 0)
                     {
                         foreach (var area in result[1])
                         {
-                            dataGridView1.Rows.Add("Property", area.Id, area.Description, area.getCoordinatesInReadable(), area.getListOfAreas());
+                            dataGridView1.Rows.Add("Property", area.Id, area.Description, area.GetCoordinates(), area.GetListOfAreas());
                         }
                     }
                     lastSearchItem = result[0].Concat(result[1]).ToList();
@@ -118,7 +118,7 @@ namespace Cadastre
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
                     string description = numberInputForm.Description;
                     int type = numberInputForm.TypeOfItem;
-                    if (cadastre.insertItem(enteredNumbers, description, type))
+                    if (cadastre.InsertItem(enteredNumbers, description, type))
                     {
                         MessageBox.Show("Item was inserted into register", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -151,7 +151,7 @@ namespace Cadastre
                     {
                         double[] enteredNumbers = numberInputForm.EnteredNumbers;
                         description = numberInputForm.Description;
-                        if (cadastre.editItem(enteredNumbers, description, lastSearch, item))
+                        if (cadastre.EditItem(enteredNumbers, description, lastSearch, item))
                         {
                             MessageBox.Show("Item was succesfully edited", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -175,7 +175,7 @@ namespace Cadastre
 
                 if (result == DialogResult.Yes)
                 {
-                    if (cadastre.deleteItem(item, lastSearch))
+                    if (cadastre.DeleteItem(item, lastSearch))
                     {
                         MessageBox.Show("Item was successfully deleted", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         dataGridView1.Rows.Remove(selectedRow);
@@ -190,11 +190,11 @@ namespace Cadastre
         }
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            cadastre.saveToCSV("lands.csv", "properties.csv");
+            cadastre.SaveToCSV("lands.csv", "properties.csv");
         }
         private void buttonLoad_Click(object sender, EventArgs e)
         {
-            cadastre.loadFromCSV("lands.csv", "properties.csv");
+            cadastre.LoadFromCSV("lands.csv", "properties.csv");
             changeArea();
         }
         private void buttonNew_Click(object sender, EventArgs e)
@@ -242,7 +242,7 @@ namespace Cadastre
         }
         private void changeArea()
         {
-            double[] size = cadastre.getSize();
+            double[] size = cadastre.GetSize();
             labelArea.Text = "Area[" + size[0] + " , " + size[1] + "] [" + size[2] + " , " + size[3] + "]";
         }
     }

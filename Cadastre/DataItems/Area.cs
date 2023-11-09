@@ -45,7 +45,7 @@ namespace Cadastre.DataItems
             return CompareById(otherItem);
         }
 
-        public string getCoordinatesInReadable()
+        public string GetCoordinates()
         {
             double x0 = Math.Round(GpsLocation[0].lengthPosition, 2);
             double y0 = Math.Round(GpsLocation[0].widthPosition, 2);
@@ -54,12 +54,12 @@ namespace Cadastre.DataItems
             return "[" + x0 + " , " + y0 + "] [" + x1 + " , " + y1 + "]";
         }
 
-        virtual public string getListOfAreas()
+        virtual public string GetListOfAreas()
         {
             return "";
         }
 
-        public double getSize()
+        public double GetSize()
         {
             return GpsLocation[1].lengthPosition - GpsLocation[0].lengthPosition;
         }

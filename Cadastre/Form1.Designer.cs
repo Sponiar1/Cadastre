@@ -80,7 +80,7 @@
             buttonNew.Name = "buttonNew";
             buttonNew.Size = new Size(93, 23);
             buttonNew.TabIndex = 3;
-            buttonNew.Text = "New Tree";
+            buttonNew.Text = "New Area";
             buttonNew.UseVisualStyleBackColor = true;
             buttonNew.Click += buttonNew_Click;
             // 
