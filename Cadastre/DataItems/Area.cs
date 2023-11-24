@@ -1,5 +1,7 @@
 ﻿using Cadastre.DataStructure.Templates;
+using Cadastre.Files.Templates;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cadastre.DataItems
 {
-    public class Area : QuadTreeData, IComparator<Area>
+    public class Area : QuadTreeData, IComparator<Area>, IData<Area>
     {
         public string Description { get; set; }
         public GPSPosition[] GpsLocation { get; set; }
@@ -59,9 +61,76 @@ namespace Cadastre.DataItems
             return "";
         }
 
-        public double GetSize()
+        public double GetSizeArea()
         {
             return GpsLocation[1].lengthPosition - GpsLocation[0].lengthPosition;
+        }
+
+        bool IData<Area>.Equals(Area obj)
+        {
+            return base.Equals(obj);
+        }
+
+        BitArray IData<Area>.GetHash()
+        {
+            int hasCode = Id % 191;
+            BitArray hash = new BitArray(hasCode);
+            return hash;
+        }
+
+        int IRecord<Area>.GetSize()
+        {
+            return 15 + 4 * sizeof(double) + sizeof(int);
+        }
+
+        byte[] IRecord<Area>.ToByteArray()
+        {
+            byte[] bytes = new byte[((IRecord<Area>)this).GetSize()];
+            int totalLength;
+
+            byte[] idArray = BitConverter.GetBytes(this.Id);
+            Array.Copy(idArray, 0, bytes, 0, idArray.Length);
+            totalLength = idArray.Length;
+
+            byte[] descArray = Encoding.UTF8.GetBytes(Description);
+            Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
+            totalLength+= descArray.Length;
+
+            byte[] bottomXArray = BitConverter.GetBytes(this.GpsLocation[0].lengthPosition);
+            Array.Copy(bottomXArray, 0, bytes, totalLength, bottomXArray.Length);
+            totalLength += bottomXArray.Length;
+
+            byte[] bottomYArray = BitConverter.GetBytes(this.GpsLocation[0].widthPosition);
+            Array.Copy(bottomYArray, 0, bytes, totalLength, bottomYArray.Length);
+            totalLength += bottomYArray.Length;
+
+            byte[] UpperXArray = BitConverter.GetBytes(this.GpsLocation[1].lengthPosition);
+            Array.Copy(UpperXArray, 0, bytes, totalLength, UpperXArray.Length);
+            totalLength += UpperXArray.Length;
+
+            byte[] UpperYArray = BitConverter.GetBytes(this.GpsLocation[1].widthPosition);
+            Array.Copy(UpperYArray, 0, bytes, totalLength, UpperYArray.Length);
+
+            return bytes;
+        }
+
+        void IRecord<Area>.FromByteArray(byte[] byteArray)
+        {
+            int offset = 0;
+            Id = BitConverter.ToInt32(byteArray, offset);
+            offset += sizeof(int);
+
+            GpsLocation[0].lengthPosition = BitConverter.ToDouble(byteArray, offset);
+            offset += sizeof(double);
+
+            GpsLocation[0].widthPosition = BitConverter.ToDouble(byteArray, offset);
+            offset += sizeof(double);
+
+            GpsLocation[1].lengthPosition = BitConverter.ToDouble(byteArray, offset);
+            offset += sizeof(double);
+
+            GpsLocation[1].widthPosition = BitConverter.ToDouble(byteArray, offset);
+
         }
     }
 }

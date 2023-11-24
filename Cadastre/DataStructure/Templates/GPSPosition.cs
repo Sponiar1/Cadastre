@@ -8,10 +8,10 @@ namespace Cadastre.DataStructure.Templates
 {
     public class GPSPosition
     {
-        public char widthDirection { get; }
-        public char lengthDirection { get; }
-        public double widthPosition { get; }
-        public double lengthPosition { get; }
+        public char widthDirection { get; set; }
+        public char lengthDirection { get; set; }
+        public double widthPosition { get; set; }
+        public double lengthPosition { get; set; }
 
         public GPSPosition(char width, char length, double lengthPosition, double widthPosition)
         {

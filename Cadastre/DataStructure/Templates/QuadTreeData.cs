@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Cadastre.Files.Templates;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cadastre.DataStructure.Templates
 {
-    public class QuadTreeData : IComparator<QuadTreeData>
+    public class QuadTreeData : IComparator<QuadTreeData>, IData<QuadTreeData>
     {
         public int Id { get; set; }
         public int IsInMinimalZone { get; set; } //0=yes, 1=no/dont know
@@ -54,6 +56,31 @@ namespace Cadastre.DataStructure.Templates
         public double GetSize()
         {
             return 0;
+        }
+
+        public bool Equals(QuadTreeData obj)
+        {
+            return obj.Id == Id;
+        }
+
+        public BitArray GetHash()
+        {
+            throw new NotImplementedException();
+        }
+
+        int IRecord<QuadTreeData>.GetSize()
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] ToByteArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FromByteArray(byte[] byteArray)
+        {
+            throw new NotImplementedException();
         }
     }
 }

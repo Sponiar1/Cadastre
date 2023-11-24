@@ -1,4 +1,5 @@
 ﻿using Cadastre.DataStructure.Templates;
+using Cadastre.Files.Templates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cadastre.DataItems
 {
-    public class Land : Area, IComparator<Land>
+    public class Land : Area, IComparator<Land>, IData<Land>
     {
         public List<Property> Properties { get; set; }
 
@@ -32,5 +33,31 @@ namespace Cadastre.DataItems
             }
             return listOfAreas;
         }
+
+        bool IData<Land>.Equals(Land obj)
+        {
+            return base.Equals(obj);
+        }
+
+        BitArray IData<Land>.GetHash()
+        {
+            throw new NotImplementedException();
+        }
+
+        int IRecord<Land>.GetSize()
+        {
+            throw new NotImplementedException();
+        }
+
+        byte[] IRecord<Land>.ToByteArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IRecord<Land>.FromByteArray(byte[] byteArray)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
