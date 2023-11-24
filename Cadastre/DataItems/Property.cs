@@ -35,29 +35,48 @@ namespace Cadastre.DataItems
             return listOfAreas;
         }
 
-        bool IData<Property>.Equals(Property obj)
+        public bool Equals(Property obj)
         {
             return base.Equals(obj);
         }
 
-        BitArray IData<Property>.GetHash()
+        public BitArray GetHash()
         {
-            throw new NotImplementedException();
+            return base.GetHash();
         }
 
-        int IRecord<Property>.GetSize()
+        public int GetSize()
         {
-            throw new NotImplementedException();
+            return base.GetSize() + 15 + sizeof(int) + 5*sizeof(int);
         }
 
-        byte[] IRecord<Property>.ToByteArray()
+        public byte[] ToByteArray()
         {
-            throw new NotImplementedException();
+            byte[] bytes = new byte[base.GetSize()];
+
+            byte[] parent = base.ToByteArray();
+            int totalLength = parent.Length;
+            Array.Copy(parent, 0, bytes, 0, parent.Length);
+
+            byte[] descArray = Encoding.UTF8.GetBytes(Description);
+            Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
+            totalLength += descArray.Length;
+
+            for (int i = 0; i < 5; i++)
+            {
+                byte[] idArray = BitConverter.GetBytes(Lands[i].Id);
+                Array.Copy(idArray, 0, bytes, totalLength, idArray.Length);
+                totalLength += idArray.Length;
+            }
+            return bytes;
         }
 
-        void IRecord<Property>.FromByteArray(byte[] byteArray)
+        public void FromByteArray(byte[] byteArray)
         {
-            throw new NotImplementedException();
+            base.FromByteArray(byteArray);
+            int offset = base.GetSize();
+
+            Description = Encoding.UTF8.GetString(byteArray, offset, 10);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Cadastre.DataStructure.Templates
             }
         }
 
-        public double GetSize()
+        public double GetSizeArea()
         {
             return 0;
         }
@@ -68,9 +68,9 @@ namespace Cadastre.DataStructure.Templates
             throw new NotImplementedException();
         }
 
-        int IRecord<QuadTreeData>.GetSize()
+        public int GetSize()
         {
-            throw new NotImplementedException();
+            return sizeof(int);
         }
 
         public byte[] ToByteArray()

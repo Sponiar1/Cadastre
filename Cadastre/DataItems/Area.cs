@@ -66,24 +66,24 @@ namespace Cadastre.DataItems
             return GpsLocation[1].lengthPosition - GpsLocation[0].lengthPosition;
         }
 
-        bool IData<Area>.Equals(Area obj)
+        public bool Equals(Area obj)
         {
             return base.Equals(obj);
         }
 
-        BitArray IData<Area>.GetHash()
+        public BitArray GetHash()
         {
             int hasCode = Id % 191;
             BitArray hash = new BitArray(hasCode);
             return hash;
         }
 
-        int IRecord<Area>.GetSize()
+        public int GetSize()
         {
             return 15 + 4 * sizeof(double) + sizeof(int);
         }
 
-        byte[] IRecord<Area>.ToByteArray()
+        public byte[] ToByteArray()
         {
             byte[] bytes = new byte[((IRecord<Area>)this).GetSize()];
             int totalLength;
@@ -91,11 +91,11 @@ namespace Cadastre.DataItems
             byte[] idArray = BitConverter.GetBytes(this.Id);
             Array.Copy(idArray, 0, bytes, 0, idArray.Length);
             totalLength = idArray.Length;
-
+            /*
             byte[] descArray = Encoding.UTF8.GetBytes(Description);
             Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
             totalLength+= descArray.Length;
-
+            */
             byte[] bottomXArray = BitConverter.GetBytes(this.GpsLocation[0].lengthPosition);
             Array.Copy(bottomXArray, 0, bytes, totalLength, bottomXArray.Length);
             totalLength += bottomXArray.Length;
@@ -114,7 +114,7 @@ namespace Cadastre.DataItems
             return bytes;
         }
 
-        void IRecord<Area>.FromByteArray(byte[] byteArray)
+        public void FromByteArray(byte[] byteArray)
         {
             int offset = 0;
             Id = BitConverter.ToInt32(byteArray, offset);
