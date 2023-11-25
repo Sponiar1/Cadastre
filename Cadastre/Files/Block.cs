@@ -11,7 +11,10 @@ namespace Cadastre.Files
     {
         public List<T> Records {get; set;}
         private int blockFactor;
-        private int ValidCount;
+        private int validCount;
+        private int usedOverflowBlocks;
+        private int successor;
+        private int predecessor;
         public Block(int paBlockFactor)
         {
             Records = new List<T>(paBlockFactor);
@@ -20,17 +23,65 @@ namespace Cadastre.Files
 
         public int GetSize()
         {
-            return blockFactor * Records[0].GetSize() ;
+            return 4*sizeof(int) + blockFactor * Records[0].GetSize();
         }
 
         public byte[] ToByteArray()
         {
-            throw new NotImplementedException();
+            byte[] bytes = new byte[GetSize()];
+            int totalLength = 0;
+
+            byte[] validArray = BitConverter.GetBytes(validCount);
+            Array.Copy(validArray, 0, bytes, 0, validArray.Length);
+            totalLength += validArray.Length;
+
+            byte[] overFlowArray = BitConverter.GetBytes(usedOverflowBlocks);
+            Array.Copy(overFlowArray, 0, bytes, totalLength, overFlowArray.Length);
+            totalLength += overFlowArray.Length;
+
+            byte[] successorArray = BitConverter.GetBytes(successor);
+            Array.Copy(successorArray, 0, bytes, totalLength, successorArray.Length);
+            totalLength += successorArray.Length;
+
+            byte[] predecessorArray = BitConverter.GetBytes(predecessor);
+            Array.Copy(predecessorArray, 0, bytes, totalLength, predecessorArray.Length);
+            totalLength += predecessorArray.Length;
+
+            for(int i = 0; i < blockFactor; i++)
+            {
+                byte[] recordBytes= Records[i].ToByteArray();
+                Array.Copy(recordBytes, 0, bytes, totalLength, recordBytes.Length);
+                totalLength += Records[i].GetSize();
+            }
+
+            return bytes;
         }
 
         public void FromByteArray(byte[] byteArray)
         {
-            throw new NotImplementedException();
+            int offset = 0;
+            validCount = BitConverter.ToInt32(byteArray, offset);
+            offset += sizeof(int);
+
+            usedOverflowBlocks = BitConverter.ToInt32(byteArray, offset);
+            offset += sizeof(int);
+
+            successor = BitConverter.ToInt32(byteArray, offset);
+            offset += sizeof(int);
+
+            predecessor = BitConverter.ToInt32(byteArray, offset);
+            offset += sizeof(int);
+
+
+            for(int i = 0; i < blockFactor; i++)
+            {
+                byte[] recordsArray = new byte[byteArray.Length - offset];
+                Array.Copy(byteArray, offset, recordsArray, 0, byteArray.Length - offset);
+
+                Records[i].FromByteArray(byteArray);
+                offset += Records[i].GetSize();
+            }
+
         }
     }
 }

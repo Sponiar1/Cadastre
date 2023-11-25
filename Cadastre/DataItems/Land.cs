@@ -12,6 +12,7 @@ namespace Cadastre.DataItems
     public class Land : Area, IComparator<Land>, IData<Land>
     {
         public List<Property> Properties { get; set; }
+        public List<int> PropertiesId { get; set; }
 
         public Land(int idNumber, string description, GPSPosition[] gpsLocation) : base(idNumber, description, gpsLocation)
         {
@@ -46,7 +47,7 @@ namespace Cadastre.DataItems
 
         public int GetSize()
         {
-            return base.GetSize() + 10 + 5 * sizeof(int);
+            return base.GetSize() + 11 + 5 * sizeof(int);
         }
 
         public byte[] ToByteArray()
@@ -75,15 +76,26 @@ namespace Cadastre.DataItems
             base.FromByteArray(byteArray);
             int offset = base.GetSize();
 
-            Description = Encoding.UTF8.GetString(byteArray, offset, 10);
-            /*
+            Description = Encoding.UTF8.GetString(byteArray, offset, 11);
+            offset += 11;
+
             for (int i = 0; i < 5; i++)
             {
-                byte[] idArray = BitConverter.GetBytes(Properties[i].Id);
-                Array.Copy(idArray, 0, bytes, totalLength, idArray.Length);
-                totalLength += idArray.Length;
-            }*/
+                PropertiesId[i] = BitConverter.ToInt32(byteArray, offset);
+                offset += sizeof(int);
+            }
         }
 
+        public Land DummyClass()
+        {
+            GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
+            Land dummy = new Land(-1, "", gps);
+            PropertiesId = new List<int>(5);
+            for(int i = 0; i < 5; i++)
+            {
+                dummy.PropertiesId[i] = -1;
+            }
+            return dummy;
+        }
     }
 }

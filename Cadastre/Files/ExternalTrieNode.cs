@@ -9,10 +9,10 @@ namespace Cadastre.Files.Templates
     internal class ExternalTrieNode<T> : TrieNode<T>
     {
         public int Address { get; set; }
-        int count;
-        public ExternalTrieNode(TrieNode<T> paParent) : base(paParent)
+        public int Count { get; set; }
+        public ExternalTrieNode(TrieNode<T> paParent, int depth) : base(paParent, depth)
         { 
-
+            Count = 0;
         }
     }
 }

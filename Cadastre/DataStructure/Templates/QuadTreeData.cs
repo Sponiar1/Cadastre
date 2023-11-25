@@ -82,5 +82,10 @@ namespace Cadastre.DataStructure.Templates
         {
             throw new NotImplementedException();
         }
+
+        public QuadTreeData DummyClass()
+        {
+            return new QuadTreeData(-1);
+        }
     }
 }

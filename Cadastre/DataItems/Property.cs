@@ -13,7 +13,8 @@ namespace Cadastre.DataItems
     public class Property : Area, IComparator<Property>, IData<Property>
     {
         public int RegisterNumber {  get; set; }
-        public List<Land> Lands { get; set;}
+        public List<Land> Lands { get; set; }
+        public List<int> LandsId { get; set; }
         public Property(int id, string description, GPSPosition[] gpsLocation) : base(id, description, gpsLocation)
         {
             Lands = new List<Land>();
@@ -47,7 +48,7 @@ namespace Cadastre.DataItems
 
         public int GetSize()
         {
-            return base.GetSize() + 15 + sizeof(int) + 5*sizeof(int);
+            return base.GetSize() + 15 + sizeof(int) + 6*sizeof(int);
         }
 
         public byte[] ToByteArray()
@@ -62,7 +63,7 @@ namespace Cadastre.DataItems
             Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
             totalLength += descArray.Length;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 byte[] idArray = BitConverter.GetBytes(Lands[i].Id);
                 Array.Copy(idArray, 0, bytes, totalLength, idArray.Length);
@@ -76,7 +77,26 @@ namespace Cadastre.DataItems
             base.FromByteArray(byteArray);
             int offset = base.GetSize();
 
-            Description = Encoding.UTF8.GetString(byteArray, offset, 10);
+            Description = Encoding.UTF8.GetString(byteArray, offset, 15);
+            offset += 10;
+
+            for(int i = 0; i < 6; i++)
+            {
+                LandsId[i] = BitConverter.ToInt32(byteArray, offset);
+                offset += sizeof(int);
+            }
+        }
+
+        public Property DummyClass()
+        {
+            GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
+            Property dummy = new Property(-1, "", gps);
+            dummy.LandsId = new List<int>(6);
+            for (int i = 0; i < 5; i++)
+            {
+                dummy.LandsId[i] = -1;
+            }
+            return dummy;
         }
     }
 }

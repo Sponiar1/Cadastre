@@ -10,8 +10,9 @@ namespace Cadastre.Files.Templates
     {
         public TrieNode<T> LeftSon { get; set; }
         public TrieNode<T> RightSon { get; set; }
-        public InternalTrieNode(TrieNode<T> paParent) : base(paParent)
+        public InternalTrieNode(TrieNode<T> paParent, int depth) : base(paParent, depth)
         {
+
         }
     }
 }

@@ -132,5 +132,11 @@ namespace Cadastre.DataItems
             GpsLocation[1].widthPosition = BitConverter.ToDouble(byteArray, offset);
 
         }
+
+        public Area DummyClass()
+        {
+            GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
+            return new Area(-1, "", gps);
+        }
     }
 }
