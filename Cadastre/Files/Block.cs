@@ -11,7 +11,7 @@ namespace Cadastre.Files
     {
         public List<T> Records {get; set;}
         private int blockFactor;
-        private int validCount;
+        public int ValidCount { get; set;}
         private int usedOverflowBlocks;
         private int successor;
         private int predecessor;
@@ -31,7 +31,7 @@ namespace Cadastre.Files
             byte[] bytes = new byte[GetSize()];
             int totalLength = 0;
 
-            byte[] validArray = BitConverter.GetBytes(validCount);
+            byte[] validArray = BitConverter.GetBytes(ValidCount);
             Array.Copy(validArray, 0, bytes, 0, validArray.Length);
             totalLength += validArray.Length;
 
@@ -60,7 +60,7 @@ namespace Cadastre.Files
         public void FromByteArray(byte[] byteArray)
         {
             int offset = 0;
-            validCount = BitConverter.ToInt32(byteArray, offset);
+            ValidCount = BitConverter.ToInt32(byteArray, offset);
             offset += sizeof(int);
 
             usedOverflowBlocks = BitConverter.ToInt32(byteArray, offset);
@@ -82,6 +82,29 @@ namespace Cadastre.Files
                 offset += Records[i].GetSize();
             }
 
+        }
+
+        public int GetSuccessorPosition()
+        {
+            return 2 * sizeof(int);
+        }
+        public int GetPredeccessorPosition()
+        {
+            return 3 * sizeof(int);
+        }
+
+        public bool AddRecord(T item)
+        {
+            for(int i = 0; i < ValidCount; i++)
+            {
+                if (Records[i].Equals(item))
+                {
+                    return false;
+                }
+            }
+            Records[ValidCount] = item;
+            ValidCount++;
+            return true;
         }
     }
 }

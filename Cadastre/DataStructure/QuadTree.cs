@@ -497,7 +497,7 @@ namespace Cadastre.DataStructure
                 {
                     foreach (T item in currentNode.Items)
                     {
-                        if (item.GetSize() < smallestItem.GetSize())
+                        if (item.GetSizeArea() < smallestItem.GetSizeArea())
                         {
                             smallestItem = item;
                         }
@@ -514,7 +514,7 @@ namespace Cadastre.DataStructure
             }
             for (int i = 0; i < int.MaxValue; i++)
             {
-                if (((root.Zone.UpperRightX - root.Zone.BottomLeftX) * 1.3) / Math.Pow(2, i) < smallestItem.GetSize())
+                if (((root.Zone.UpperRightX - root.Zone.BottomLeftX) * 1.3) / Math.Pow(2, i) < smallestItem.GetSizeArea())
                 {
                     return i-1;
                 }

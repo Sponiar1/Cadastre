@@ -13,6 +13,23 @@ namespace Cadastre.Files.Templates
         public ExternalTrieNode(TrieNode<T> paParent, int depth) : base(paParent, depth)
         { 
             Count = 0;
+            Address = -1;
+        }
+
+        public int whichSon()
+        {
+            if (Parent == null)
+            {
+                return -1;
+            }
+            else if (((InternalTrieNode<T>)Parent).LeftSon == this)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 }

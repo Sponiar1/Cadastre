@@ -8,12 +8,13 @@ namespace Cadastre.Files.Templates
 {
     internal class TrieNode<T>
     {
-        protected TrieNode<T> parent;
+        public TrieNode<T> Parent {get; private set;}
         public int Depth { get; set; }
         public TrieNode(TrieNode<T> paParent, int depth)
         {
-            parent = paParent;
+            Parent = paParent;
             Depth = depth;
         }
+
     }
 }
