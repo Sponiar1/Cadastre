@@ -18,8 +18,12 @@ namespace Cadastre.DataItems
         public Property(int id, string description, GPSPosition[] gpsLocation) : base(id, description, gpsLocation)
         {
             Lands = new List<Land>();
+            LandsId = new List<int>(6) { -1,-1,-1,-1,-1,-1};
         }
-
+        public Property() : base(-1,"",null)
+        {
+            
+        }
         int IComparator<Property>.CompareById(Property otherItem)
         {
             return CompareById(otherItem);
@@ -53,7 +57,7 @@ namespace Cadastre.DataItems
 
         public byte[] ToByteArray()
         {
-            byte[] bytes = new byte[base.GetSize()];
+            byte[] bytes = new byte[GetSize()];
 
             byte[] parent = base.ToByteArray();
             int totalLength = parent.Length;
@@ -65,7 +69,7 @@ namespace Cadastre.DataItems
 
             for (int i = 0; i < 6; i++)
             {
-                byte[] idArray = BitConverter.GetBytes(Lands[i].Id);
+                byte[] idArray = BitConverter.GetBytes(LandsId[i]);
                 Array.Copy(idArray, 0, bytes, totalLength, idArray.Length);
                 totalLength += idArray.Length;
             }
@@ -87,16 +91,25 @@ namespace Cadastre.DataItems
             }
         }
 
-        public Property DummyClass()
+        public Property CreateInstance()
         {
             GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
             Property dummy = new Property(-1, "", gps);
             dummy.LandsId = new List<int>(6);
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
-                dummy.LandsId[i] = -1;
+                dummy.LandsId.Add(-1);
             }
             return dummy;
+        }
+        public string ExtractInfo()
+        {
+            string baseInfo = base.ExtractInfo() + "Related Lands: ";
+            for (int i = 0; i < 6; i++)
+            {
+                baseInfo += LandsId + ", ";
+            }
+            return baseInfo;
         }
     }
 }

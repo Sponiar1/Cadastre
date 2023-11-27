@@ -133,10 +133,15 @@ namespace Cadastre.DataItems
 
         }
 
-        public Area DummyClass()
+        public Area CreateInstance()
         {
             GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
             return new Area(-1, "", gps);
+        }
+
+        public string ExtractInfo()
+        {
+            return "Id: " + Id + ", Description: " + Description + ", GPS: [" + GpsLocation[0].lengthPosition + ", " + GpsLocation[0].widthPosition + "][" + GpsLocation[1].lengthPosition + ", " + GpsLocation[1].widthPosition + "]";
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Cadastre.Files.Templates;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,8 +20,12 @@ namespace Cadastre.Files
         {
             Records = new List<T>(paBlockFactor);
             blockFactor = paBlockFactor;
+            for (int i = 0; i < blockFactor; i++)
+            {
+                T dummyInstance = Activator.CreateInstance<T>();
+                Records.Add(dummyInstance.CreateInstance());
+            }
         }
-
         public int GetSize()
         {
             return 4*sizeof(int) + blockFactor * Records[0].GetSize();
@@ -104,7 +109,50 @@ namespace Cadastre.Files
             }
             Records[ValidCount] = item;
             ValidCount++;
+            if (Records[1] == null)
+            {
+                for(int i = 1; i < blockFactor; i++)
+                {
+                    Records[i] = Records[0].CreateInstance();
+                }
+            }
             return true;
+        }
+        public bool RemoveRecord(T item)
+        {
+            for (int i = 0; i < ValidCount; i++)
+            {
+                if (Records[i].Equals(item))
+                {
+                    T removedItem = Records[i];
+                    Records[i] = Records[ValidCount - 1];
+                    Records[ValidCount - 1] = removedItem;
+                    break;
+                }
+            }
+            ValidCount--;
+            return true;
+        }
+        public T FindRecord(T item)
+        {
+            for (int i = 0; i < ValidCount; i++)
+            {
+                if (Records[i].Equals(item))
+                {
+                    return Records[i];
+                }
+            }
+            T foundRecord = default;
+            return foundRecord;
+        }
+
+        public string ExtractPrefix()
+        {
+            return "Valid Count:" + ValidCount + ", Used Overflow Blocks: " + usedOverflowBlocks + ", Successor Address: " + successor + ", Predecessor Address: " + predecessor;
+        }
+        public string ExtractItem(int index)
+        {
+            return Records[index].ExtractInfo();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Cadastre.Files.Templates
     {
         public bool Equals(T obj);
         public BitArray GetHash();
-
-        public T DummyClass();
+        public T CreateInstance();
+        public string ExtractInfo();
     }
 }

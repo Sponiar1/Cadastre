@@ -52,7 +52,7 @@ namespace Cadastre.DataItems
 
         public byte[] ToByteArray()
         {
-            byte[] bytes = new byte[base.GetSize()];
+            byte[] bytes = new byte[GetSize()];
 
             byte[] parent = base.ToByteArray();
             int totalLength = parent.Length;
@@ -86,7 +86,7 @@ namespace Cadastre.DataItems
             }
         }
 
-        public Land DummyClass()
+        public Land CreateInstance()
         {
             GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
             Land dummy = new Land(-1, "", gps);
@@ -96,6 +96,16 @@ namespace Cadastre.DataItems
                 dummy.PropertiesId[i] = -1;
             }
             return dummy;
+        }
+
+        public string ExtractInfo()
+        {
+            string baseInfo = base.ExtractInfo() + "Related Properties: ";
+            for(int i = 0; i < 5; i++)
+            {
+                baseInfo += PropertiesId + ", ";
+            }
+            return baseInfo;
         }
     }
 }
