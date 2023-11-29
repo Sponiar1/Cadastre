@@ -25,8 +25,8 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            properties = new DynamicHash<Property>(5, "Properties_test.bin", 5, "PropertiesOverflow_test.bin");
-            Random rand = new Random();
+            properties = new DynamicHash<Property>(3, "Properties_test.bin", 5, "PropertiesOverflow_test.bin");
+            Random rand = new Random(6);
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
             double remove = (double)numericUpDown3.Value;
@@ -42,29 +42,43 @@ namespace Cadastre
             ybottom = 10000 * rand.NextDouble();
             gpss[0] = new GPSPosition('N', 'E', xbottom, ybottom);
             gpss[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-            Property test = new Property(0, "nic", gpss);
+            Property test = new Property(0, "nicnicnicnicnic", gpss);
+            test.LandsId = new List<int>() { -1, -1, -1, -1, -1, -1 };
             properties.Insert(test);
             availableProperties.Add(test);
-
+            int id = 1;
+            /*
+            string[] contentaa = properties.FileExtract();
+            foreach (string line in contentaa)
+            {
+                if (line != null)
+                {
+                    string sanitizedLine = line.Contains('\0') ? line.Replace('\0', ' ') : line;
+                    textBox1.AppendText(sanitizedLine + Environment.NewLine);
+                }
+            }
+            */
             double action;
             for (int i = 0; i < numberOfOperations; i++)
             {
                 action = rand.NextDouble();
-                if (action < insert)
+                if (action < 0.6)
                 {
                     GPSPosition[] gps = new GPSPosition[2];
                     xbottom = 10000 * rand.NextDouble();
                     ybottom = 10000 * rand.NextDouble();
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    test = new Property(i+1, "nic", gps);
+                    test = new Property(id, "nicnicnicnicnic", gps);
+                    id++;
                     properties.Insert(test);
                     availableProperties.Add(test);
+
                 }
-                else if (action < insert + find)
+                else if (action < 1)
                 {
-                    int id = rand.Next(availableProperties.Count);
-                    Property dummy = new Property(id, null, null);
+                    int idf = rand.Next(availableProperties.Count);
+                    Property dummy = new Property(idf, null, null);
                     properties.FindItem(dummy);
                 }
                 else
@@ -80,7 +94,10 @@ namespace Cadastre
             textBox1.Clear();
             foreach (string line in content)
             {
-                textBox1.AppendText(line + Environment.NewLine);
+                if (line != null)
+                {
+                    textBox1.AppendText(line + Environment.NewLine);
+                }
             }
         }
     }

@@ -119,6 +119,7 @@
             textBox1.Location = new Point(29, 94);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
+            textBox1.ScrollBars = ScrollBars.Vertical;
             textBox1.Size = new Size(1199, 541);
             textBox1.TabIndex = 7;
             // 
@@ -127,11 +128,10 @@
             numericUpDown4.Increment = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown4.Location = new Point(407, 54);
             numericUpDown4.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
-            numericUpDown4.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown4.Name = "numericUpDown4";
             numericUpDown4.Size = new Size(120, 23);
             numericUpDown4.TabIndex = 8;
-            numericUpDown4.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            numericUpDown4.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label4
             // 

@@ -19,6 +19,7 @@ namespace Cadastre.DataItems
         {
             Lands = new List<Land>();
             LandsId = new List<int>(6) { -1,-1,-1,-1,-1,-1};
+            RegisterNumber = 11;
         }
         public Property() : base(-1,"",null)
         {
@@ -62,14 +63,20 @@ namespace Cadastre.DataItems
             byte[] parent = base.ToByteArray();
             int totalLength = parent.Length;
             Array.Copy(parent, 0, bytes, 0, parent.Length);
-
+            
+            Description = Description.PadRight(15, '#');
             byte[] descArray = Encoding.UTF8.GetBytes(Description);
             Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
             totalLength += descArray.Length;
 
+            byte[] registerArray = BitConverter.GetBytes(RegisterNumber);
+            Array.Copy(registerArray, 0, bytes, totalLength, registerArray.Length);
+            totalLength += registerArray.Length;
+
             for (int i = 0; i < 6; i++)
             {
-                byte[] idArray = BitConverter.GetBytes(LandsId[i]);
+                int landid = LandsId[i];
+                byte[] idArray = BitConverter.GetBytes(landid);
                 Array.Copy(idArray, 0, bytes, totalLength, idArray.Length);
                 totalLength += idArray.Length;
             }
@@ -82,10 +89,17 @@ namespace Cadastre.DataItems
             int offset = base.GetSize();
 
             Description = Encoding.UTF8.GetString(byteArray, offset, 15);
-            offset += 10;
+            int length = Description.Length;
+            Description = Description.TrimEnd('#');
+            offset += 15;
 
-            for(int i = 0; i < 6; i++)
+            RegisterNumber = BitConverter.ToInt32(byteArray, offset);
+            offset += sizeof(int);
+
+            for (int i = 0; i < 6; i++)
             {
+                byte[] idArray = new byte[4];
+                Array.Copy(idArray, 0, byteArray, offset, idArray.Length);
                 LandsId[i] = BitConverter.ToInt32(byteArray, offset);
                 offset += sizeof(int);
             }
@@ -95,6 +109,7 @@ namespace Cadastre.DataItems
         {
             GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
             Property dummy = new Property(-1, "", gps);
+            dummy.RegisterNumber = -1;
             dummy.LandsId = new List<int>(6);
             for (int i = 0; i < 6; i++)
             {
@@ -104,10 +119,10 @@ namespace Cadastre.DataItems
         }
         public string ExtractInfo()
         {
-            string baseInfo = base.ExtractInfo() + "Related Lands: ";
+            string baseInfo = base.ExtractInfo() + "Register number: " + RegisterNumber + " Related Lands: ";
             for (int i = 0; i < 6; i++)
             {
-                baseInfo += LandsId + ", ";
+                baseInfo += LandsId[i] + ", ";
             }
             return baseInfo;
         }

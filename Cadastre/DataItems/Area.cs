@@ -73,19 +73,47 @@ namespace Cadastre.DataItems
 
         public BitArray GetHash()
         {
-            int hasCode = Id % 191;
-            BitArray hash = new BitArray(hasCode);
-            return hash;
+            string binaryRepresentation = Convert.ToString(191, 2);
+
+            // Return the length of the binary representation
+            int length = binaryRepresentation.Length;
+
+            int hashCode = Id % 191;
+            //BitArray hash = new BitArray(length);
+            //string hashString = Convert.ToString(hashCode, 2);
+            BitArray hashArray = new BitArray(BitConverter.GetBytes(hashCode));
+            //int startIndex = Math.Max(0, length - hashString.Length);
+            /*
+            for (int i = 0; i < hashString.Length; i++)
+            {
+                hash[startIndex + i] = (binaryRepresentation[i] == '1');
+            }
+            char[] bits = new char[hash.Length];
+
+            for (int i = 0; i < hash.Length; i++)
+            {
+                bits[i] = hash[i] ? '1' : '0';
+            }
+
+            string hashh = new string(bits);
+            return hash;*/
+            BitArray reversedHashArray = new BitArray(hashArray.Count);
+            for (int i = 0; i < hashArray.Count; i++)
+            {
+                reversedHashArray[i] = hashArray[hashArray.Count - 1 - i];
+            }
+
+            return reversedHashArray;
         }
 
         public int GetSize()
         {
-            return 15 + 4 * sizeof(double) + sizeof(int);
+            return 4 * sizeof(double) + sizeof(int);
         }
 
         public byte[] ToByteArray()
         {
-            byte[] bytes = new byte[((IRecord<Area>)this).GetSize()];
+            byte[] bytes = new byte[GetSize()];
             int totalLength;
 
             byte[] idArray = BitConverter.GetBytes(this.Id);

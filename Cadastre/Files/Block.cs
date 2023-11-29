@@ -1,5 +1,6 @@
 ﻿using Cadastre.Files.Templates;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Cadastre.Files
         private int blockFactor;
         public int ValidCount { get; set;}
         private int usedOverflowBlocks;
-        private int successor;
+        public int Successor {get; set;}
         private int predecessor;
         public Block(int paBlockFactor)
         {
@@ -44,7 +45,7 @@ namespace Cadastre.Files
             Array.Copy(overFlowArray, 0, bytes, totalLength, overFlowArray.Length);
             totalLength += overFlowArray.Length;
 
-            byte[] successorArray = BitConverter.GetBytes(successor);
+            byte[] successorArray = BitConverter.GetBytes(Successor);
             Array.Copy(successorArray, 0, bytes, totalLength, successorArray.Length);
             totalLength += successorArray.Length;
 
@@ -58,12 +59,14 @@ namespace Cadastre.Files
                 Array.Copy(recordBytes, 0, bytes, totalLength, recordBytes.Length);
                 totalLength += Records[i].GetSize();
             }
-
+            string result = Encoding.UTF8.GetString(bytes);
             return bytes;
         }
 
         public void FromByteArray(byte[] byteArray)
         {
+            string result = Encoding.UTF8.GetString(byteArray);
+
             int offset = 0;
             ValidCount = BitConverter.ToInt32(byteArray, offset);
             offset += sizeof(int);
@@ -71,7 +74,7 @@ namespace Cadastre.Files
             usedOverflowBlocks = BitConverter.ToInt32(byteArray, offset);
             offset += sizeof(int);
 
-            successor = BitConverter.ToInt32(byteArray, offset);
+            Successor = BitConverter.ToInt32(byteArray, offset);
             offset += sizeof(int);
 
             predecessor = BitConverter.ToInt32(byteArray, offset);
@@ -83,7 +86,7 @@ namespace Cadastre.Files
                 byte[] recordsArray = new byte[byteArray.Length - offset];
                 Array.Copy(byteArray, offset, recordsArray, 0, byteArray.Length - offset);
 
-                Records[i].FromByteArray(byteArray);
+                Records[i].FromByteArray(recordsArray);
                 offset += Records[i].GetSize();
             }
 
@@ -109,13 +112,14 @@ namespace Cadastre.Files
             }
             Records[ValidCount] = item;
             ValidCount++;
+            /*
             if (Records[1] == null)
             {
                 for(int i = 1; i < blockFactor; i++)
                 {
                     Records[i] = Records[0].CreateInstance();
                 }
-            }
+            }*/
             return true;
         }
         public bool RemoveRecord(T item)
@@ -148,7 +152,7 @@ namespace Cadastre.Files
 
         public string ExtractPrefix()
         {
-            return "Valid Count:" + ValidCount + ", Used Overflow Blocks: " + usedOverflowBlocks + ", Successor Address: " + successor + ", Predecessor Address: " + predecessor;
+            return "Valid Count:" + ValidCount + ", Used Overflow Blocks: " + usedOverflowBlocks + ", Successor Address: " + Successor + ", Predecessor Address: " + predecessor;
         }
         public string ExtractItem(int index)
         {
