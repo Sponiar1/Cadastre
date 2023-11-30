@@ -38,6 +38,7 @@
             textBox1 = new TextBox();
             numericUpDown4 = new NumericUpDown();
             label4 = new Label();
+            label5 = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown3).BeginInit();
@@ -142,11 +143,21 @@
             label4.TabIndex = 9;
             label4.Text = "Number of Operations";
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(691, 23);
+            label5.Name = "label5";
+            label5.Size = new Size(30, 15);
+            label5.TabIndex = 10;
+            label5.Text = "Test:";
+            // 
             // FormFileTest
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1260, 658);
+            Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(numericUpDown4);
             Controls.Add(textBox1);
@@ -179,5 +190,6 @@
         private TextBox textBox1;
         private NumericUpDown numericUpDown4;
         private Label label4;
+        private Label label5;
     }
 }

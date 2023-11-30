@@ -17,6 +17,7 @@ namespace Cadastre.Files
         public int UsedOverflowBlocks { get; set;}
         public int Successor {get; set;}
         public int Predecessor { get; set;}
+
         public Block(int paBlockFactor)
         {
             Records = new List<T>(paBlockFactor);
@@ -34,7 +35,6 @@ namespace Cadastre.Files
         {
             return 4*sizeof(int) + blockFactor * Records[0].GetSize();
         }
-
         public byte[] ToByteArray()
         {
             byte[] bytes = new byte[GetSize()];
@@ -65,7 +65,6 @@ namespace Cadastre.Files
             string result = Encoding.UTF8.GetString(bytes);
             return bytes;
         }
-
         public void FromByteArray(byte[] byteArray)
         {
             string result = Encoding.UTF8.GetString(byteArray);
@@ -94,7 +93,6 @@ namespace Cadastre.Files
             }
 
         }
-
         public int GetSuccessorPosition()
         {
             return 2 * sizeof(int);
@@ -107,7 +105,6 @@ namespace Cadastre.Files
         {
             return sizeof(int);
         }
-
         public bool AddRecord(T item)
         {
             for(int i = 0; i < ValidCount; i++)
@@ -119,14 +116,6 @@ namespace Cadastre.Files
             }
             Records[ValidCount] = item;
             ValidCount++;
-            /*
-            if (Records[1] == null)
-            {
-                for(int i = 1; i < blockFactor; i++)
-                {
-                    Records[i] = Records[0].CreateInstance();
-                }
-            }*/
             return true;
         }
         public bool RemoveRecord(T item)
@@ -157,7 +146,6 @@ namespace Cadastre.Files
             T foundRecord = default;
             return foundRecord;
         }
-
         public string ExtractPrefix()
         {
             return "Valid Count:" + ValidCount + ", Used Overflow Blocks: " + UsedOverflowBlocks + ", Successor Address: " + Successor + ", Predecessor Address: " + Predecessor;

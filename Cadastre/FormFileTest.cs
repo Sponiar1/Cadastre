@@ -89,6 +89,16 @@ namespace Cadastre
 
             }
 
+            for(int i = 0; i < availableProperties.Count; i++)
+            {
+
+                if (properties.Find(availableProperties[i]) == null)
+                {
+                    label5.Text = "Missing item id:" + i;
+                    return;
+                }
+            }
+            label5.Text = "Test successful";
             string[] content = properties.FileExtract();
 
             textBox1.Clear();

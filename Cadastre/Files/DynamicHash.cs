@@ -99,7 +99,7 @@ namespace Cadastre.Files
             }
             if(address == -1)
             {
-                address = usedBlocks; //možno bez ++
+                address = usedBlocks;
                 usedBlocks++;
                 newBlock = true;
             }
@@ -141,7 +141,7 @@ namespace Cadastre.Files
                 }
                 if (address == -1)
                 {
-                    address = usedBlocksOverflow; //možno bez ++
+                    address = usedBlocksOverflow;
                     usedBlocksOverflow++;
                     newBlock = true;
                 }
