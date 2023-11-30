@@ -73,19 +73,14 @@ namespace Cadastre.DataItems
 
         public BitArray GetHash()
         {
-            string binaryRepresentation = Convert.ToString(191, 2);
-
-            int length = binaryRepresentation.Length;
-
             int hashCode = Id % 191;
-            BitArray hashArray = new BitArray(BitConverter.GetBytes(hashCode));
-            BitArray reversedHashArray = new BitArray(hashArray.Count);
-            for (int i = 0; i < hashArray.Count; i++)
+            BitArray hash = new BitArray(BitConverter.GetBytes(hashCode));
+            BitArray reversedHash = new BitArray(hash.Count);
+            for (int i = 0; i < hash.Count; i++)
             {
-                reversedHashArray[i] = hashArray[hashArray.Count - 1 - i];
+                reversedHash[i] = hash[hash.Count - i - 1];
             }
-
-            return reversedHashArray;
+            return reversedHash;
         }
 
         public int GetSize()
@@ -98,23 +93,23 @@ namespace Cadastre.DataItems
             byte[] bytes = new byte[GetSize()];
             int totalLength;
 
-            byte[] idArray = BitConverter.GetBytes(this.Id);
+            byte[] idArray = BitConverter.GetBytes(Id);
             Array.Copy(idArray, 0, bytes, 0, idArray.Length);
             totalLength = idArray.Length;
 
-            byte[] bottomXArray = BitConverter.GetBytes(this.GpsLocation[0].lengthPosition);
+            byte[] bottomXArray = BitConverter.GetBytes(GpsLocation[0].lengthPosition);
             Array.Copy(bottomXArray, 0, bytes, totalLength, bottomXArray.Length);
             totalLength += bottomXArray.Length;
 
-            byte[] bottomYArray = BitConverter.GetBytes(this.GpsLocation[0].widthPosition);
+            byte[] bottomYArray = BitConverter.GetBytes(GpsLocation[0].widthPosition);
             Array.Copy(bottomYArray, 0, bytes, totalLength, bottomYArray.Length);
             totalLength += bottomYArray.Length;
 
-            byte[] UpperXArray = BitConverter.GetBytes(this.GpsLocation[1].lengthPosition);
+            byte[] UpperXArray = BitConverter.GetBytes(GpsLocation[1].lengthPosition);
             Array.Copy(UpperXArray, 0, bytes, totalLength, UpperXArray.Length);
             totalLength += UpperXArray.Length;
 
-            byte[] UpperYArray = BitConverter.GetBytes(this.GpsLocation[1].widthPosition);
+            byte[] UpperYArray = BitConverter.GetBytes(GpsLocation[1].widthPosition);
             Array.Copy(UpperYArray, 0, bytes, totalLength, UpperYArray.Length);
 
             return bytes;

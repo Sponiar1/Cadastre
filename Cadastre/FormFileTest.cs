@@ -26,7 +26,7 @@ namespace Cadastre
         private void button1_Click(object sender, EventArgs e)
         {
             properties = new DynamicHash<Property>(3, "Properties_test.bin", 5, "PropertiesOverflow_test.bin");
-            Random rand = new Random(6);
+            Random rand = new Random(7);
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
             double remove = (double)numericUpDown3.Value;
@@ -47,17 +47,7 @@ namespace Cadastre
             properties.Insert(test);
             availableProperties.Add(test);
             int id = 1;
-            /*
-            string[] contentaa = properties.FileExtract();
-            foreach (string line in contentaa)
-            {
-                if (line != null)
-                {
-                    string sanitizedLine = line.Contains('\0') ? line.Replace('\0', ' ') : line;
-                    textBox1.AppendText(sanitizedLine + Environment.NewLine);
-                }
-            }
-            */
+
             double action;
             for (int i = 0; i < numberOfOperations; i++)
             {

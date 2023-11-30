@@ -21,9 +21,7 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DynamicHash<Area> hash = new DynamicHash<Area>(5, "Land.bin", 5, "OverFlowLand.bin");
-            /*hash.TestCreateFile();*/
-            hash.TestReadFile();
+            
 
         }
 

@@ -93,6 +93,10 @@ namespace Cadastre.Files
             }
 
         }
+        public int GetUsedBlocksPosition()
+        {
+            return sizeof(int);
+        }
         public int GetSuccessorPosition()
         {
             return 2 * sizeof(int);
@@ -100,10 +104,6 @@ namespace Cadastre.Files
         public int GetPredeccessorPosition()
         {
             return 3 * sizeof(int);
-        }
-        public int GetUsedBlocksPosition()
-        {
-            return sizeof(int);
         }
         public bool AddRecord(T item)
         {
@@ -129,7 +129,6 @@ namespace Cadastre.Files
                     Records[ValidCount - 1] = removedItem;
                     ValidCount--;
                     return true;
-                    break;
                 }
             }
             return false;

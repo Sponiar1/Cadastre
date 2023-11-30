@@ -64,7 +64,7 @@ namespace Cadastre.DataItems
             int totalLength = parent.Length;
             Array.Copy(parent, 0, bytes, 0, parent.Length);
             
-            Description = Description.PadRight(15, '#');
+            Description = Description.PadRight(15, ' ');
             byte[] descArray = Encoding.UTF8.GetBytes(Description);
             Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
             totalLength += descArray.Length;
@@ -90,7 +90,7 @@ namespace Cadastre.DataItems
 
             Description = Encoding.UTF8.GetString(byteArray, offset, 15);
             int length = Description.Length;
-            Description = Description.TrimEnd('#');
+            //Description = Description.TrimEnd('#');
             offset += 15;
 
             RegisterNumber = BitConverter.ToInt32(byteArray, offset);
