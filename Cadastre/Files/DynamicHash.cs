@@ -85,7 +85,6 @@ namespace Cadastre.Files
         {
             return 3*sizeof(int);
         }
-
         public int GetEmptyBlock()
         {
             int address = -1;
@@ -247,9 +246,8 @@ namespace Cadastre.Files
                 {
                     using (BinaryWriter writer = new BinaryWriter(fs))
                     {
-
                         fs.Seek(GetPrefixSize() + node.Address * leftBlock.GetSize(), SeekOrigin.Begin);
-                        fs.Write(bytes, 0, bytes.Length);
+                        writer.Write(bytes);
                     }
                 }
             }
@@ -289,13 +287,17 @@ namespace Cadastre.Files
             {
                 rightSon.Count = rightBlock.ValidCount;
                 rightSon.Address = GetEmptyBlock();
+                if(newBlock)
+                {
+                    newBlock = false;
+                }
                 bytes = rightBlock.ToByteArray();
                 using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
                 {
                     using (BinaryWriter writer = new BinaryWriter(fs))
                     {
                         fs.Seek(GetPrefixSize() + rightSon.Address * rightBlock.GetSize(), SeekOrigin.Begin);
-                        fs.Write(bytes, 0, bytes.Length);
+                        writer.Write(bytes);
                     }
                 }
             }
@@ -379,6 +381,7 @@ namespace Cadastre.Files
                     return false;
                 }
                 totalBlocks = fileBlock.UsedOverflowBlocks;
+                successorAddress = fileBlock.Successor;
                 if (successorAddress == -1)
                 {
                     address = GetEmptyOverflowBlock();
@@ -427,7 +430,7 @@ namespace Cadastre.Files
                                 {
                                     return false;
                                 }
-                                if(overflowblock.ValidCount <= blockFactorOverflow && bestSpot == -1)
+                                if(overflowblock.ValidCount < blockFactorOverflow && bestSpot == -1)
                                 {
                                     bestSpot = successorAddress;
                                 }
@@ -485,7 +488,7 @@ namespace Cadastre.Files
                         }
                         overflowblock.FromByteArray(bytes);
                         overflowblock.AddRecord(item);
-                        using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
+                        using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
                         {
                             using (BinaryWriter writer = new BinaryWriter(fs))
                             {
@@ -530,7 +533,7 @@ namespace Cadastre.Files
                         using (BinaryReader reader = new BinaryReader(fs))
                         {
                             fs.Seek(GetPrefixSize() + block.GetSuccessorPosition() * overflowBlock.GetSize(), SeekOrigin.Begin);
-                            while(block.GetSuccessorPosition() != -1)
+                            while(block.Successor != -1)
                             {
                                 bytes = reader.ReadBytes(overflowBlock.GetSize());
                                 block.FromByteArray(bytes);

@@ -73,30 +73,12 @@ namespace Cadastre.DataItems
 
         public BitArray GetHash()
         {
-            string binaryRepresentation = Convert.ToString(3, 2);
+            string binaryRepresentation = Convert.ToString(191, 2);
 
-            // Return the length of the binary representation
             int length = binaryRepresentation.Length;
 
-            int hashCode = Id % 3;
-            //BitArray hash = new BitArray(length);
-            //string hashString = Convert.ToString(hashCode, 2);
+            int hashCode = Id % 191;
             BitArray hashArray = new BitArray(BitConverter.GetBytes(hashCode));
-            //int startIndex = Math.Max(0, length - hashString.Length);
-            /*
-            for (int i = 0; i < hashString.Length; i++)
-            {
-                hash[startIndex + i] = (binaryRepresentation[i] == '1');
-            }
-            char[] bits = new char[hash.Length];
-
-            for (int i = 0; i < hash.Length; i++)
-            {
-                bits[i] = hash[i] ? '1' : '0';
-            }
-
-            string hashh = new string(bits);
-            return hash;*/
             BitArray reversedHashArray = new BitArray(hashArray.Count);
             for (int i = 0; i < hashArray.Count; i++)
             {
@@ -119,11 +101,7 @@ namespace Cadastre.DataItems
             byte[] idArray = BitConverter.GetBytes(this.Id);
             Array.Copy(idArray, 0, bytes, 0, idArray.Length);
             totalLength = idArray.Length;
-            /*
-            byte[] descArray = Encoding.UTF8.GetBytes(Description);
-            Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
-            totalLength+= descArray.Length;
-            */
+
             byte[] bottomXArray = BitConverter.GetBytes(this.GpsLocation[0].lengthPosition);
             Array.Copy(bottomXArray, 0, bytes, totalLength, bottomXArray.Length);
             totalLength += bottomXArray.Length;
