@@ -89,7 +89,6 @@ namespace Cadastre.DataItems
             int offset = base.GetSize();
 
             Description = Encoding.UTF8.GetString(byteArray, offset, 15);
-            int length = Description.Length;
             //Description = Description.TrimEnd('#');
             offset += 15;
 
