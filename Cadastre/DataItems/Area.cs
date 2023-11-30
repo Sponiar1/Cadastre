@@ -73,12 +73,12 @@ namespace Cadastre.DataItems
 
         public BitArray GetHash()
         {
-            string binaryRepresentation = Convert.ToString(191, 2);
+            string binaryRepresentation = Convert.ToString(3, 2);
 
             // Return the length of the binary representation
             int length = binaryRepresentation.Length;
 
-            int hashCode = Id % 191;
+            int hashCode = Id % 3;
             //BitArray hash = new BitArray(length);
             //string hashString = Convert.ToString(hashCode, 2);
             BitArray hashArray = new BitArray(BitConverter.GetBytes(hashCode));

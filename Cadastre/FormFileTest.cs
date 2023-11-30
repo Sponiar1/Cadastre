@@ -25,7 +25,7 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            properties = new DynamicHash<Property>(3, "Properties_test.bin", 5, "PropertiesOverflow_test.bin");
+            properties = new DynamicHash<Property>(2, "Properties_test.bin", 1, "PropertiesOverflow_test.bin");
             Random rand = new Random(6);
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
@@ -62,7 +62,7 @@ namespace Cadastre
             for (int i = 0; i < numberOfOperations; i++)
             {
                 action = rand.NextDouble();
-                if (action < 0.6)
+                if (action < 1)
                 {
                     GPSPosition[] gps = new GPSPosition[2];
                     xbottom = 10000 * rand.NextDouble();
@@ -70,8 +70,8 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     test = new Property(id, "nicnicnicnicnic", gps);
-                    id++;
                     properties.Insert(test);
+                    id++;
                     availableProperties.Add(test);
 
                 }
