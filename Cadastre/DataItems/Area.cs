@@ -73,7 +73,7 @@ namespace Cadastre.DataItems
 
         public BitArray GetHash()
         {
-            int hashCode = Id % 191;
+            int hashCode = Id % 3;
             BitArray hash = new BitArray(BitConverter.GetBytes(hashCode));
             BitArray reversedHash = new BitArray(hash.Count);
             for (int i = 0; i < hash.Count; i++)

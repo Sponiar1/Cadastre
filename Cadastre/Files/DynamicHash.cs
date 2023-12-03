@@ -1,17 +1,9 @@
 ﻿using Cadastre.Files.Templates;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Cadastre.Files
 {
-    internal class DynamicHash<T> where T: IData<T>
+    internal class DynamicHash<T> where T : IData<T>
     {
         private TrieNode<T> root;
         private int blockFactor;
@@ -25,7 +17,7 @@ namespace Cadastre.Files
 
         public DynamicHash(int blockFactor, string fileName, int blocckFactorOverload, string fileNameOverflow)
         {
-            this.root = new ExternalTrieNode<T>(null,0);
+            this.root = new ExternalTrieNode<T>(null, 0);
             this.blockFactor = blockFactor;
             this.fileName = fileName;
             this.blockFactorOverflow = blocckFactorOverload;
@@ -54,7 +46,7 @@ namespace Cadastre.Files
         }
         public DynamicHash(string fileName, string fileNameOverflow, string trieFile)
         {
-            this.fileName= fileName;
+            this.fileName = fileName;
             this.fileNameOverflow = fileNameOverflow;
             this.newBlock = false;
             //subor
@@ -82,7 +74,7 @@ namespace Cadastre.Files
         }
         private int GetPrefixSize()
         {
-            return 3*sizeof(int);
+            return 3 * sizeof(int);
         }
         public int GetEmptyBlock()
         {
@@ -91,11 +83,11 @@ namespace Cadastre.Files
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
-                    fs.Seek(2*sizeof(int), SeekOrigin.Begin);
+                    fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
                     address = reader.ReadInt32();
                 }
             }
-            if(address == -1)
+            if (address == -1)
             {
                 address = usedBlocks;
                 usedBlocks++;
@@ -127,51 +119,51 @@ namespace Cadastre.Files
         }
         public int GetEmptyOverflowBlock()
         {
-                int address = -1;
+            int address = -1;
+            using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
+            {
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+
+                    address = reader.ReadInt32();
+                }
+            }
+            if (address == -1)
+            {
+                address = usedBlocksOverflow;
+                usedBlocksOverflow++;
+                newBlock = true;
+            }
+            else
+            {
+                int successorAddress = -1;
+                Block<T> block = new Block<T>(blockFactorOverflow);
                 using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
                 {
                     using (BinaryReader reader = new BinaryReader(fs))
                     {
-                        fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+                        fs.Seek(GetPrefixSize() + address * block.GetSize() + block.GetSuccessorPosition(), SeekOrigin.Begin);
 
-                        address = reader.ReadInt32();
+                        successorAddress = reader.ReadInt32();
                     }
                 }
-                if (address == -1)
+                using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
                 {
-                    address = usedBlocksOverflow;
-                    usedBlocksOverflow++;
-                    newBlock = true;
-                }
-                else
-                {
-                    int successorAddress = -1;
-                    Block<T> block = new Block<T>(blockFactorOverflow);
-                    using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
+                    fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+                    using (BinaryWriter writer = new BinaryWriter(fs))
                     {
-                        using (BinaryReader reader = new BinaryReader(fs))
-                        {
-                            fs.Seek(GetPrefixSize() + address * block.GetSize() + block.GetSuccessorPosition(), SeekOrigin.Begin);
-
-                            successorAddress = reader.ReadInt32();
-                        }
-                    }
-                    using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
-                    {
-                        fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
-                        using (BinaryWriter writer = new BinaryWriter(fs))
-                        {
-                            writer.Write(successorAddress);
-                        }
+                        writer.Write(successorAddress);
                     }
                 }
-                return address;
+            }
+            return address;
         }
         public ExternalTrieNode<T> Find(T item)
         {
             BitArray hash = item.GetHash();
             TrieNode<T> currentNode = this.root;
-            while(currentNode.GetType() != typeof(ExternalTrieNode<T>))
+            while (currentNode.GetType() != typeof(ExternalTrieNode<T>))
             {
                 InternalTrieNode<T> currentInternal = (InternalTrieNode<T>)currentNode;
                 if (hash[currentNode.Depth] == false)
@@ -189,9 +181,9 @@ namespace Cadastre.Files
         }
         public void Divide(ExternalTrieNode<T> node)
         {
-            InternalTrieNode<T> newParent = new InternalTrieNode<T>(node.Parent,node.Depth);
+            InternalTrieNode<T> newParent = new InternalTrieNode<T>(node.Parent, node.Depth);
             int parent = node.whichSon();
-            switch(parent)
+            switch (parent)
             {
                 case 0:
                     ((InternalTrieNode<T>)newParent.Parent).LeftSon = newParent;
@@ -208,7 +200,7 @@ namespace Cadastre.Files
             Block<T> leftBlock = new Block<T>(blockFactor);
             Block<T> rightBlock = new Block<T>(blockFactor);
             int address = GetPrefixSize() + node.Address * oldContent.GetSize();
-            byte[] bytes = ReadBlockMain(address, oldContent.GetSize());
+            byte[] bytes = ReadBlock(fileName, address, oldContent.GetSize());
             oldContent.FromByteArray(bytes);
 
             for (int i = 0; i < oldContent.ValidCount; i++)
@@ -232,10 +224,11 @@ namespace Cadastre.Files
             {
                 bytes = leftBlock.ToByteArray();
                 address = GetPrefixSize() + node.Address * leftBlock.GetSize();
-                WriteBlockMain(address, bytes);
+                WriteBlock(fileName, address, bytes);
             }
             else
             {
+
                 int emptyBlock;
                 //pridať ho do zratazenia prazdnych adries
                 using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
@@ -252,29 +245,35 @@ namespace Cadastre.Files
                 {
                     using (BinaryWriter writer = new BinaryWriter(fs))
                     {
-                        if (emptyBlock == -1)
+                        if (emptyBlock != -1)
                         {
                             leftBlock.Successor = emptyBlock;
+                            fs.Seek(GetPrefixSize() + emptyBlock * oldContent.GetSize() + oldContent.GetPredeccessorPosition(), SeekOrigin.Begin);
+                            writer.Write(node.Address);
                         }
                         fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
                         writer.Write(node.Address); //možno to dať do array
                     }
                 }
+                bytes = leftBlock.ToByteArray();
+                address = GetPrefixSize() + node.Address * leftBlock.GetSize();
+                WriteBlock(fileName, address, bytes);
+                node.Address = -1;
             }
 
             ExternalTrieNode<T> rightSon = new ExternalTrieNode<T>(newParent, node.Depth);
             newParent.RightSon = rightSon;
-            if(rightBlock.ValidCount > 0)
+            if (rightBlock.ValidCount > 0)
             {
                 rightSon.Count = rightBlock.ValidCount;
                 rightSon.Address = GetEmptyBlock();
-                if(newBlock)
+                if (newBlock)
                 {
                     newBlock = false;
                 }
                 bytes = rightBlock.ToByteArray();
                 address = GetPrefixSize() + rightSon.Address * rightBlock.GetSize();
-                WriteBlockMain(address, bytes);
+                WriteBlock(fileName, address, bytes);
             }
             else
             {
@@ -283,7 +282,7 @@ namespace Cadastre.Files
         }
         public bool Insert(T item)
         {
-            int address = -1;
+            int address;
             ExternalTrieNode<T> destination = Find(item);
             if (destination.Count == blockFactor && destination.Depth != maxDepth)
             {
@@ -304,35 +303,21 @@ namespace Cadastre.Files
                 }
                 Block<T> block = new Block<T>(blockFactor);
                 byte[] bytes;
-                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                if (!newBlock)
                 {
-                    using (BinaryReader reader = new BinaryReader(fs))
-                    {
-                        if (!newBlock)
-                        {
-                            fs.Seek(GetPrefixSize() + address * block.GetSize(), SeekOrigin.Begin);
-                            bytes = reader.ReadBytes(block.GetSize());
-                            block.FromByteArray(bytes);
-                        }
-                        else
-                        {
-                            newBlock = false;
-                        }
-                        if (!block.AddRecord(item))
-                        {
-                            return false;
-                        }
-                    }
+                    bytes = ReadBlock(fileName, GetPrefixSize() + address * block.GetSize(), block.GetSize());
+                    block.FromByteArray(bytes);
                 }
-                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
+                else
                 {
-                    bytes = block.ToByteArray();
-                    using (BinaryWriter writer = new BinaryWriter(fs))
-                    {
-                        writer.Seek(GetPrefixSize() + address * block.GetSize(), SeekOrigin.Begin);
-                        writer.Write(bytes, 0, bytes.Length);
-                    }
+                    newBlock = false;
                 }
+                if (!block.AddRecord(item))
+                {
+                    return false;
+                }
+                bytes = block.ToByteArray();
+                WriteBlock(fileName, GetPrefixSize() + address * block.GetSize(), bytes);
                 return true;
             }
             else
@@ -340,104 +325,69 @@ namespace Cadastre.Files
                 Block<T> fileBlock = new Block<T>(blockFactor);
                 Block<T> overflowblock = new Block<T>(blockFactorOverflow);
                 byte[] bytes;
-                int successorAddress = -1;
-                int totalBlocks = 0;
-                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-                {
-                    using (BinaryReader reader = new BinaryReader(fs))
-                    {
-                        fs.Seek(GetPrefixSize() + destination.Address * fileBlock.GetSize(), SeekOrigin.Begin);
-                        bytes = reader.ReadBytes(fileBlock.GetSize());
-                    }
-                }
+
+                bytes = ReadBlock(fileName, GetPrefixSize() + destination.Address * fileBlock.GetSize(), fileBlock.GetSize());
                 fileBlock.FromByteArray(bytes);
-                if(!fileBlock.CheckOriginality(item))
+                if (!fileBlock.CheckOriginality(item))
                 {
                     return false;
                 }
-                totalBlocks = fileBlock.UsedOverflowBlocks;
-                successorAddress = fileBlock.Successor;
-                if (successorAddress == -1)
+
+                int totalBlocks = fileBlock.UsedOverflowBlocks;
+                int successorAddress = fileBlock.Successor;
+
+                if (successorAddress == -1) //ak nemá overflow block
                 {
                     address = GetEmptyOverflowBlock();
                     fileBlock.UsedOverflowBlocks++;
                     fileBlock.Successor = address;
                     overflowblock.AddRecord(item);
                     overflowblock.UsedOverflowBlocks++;
-                    using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(fs))
-                        {
-                            fs.Seek(GetPrefixSize() + destination.Address * fileBlock.GetSize(), SeekOrigin.Begin);
-                            writer.Write(fileBlock.ToByteArray());
-                        }
-                    }
-                    using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(fs))
-                        {
-                            fs.Seek(GetPrefixSize() + address * overflowblock.GetSize(), SeekOrigin.Begin);
-                            writer.Write(overflowblock.ToByteArray());
-                        }
-                    }
+                    WriteBlock(fileName, GetPrefixSize() + destination.Address * fileBlock.GetSize(), fileBlock.ToByteArray());
+                    WriteBlock(fileNameOverflow, GetPrefixSize() + address * overflowblock.GetSize(), overflowblock.ToByteArray());
+
                     destination.Count++;
                     return true;
                 }
                 else
                 {
-                    bool foundSpot = false;
-                    bool original = true;
                     int bestSpot = -1;
-                    int count=0;
-                    int dummy=0;
                     int predecessor = -1;
-                    int successor = successorAddress;
-                    using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
+                    while (successorAddress != -1)
                     {
-                        using (BinaryReader reader = new BinaryReader(fs))
+                        bytes = ReadBlock(fileNameOverflow, GetPrefixSize() + successorAddress * overflowblock.GetSize(), overflowblock.GetSize());
+                        overflowblock.FromByteArray(bytes);
+                        if (!overflowblock.CheckOriginality(item))
                         {
-                            while(successorAddress != -1)
-                            {
-                                fs.Seek(GetPrefixSize() + successorAddress * overflowblock.GetSize(), SeekOrigin.Begin);
-                                bytes = reader.ReadBytes(overflowblock.GetSize());
-                                overflowblock.FromByteArray(bytes);
-                                if(!overflowblock.CheckOriginality(item))
-                                {
-                                    return false;
-                                }
-                                if(overflowblock.ValidCount < blockFactorOverflow && bestSpot == -1)
-                                {
-                                    bestSpot = successorAddress;
-                                }
-                                predecessor = successorAddress;
-                                successorAddress = overflowblock.Successor;
-                            }
+                            return false;
                         }
+                        if (overflowblock.ValidCount < blockFactorOverflow && bestSpot == -1)
+                        {
+                            bestSpot = successorAddress;
+                        }
+                        predecessor = successorAddress;
+                        successorAddress = overflowblock.Successor;
                     }
-                    if(bestSpot == -1)
+                    if (bestSpot == -1) //ak sa nezmestí do existujúcich
                     {
                         int overflowAddress = GetEmptyOverflowBlock();
                         overflowblock = new Block<T>(blockFactorOverflow);
                         overflowblock.AddRecord(item);
                         overflowblock.Predecessor = predecessor;
                         overflowblock.UsedOverflowBlocks = totalBlocks + 1;
-                        using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
-                        {
-                            using (BinaryWriter writer = new BinaryWriter(fs))
-                            {
-                                fs.Seek(GetPrefixSize() + overflowAddress * overflowblock.GetSize(), SeekOrigin.Begin);
-                                writer.Write(overflowblock.ToByteArray());
-                            }
-                        }
+                        WriteBlock(fileNameOverflow, GetPrefixSize() + overflowAddress * overflowblock.GetSize(), overflowblock.ToByteArray());
+
+                        //update počet preplnujucich blokov
                         using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
                         {
                             using (BinaryWriter writer = new BinaryWriter(fs))
                             {
-                                fs.Seek(GetPrefixSize() + overflowAddress * fileBlock.GetSize() + fileBlock.GetUsedBlocksPosition(), SeekOrigin.Begin);
+                                fs.Seek(GetPrefixSize() + destination.Address * fileBlock.GetSize() + fileBlock.GetUsedBlocksPosition(), SeekOrigin.Begin);
                                 writer.Write(totalBlocks + 1);
                             }
                         }
-                        if (predecessor != -1)
+
+                        if (predecessor != -1) // predchodzovi odkaz na noveho successora
                         {
                             using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
                             {
@@ -453,24 +403,10 @@ namespace Cadastre.Files
                     }
                     else
                     {
-                        using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
-                        {
-                            using (BinaryReader reader = new BinaryReader(fs))
-                            {
-                                fs.Seek(GetPrefixSize() + bestSpot * overflowblock.GetSize(), SeekOrigin.Begin);
-                                bytes = reader.ReadBytes(overflowblock.GetSize());
-                            }
-                        }
+                        bytes = ReadBlock(fileNameOverflow, GetPrefixSize() + bestSpot * overflowblock.GetSize(), overflowblock.GetSize());
                         overflowblock.FromByteArray(bytes);
                         overflowblock.AddRecord(item);
-                        using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
-                        {
-                            using (BinaryWriter writer = new BinaryWriter(fs))
-                            {
-                                fs.Seek(GetPrefixSize() + bestSpot * overflowblock.GetSize(), SeekOrigin.Begin);
-                                writer.Write(overflowblock.ToByteArray());
-                            }
-                        }
+                        WriteBlock(fileNameOverflow, GetPrefixSize() + bestSpot * overflowblock.GetSize(), overflowblock.ToByteArray());
                     }
                     destination.Count++;
                     return true;
@@ -483,24 +419,17 @@ namespace Cadastre.Files
             ExternalTrieNode<T> destination = Find(item);
             Block<T> block = new Block<T>(blockFactor);
             byte[] bytes;
-            address = destination.Address;
-            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-            {
-                using (BinaryReader reader = new BinaryReader(fs))
-                {
-                        fs.Seek(GetPrefixSize() + address * block.GetSize(), SeekOrigin.Begin);
-                        bytes = reader.ReadBytes(block.GetSize());
-                        block.FromByteArray(bytes);
-                }
-            }
+            address = GetPrefixSize() + destination.Address * block.GetSize();
+            bytes = ReadBlock(fileName, address, block.GetSize());
+            block.FromByteArray(bytes);
             T foundItem = block.FindRecord(item);
-            if(foundItem != null)
+            if (foundItem != null)
             {
                 return foundItem;
             }
             else
             {
-                if(block.ValidCount < destination.Count)
+                if (block.ValidCount < destination.Count)
                 {
                     Block<T> overflowBlock = new Block<T>(blockFactorOverflow);
                     int successor = block.Successor;
@@ -508,18 +437,17 @@ namespace Cadastre.Files
                     {
                         using (BinaryReader reader = new BinaryReader(fs))
                         {
-                            fs.Seek(GetPrefixSize() + successor * overflowBlock.GetSize(), SeekOrigin.Begin);
-                            while(successor != -1)
+                            while (successor != -1)
                             {
+                                fs.Seek(GetPrefixSize() + successor * overflowBlock.GetSize(), SeekOrigin.Begin);
                                 bytes = reader.ReadBytes(overflowBlock.GetSize());
                                 overflowBlock.FromByteArray(bytes);
                                 foundItem = overflowBlock.FindRecord(item);
-                                if(foundItem != null)
+                                if (foundItem != null)
                                 {
                                     return foundItem;
                                 }
                                 successor = overflowBlock.Successor;
-                                fs.Seek(GetPrefixSize() + successor * overflowBlock.GetSize(), SeekOrigin.Begin);
                             }
                         }
                     }
@@ -529,12 +457,304 @@ namespace Cadastre.Files
         }
         public bool DeleteItem(T item)
         {
-            return true;
+            int address;
+            int totalBlocks;
+            int totalItems;
+            ExternalTrieNode<T> destination = Find(item);
+            Block<T> block = new Block<T>(blockFactor);
+            byte[] bytes;
+            address = GetPrefixSize() + destination.Address * block.GetSize();
+            bytes = ReadBlock(fileName, address, block.GetSize());
+            block.FromByteArray(bytes);
+
+            totalBlocks = block.UsedOverflowBlocks;
+            totalItems = destination.Count - 1;
+
+            bool found = block.RemoveRecord(item);
+            if (found == true)
+            {
+                destination.Count--;
+                WriteBlock(fileName, address, block.ToByteArray());
+                if (totalItems == 0)
+                {
+                    FreeBlock(destination.Address, block, fileName);
+                    destination.Address = -1;
+                }
+                else if (CheckSpace(totalItems, totalBlocks, block.ValidCount))
+                {
+                    ShakeOff(destination);
+                }
+                return true;
+            }
+            else
+            {
+                if (block.ValidCount < destination.Count)
+                {
+                    Block<T> overflowBlock = new Block<T>(blockFactorOverflow);
+                    int successor = block.Successor;
+                    using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Read))
+                    {
+                        using (BinaryReader reader = new BinaryReader(fs))
+                        {
+                            while (successor != -1)
+                            {
+                                fs.Seek(GetPrefixSize() + successor * overflowBlock.GetSize(), SeekOrigin.Begin);
+                                bytes = reader.ReadBytes(overflowBlock.GetSize());
+                                overflowBlock.FromByteArray(bytes);
+                                found = overflowBlock.RemoveRecord(item);
+                                if (found == true)
+                                {
+                                    break;
+                                }
+                                successor = overflowBlock.Successor;
+                            }
+                        }
+                    }
+                    if (found == true) // fixnut ked predchodza je main block 105-120
+                    {
+                        destination.Count--;
+                        WriteBlock(fileNameOverflow, GetPrefixSize() + successor * overflowBlock.GetSize(), overflowBlock.ToByteArray());
+                        if (overflowBlock.ValidCount == 0)
+                        {
+                            if (overflowBlock.Successor != -1)
+                            {
+                                if (overflowBlock.Predecessor != -1)
+                                {
+                                    using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
+                                    {
+                                        using (BinaryWriter writer = new BinaryWriter(fs))
+                                        {
+                                            fs.Seek(GetPrefixSize() + overflowBlock.Successor * overflowBlock.GetSize() + overflowBlock.GetPredeccessorPosition(), SeekOrigin.Begin);
+                                            writer.Write(BitConverter.GetBytes(overflowBlock.Predecessor));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
+                                    {
+                                        using (BinaryWriter writer = new BinaryWriter(fs))
+                                        {
+                                            fs.Seek(GetPrefixSize() + destination.Address * block.GetSize() + block.GetSuccessorPosition(), SeekOrigin.Begin);
+                                            writer.Write(BitConverter.GetBytes(overflowBlock.Successor));
+                                        }
+                                    }
+                                }
+                            }
+                            if(overflowBlock.Predecessor != -1)
+                            {
+                                using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
+                                {
+                                    using (BinaryWriter writer = new BinaryWriter(fs))
+                                    {
+                                        fs.Seek(GetPrefixSize() + overflowBlock.Predecessor * overflowBlock.GetSize() + overflowBlock.GetSuccessorPosition(), SeekOrigin.Begin);
+                                        writer.Write(BitConverter.GetBytes(overflowBlock.Successor));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
+                                {
+                                    using (BinaryWriter writer = new BinaryWriter(fs))
+                                    {
+                                        fs.Seek(GetPrefixSize() + destination.Address * block.GetSize() + block.GetSuccessorPosition(), SeekOrigin.Begin);
+                                        writer.Write(BitConverter.GetBytes(overflowBlock.Successor));
+                                    }
+                                }
+                            }
+                            FreeBlock(successor, overflowBlock, fileNameOverflow);
+                        }
+                        else if (CheckSpace(totalItems, totalBlocks, block.ValidCount))
+                        {
+                            ShakeOff(destination);
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
-        public byte[] ReadBlockMain(int address, int size)
+        private void ShakeOff(ExternalTrieNode<T> node)
+        {
+            bool shaken = false;
+            Block<T> mainBlock = new Block<T>(blockFactor);
+            byte[] bytes = ReadBlock(fileName, GetPrefixSize() + node.Address * mainBlock.GetSize(), mainBlock.GetSize());
+            mainBlock.FromByteArray(bytes);
+            int successor = mainBlock.Successor;
+            List<Block<T>> overflowList = new List<Block<T>>();
+            List<int> addressList = new List<int>();
+            Block<T> blockToDestroy = new Block<T>(blockFactorOverflow);
+            int minimal = int.MaxValue;
+            int minimalAddress = -1;
+            while (successor != -1)
+            {
+                Block<T> overflowBlock = new Block<T>(blockFactorOverflow);
+                overflowBlock.FromByteArray(ReadBlock(fileNameOverflow, GetPrefixSize() + successor * overflowBlock.GetSize(), overflowBlock.GetSize()));
+                overflowList.Add(overflowBlock);
+                addressList.Add(successor);
+                if (minimal > overflowBlock.ValidCount)
+                {
+                    minimal = overflowBlock.ValidCount;
+                    blockToDestroy = overflowBlock;
+                    minimalAddress = successor;
+                }
+                successor = overflowBlock.Successor;
+            }
+            if (mainBlock.ValidCount < blockFactor)
+            {
+                while (mainBlock.ValidCount != blockFactor && blockToDestroy.ValidCount != 0)
+                {
+                    mainBlock.AddRecord(blockToDestroy.Records[blockToDestroy.ValidCount - 1]);
+                    blockToDestroy.RemoveRecord(blockToDestroy.Records[blockToDestroy.ValidCount - 1]);
+                }
+                WriteBlock(fileName, node.Address, mainBlock.ToByteArray());
+            }
+            int block = 0;
+            while (blockToDestroy.ValidCount != 0)
+            {
+                if (addressList[block] != minimalAddress && overflowList[block].ValidCount < blockFactorOverflow)
+                {
+                    while (overflowList[block].ValidCount < blockFactorOverflow && blockToDestroy.ValidCount != 0)
+                    {
+                        overflowList[block].AddRecord(blockToDestroy.Records[blockToDestroy.ValidCount - 1]);
+                        blockToDestroy.RemoveRecord(blockToDestroy.Records[blockToDestroy.ValidCount - 1]);
+                    }
+                    WriteBlock(fileNameOverflow, addressList[block], overflowList[block].ToByteArray());
+                }
+                block++;
+            }
+            if (blockToDestroy.Successor != -1)
+            {
+                using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(fs))
+                    {
+                        fs.Seek(GetPrefixSize() + blockToDestroy.Successor * blockToDestroy.GetSize() + blockToDestroy.GetPredeccessorPosition(), SeekOrigin.Begin);
+                        writer.Write(blockToDestroy.Predecessor);
+                    }
+                }
+            }
+            if (blockToDestroy.Predecessor != -1)
+            {
+                using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(fs))
+                    {
+                        fs.Seek(GetPrefixSize() + blockToDestroy.Predecessor * blockToDestroy.GetSize() + blockToDestroy.GetSuccessorPosition(), SeekOrigin.Begin);
+                        writer.Write(blockToDestroy.Successor);
+                    }
+                }
+            }
+            FreeBlock(minimalAddress, blockToDestroy, fileNameOverflow);
+
+        }
+        private void FreeBlock(int address, Block<T> block, string file)
+        {
+            int successor;
+            if (file == fileName)
+            {
+                if (address == usedBlocks - 1)
+                {
+                    usedBlocks--;
+                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Write))
+                    {
+                        fs.SetLength(GetPrefixSize() + address * block.GetSize());
+                    }
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    {
+                        using (BinaryReader reader = new BinaryReader(fs))
+                        {
+                            fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+                            successor = reader.ReadInt32();
+                        }
+                    }
+                    block.Successor = successor;
+                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Write))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(fs))
+                        {
+                            fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+                            writer.Write(BitConverter.GetBytes(address));
+                            if (successor != -1)
+                            {
+                                fs.Seek(GetPrefixSize() + successor * block.GetSize() + block.GetPredeccessorPosition(), SeekOrigin.Begin);
+                                writer.Write(BitConverter.GetBytes(address));
+                            }
+                        }
+                    }
+                    WriteBlock(fileName, GetPrefixSize() + address * block.GetSize(), block.ToByteArray());
+                }
+            }
+            else
+            {
+                if (address == usedBlocksOverflow - 1) //dorobiť ak je uprostred zreťazenia?
+                {
+                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Write))
+                    {
+                        fs.SetLength(GetPrefixSize() + address * block.GetSize());
+                    }
+                    usedBlocksOverflow--;
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    {
+                        using (BinaryReader reader = new BinaryReader(fs))
+                        {
+                            fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+                            successor = reader.ReadInt32();
+                        }
+                    }
+                    block.Successor = successor;
+                    using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Write))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(fs))
+                        {
+                            fs.Seek(2 * sizeof(int), SeekOrigin.Begin);
+                            writer.Write(BitConverter.GetBytes(address));
+                            if (successor != -1)
+                            {
+                                fs.Seek(GetPrefixSize() + successor * block.GetSize() + block.GetPredeccessorPosition(), SeekOrigin.Begin);
+                                writer.Write(BitConverter.GetBytes(address));
+                            }
+                        }
+                    }
+                    block.Predecessor = -1;
+                    WriteBlock(file, GetPrefixSize() + address * block.GetSize(), block.ToByteArray());
+                }
+            }
+        }
+        private bool CheckSpace(int totalItems, int overFlowBlocks, int mainFileItems)
+        {
+            if (overFlowBlocks == 0)
+            {
+                return false;
+            }
+            else
+            {
+                if (totalItems == blockFactor)
+                {
+                    return true;
+                }
+                else
+                {
+                    int overflowItems = totalItems - mainFileItems;
+                    if (Math.Ceiling((double)overflowItems / (double)blockFactorOverflow) < overFlowBlocks)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        public byte[] ReadBlock(string nameOfFile, int address, int size)
         {
             byte[] bytes;
-            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new FileStream(nameOfFile, FileMode.Open, FileAccess.Read))
             {
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
@@ -544,9 +764,9 @@ namespace Cadastre.Files
             }
             return bytes;
         }
-        public void WriteBlockMain(int address, byte[] bytes)
+        public void WriteBlock(string nameOfFile, int address, byte[] bytes)
         {
-            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
+            using (FileStream fs = new FileStream(nameOfFile, FileMode.Open, FileAccess.Write))
             {
                 using (BinaryWriter writer = new BinaryWriter(fs))
                 {
@@ -565,7 +785,7 @@ namespace Cadastre.Files
         }
         public string[] FileExtract()
         {
-            string[] content = new string[usedBlocks*(blockFactor+5) + usedBlocksOverflow*(blockFactorOverflow+5) + 6];
+            string[] content = new string[usedBlocks * (blockFactor + 5) + usedBlocksOverflow * (blockFactorOverflow + 5) + 6];
             int stringPointer = 0;
             byte[] bytes = null;
             Block<T> block = new Block<T>(blockFactor);
@@ -575,10 +795,10 @@ namespace Cadastre.Files
                 {
                     fs.Seek(0, SeekOrigin.Begin);
                     content[stringPointer] = reader.ReadInt32().ToString(); //blockFaktor
-                    content[stringPointer+1] = reader.ReadInt32().ToString(); //usedBlocks
-                    content[stringPointer+2] = reader.ReadInt32().ToString(); //emptyBlok
+                    content[stringPointer + 1] = reader.ReadInt32().ToString(); //usedBlocks
+                    content[stringPointer + 2] = reader.ReadInt32().ToString(); //emptyBlok
                     stringPointer = 3;
-                    for(int i = 0; i < usedBlocks; i++)
+                    for (int i = 0; i < usedBlocks; i++)
                     {
                         content[stringPointer] = "Block number: " + i;
                         stringPointer++;
@@ -596,9 +816,9 @@ namespace Cadastre.Files
                 }
             }
             content[stringPointer] = "---------------------------------";
-            stringPointer++; 
+            stringPointer++;
             content[stringPointer] = "Overflow Block";
-            stringPointer++; 
+            stringPointer++;
             content[stringPointer] = "---------------------------------";
             stringPointer++;
             block = new Block<T>(blockFactorOverflow);
