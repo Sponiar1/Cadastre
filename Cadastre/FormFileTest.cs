@@ -25,7 +25,7 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
+            properties = new DynamicHash<Property>(2, "Properties_test.bin", 8, "PropertiesOverflow_test.bin");
             Random rand = new Random(7);
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
@@ -130,7 +130,7 @@ namespace Cadastre
             }
             label5.Text = "Test successful";
             string[] content = properties.FileExtract();
-
+            
             textBox1.Clear();
             foreach (string line in content)
             {

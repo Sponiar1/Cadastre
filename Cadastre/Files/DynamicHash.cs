@@ -1,5 +1,6 @@
 ﻿using Cadastre.Files.Templates;
 using System.Collections;
+using System.Windows.Forms.Design;
 
 namespace Cadastre.Files
 {
@@ -280,6 +281,55 @@ namespace Cadastre.Files
                 rightSon.Address = -1;
             }
         }
+        public void Merge(ExternalTrieNode<T> node)
+        {
+            if(node.Parent == null || !((InternalTrieNode<T>)node.Parent).CanMerge(blockFactor))
+            {
+                return;
+            }
+            int brotherAddress = -1;
+            if(node.whichSon() == 1)
+            {
+                brotherAddress = ((ExternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).LeftSon).Address;
+            }
+            else
+            {
+                brotherAddress = ((ExternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).RightSon).Address;
+            }
+            Block<T> myBlock = new Block<T>(blockFactor);
+            Block<T> brotherBlock = new Block<T>(blockFactor);
+
+            int address = GetPrefixSize() + node.Address * myBlock.GetSize();
+            byte[] bytes = ReadBlock(fileName, address, myBlock.GetSize());
+            myBlock.FromByteArray(bytes);
+
+            address = GetPrefixSize() + brotherAddress * myBlock.GetSize();
+            bytes = ReadBlock(fileName, address, myBlock.GetSize());
+            brotherBlock.FromByteArray(bytes);
+
+            for (int i = 0; i < brotherBlock.ValidCount; i++)
+            {
+                myBlock.AddRecord(brotherBlock.Records[i]);
+            }
+            address = GetPrefixSize() + node.Address * myBlock.GetSize();
+            WriteBlock(fileName, address, myBlock.ToByteArray());
+            brotherBlock.ValidCount = 0;
+            FreeBlock(brotherAddress, brotherBlock, fileName);
+            
+            if(((InternalTrieNode<T>)node.Parent).whichSon() == 0)
+            {
+                ((InternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).Parent).LeftSon = node;
+            }
+            else if (((InternalTrieNode<T>)node.Parent).whichSon() == 1)
+            {
+                ((InternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).Parent).RightSon = node;
+            }
+            else
+            {
+                root = node;
+            }
+
+        }
         public bool Insert(T item)
         {
             int address;
@@ -484,6 +534,7 @@ namespace Cadastre.Files
                 {
                     ShakeOff(destination);
                 }
+                //Merge(destination);
                 return true;
             }
             else
@@ -518,8 +569,6 @@ namespace Cadastre.Files
                         {
                             if (overflowBlock.Successor != -1)
                             {
-                                if (overflowBlock.Predecessor != -1)
-                                {
                                     using (FileStream fs = new FileStream(fileNameOverflow, FileMode.Open, FileAccess.Write))
                                     {
                                         using (BinaryWriter writer = new BinaryWriter(fs))
@@ -528,18 +577,7 @@ namespace Cadastre.Files
                                             writer.Write(BitConverter.GetBytes(overflowBlock.Predecessor));
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
-                                    {
-                                        using (BinaryWriter writer = new BinaryWriter(fs))
-                                        {
-                                            fs.Seek(GetPrefixSize() + destination.Address * block.GetSize() + block.GetSuccessorPosition(), SeekOrigin.Begin);
-                                            writer.Write(BitConverter.GetBytes(overflowBlock.Successor));
-                                        }
-                                    }
-                                }
+                                
                             }
                             if(overflowBlock.Predecessor != -1)
                             {
