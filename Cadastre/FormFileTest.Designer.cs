@@ -39,6 +39,7 @@
             numericUpDown4 = new NumericUpDown();
             label4 = new Label();
             label5 = new Label();
+            checkBox1 = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown3).BeginInit();
@@ -152,11 +153,22 @@
             label5.TabIndex = 10;
             label5.Text = "Test:";
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(661, 55);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(157, 19);
+            checkBox1.TabIndex = 11;
+            checkBox1.Text = "Write out content of files";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
             // FormFileTest
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1260, 658);
+            Controls.Add(checkBox1);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(numericUpDown4);
@@ -191,5 +203,6 @@
         private NumericUpDown numericUpDown4;
         private Label label4;
         private Label label5;
+        private CheckBox checkBox1;
     }
 }

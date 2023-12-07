@@ -72,6 +72,7 @@ namespace Cadastre.Files
                     usedBlocksOverflow = reader.ReadInt32();
                 }
             }
+            LoadIndex(trieFile);
         }
         private int GetPrefixSize()
         {
@@ -534,7 +535,7 @@ namespace Cadastre.Files
                 {
                     ShakeOff(destination);
                 }
-                //Merge(destination);
+                Merge(destination);
                 return true;
             }
             else
@@ -596,11 +597,17 @@ namespace Cadastre.Files
                                 {
                                     using (BinaryWriter writer = new BinaryWriter(fs))
                                     {
+                                        
                                         fs.Seek(GetPrefixSize() + destination.Address * block.GetSize() + block.GetSuccessorPosition(), SeekOrigin.Begin);
                                         writer.Write(BitConverter.GetBytes(overflowBlock.Successor));
                                     }
                                 }
                             }
+
+                            bytes = ReadBlock(fileName, GetPrefixSize() + destination.Address * block.GetSize(), block.GetSize());
+                            block.FromByteArray(bytes);
+                            block.UsedOverflowBlocks--;
+                            WriteBlock(fileName, GetPrefixSize() + destination.Address * block.GetSize(), block.ToByteArray());
                             FreeBlock(successor, overflowBlock, fileNameOverflow);
                         }
                         else if (CheckSpace(totalItems, totalBlocks, block.ValidCount))
@@ -615,7 +622,6 @@ namespace Cadastre.Files
         }
         private void ShakeOff(ExternalTrieNode<T> node)
         {
-            bool shaken = false;
             Block<T> mainBlock = new Block<T>(blockFactor);
             byte[] bytes = ReadBlock(fileName, GetPrefixSize() + node.Address * mainBlock.GetSize(), mainBlock.GetSize());
             mainBlock.FromByteArray(bytes);
@@ -625,6 +631,7 @@ namespace Cadastre.Files
             Block<T> blockToDestroy = new Block<T>(blockFactorOverflow);
             int minimal = int.MaxValue;
             int minimalAddress = -1;
+            
             while (successor != -1)
             {
                 Block<T> overflowBlock = new Block<T>(blockFactorOverflow);
@@ -813,17 +820,129 @@ namespace Cadastre.Files
                 }
             }
         }
-        public void Save(string fileName)
+        public void SaveIndex(string fileName)
         {
+            List<string> list = new List<string>();
+            string filePath = Path.Combine(Application.StartupPath, fileName);
 
+            Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
+            TrieNode<T> currentNode = root;
+            ExternalTrieNode<T> externalTrieNode;
+            //stack.Push(currentNode);
+            string hash = "";
+            while(currentNode != null || stack.Count != 0)
+            {
+                while(currentNode != null)
+                {
+                    if (currentNode.GetType() == typeof(ExternalTrieNode<T>))
+                    {
+                        externalTrieNode = (ExternalTrieNode<T>)currentNode;
+                        list.Add("1;" + externalTrieNode.Depth + ";" + externalTrieNode.Address + ";" + externalTrieNode.Count + ";");
+                    }
+                    else
+                    {
+                        list.Add("0;" + currentNode.Depth + ";");
+                        stack.Push(currentNode);
+                        currentNode = ((InternalTrieNode<T>)currentNode).LeftSon;
+                    }
+                }
+
+                currentNode = stack.Pop();
+                currentNode = ((InternalTrieNode<T>)currentNode).RightSon;
+            }
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    writer.WriteLine(list[i]);
+                }
+            }
         }
-        public void Load(string fileName)
+        public void LoadIndex(string fileName)
         {
+            string filePath = Path.Combine(Application.StartupPath, fileName);
+            int type;
+            int depth;
+            int address;
+            int count;
+            Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
+            TrieNode<T> currentNode = null;
+            TrieNode<T> newNode = null;
+            // možno vložiť dummy na začiatok
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                var line = reader.ReadLine();
+                var values = line.Split(';');
+                type = int.Parse(values[0]);
+                depth = int.Parse(values[1]);
+                if (type == 0)
+                {
+                    newNode = new InternalTrieNode<T>(null, depth);
+                    root = newNode;
+                }
+                else
+                {
+                    address = int.Parse(values[2]);
+                    count = int.Parse(values[3]);
+                    newNode = new ExternalTrieNode<T>(null, depth);
+                    ((ExternalTrieNode<T>)newNode).Count = count;
+                    ((ExternalTrieNode<T>)newNode).Address = address;
+                    root = newNode;
+                    return;
+                }
+                stack.Push(newNode);
+                currentNode = newNode;
 
+                while (!reader.EndOfStream)
+                {
+                    line = reader.ReadLine();
+                    values = line.Split(';');
+                    type = int.Parse(values[0]);
+                    if (type == 0)
+                    {
+                        depth = int.Parse(values[1]);
+                        newNode = new InternalTrieNode<T>(currentNode,depth);
+                        if (((InternalTrieNode<T>)currentNode).LeftSon == null)
+                        {
+                            ((InternalTrieNode<T>)currentNode).LeftSon = newNode;
+                            stack.Push(newNode);
+                            currentNode = newNode;
+                        }
+                        else if (((InternalTrieNode<T>)currentNode).RightSon == null)
+                        {
+                            ((InternalTrieNode<T>)currentNode).RightSon = newNode;
+                            stack.Push(newNode);
+                            currentNode = newNode;
+                        }
+                    }
+                    else
+                    {
+                        address = int.Parse(values[2]);
+                        count = int.Parse(values[3]);
+                        newNode = new ExternalTrieNode<T>(currentNode, depth);
+                        ((ExternalTrieNode<T>)newNode).Count = count;
+                        ((ExternalTrieNode<T>)newNode).Address = address;
+                        if (((InternalTrieNode<T>)currentNode).LeftSon == null)
+                        {
+                            ((InternalTrieNode<T>)currentNode).LeftSon = newNode;
+                            //currentNode = stack.Pop();
+                        }
+                        else
+                        {
+                            ((InternalTrieNode<T>)currentNode).RightSon = newNode;
+                            //currentNode = stack.Pop();
+                            while(((InternalTrieNode<T>)currentNode).RightSon != null)
+                            {
+                                currentNode = stack.Pop();
+                            }
+                        }
+                    }
+                }
+            }
         }
         public string[] FileExtract()
         {
-            string[] content = new string[usedBlocks * (blockFactor + 5) + usedBlocksOverflow * (blockFactorOverflow + 5) + 6];
+            string[] content = new string[usedBlocks * (blockFactor + 5) + usedBlocksOverflow * (blockFactorOverflow + 5) + 9];
             int stringPointer = 0;
             byte[] bytes = null;
             Block<T> block = new Block<T>(blockFactor);

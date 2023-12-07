@@ -1,6 +1,7 @@
 ﻿using Cadastre.DataItems;
 using Cadastre.DataStructure;
 using Cadastre.DataStructure.Templates;
+using Cadastre.Files.Templates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -169,5 +170,6 @@ namespace Cadastre.FileManager
                 writer.WriteLine();
             }
         }
+
     }
 }

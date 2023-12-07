@@ -18,7 +18,10 @@ namespace Cadastre.DataItems
         {
             Properties = new List<Property>();
         }
+        public Land() : base(-1, "", null)
+        {
 
+        }
         int IComparator<Land>.CompareById(Land otherItem)
         {
             return CompareById(otherItem);

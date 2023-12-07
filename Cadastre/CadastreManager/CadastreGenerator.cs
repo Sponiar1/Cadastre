@@ -1,6 +1,7 @@
 ﻿using Cadastre.DataItems;
 using Cadastre.DataStructure;
 using Cadastre.DataStructure.Templates;
+using Cadastre.Files;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,5 +75,7 @@ namespace Cadastre.CadastreManager
             string randomString = sb.ToString();
             return randomString;
         }
+
+        
     }
 }

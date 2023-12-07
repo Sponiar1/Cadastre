@@ -25,7 +25,7 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            properties = new DynamicHash<Property>(2, "Properties_test.bin", 8, "PropertiesOverflow_test.bin");
+            properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
             Random rand = new Random(7);
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
@@ -38,7 +38,7 @@ namespace Cadastre
             List<Property> availableProperties = new List<Property>();
             int id = 1;
             Property test;
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 GPSPosition[] gpss = new GPSPosition[2];
                 xbottom = 10000 * rand.NextDouble();
@@ -51,10 +51,10 @@ namespace Cadastre
                 availableProperties.Add(test);
                 id++;
             }
-            double action; //1909/1910 id 796 blok 39           100 suuc 5  ma predecor
+            double action; //1909/1910 id 796 blok 39           100 suuc 5  ma predecor | 18
             for (int i = 0; i < numberOfOperations; i++)
             {
-                if(i == 99)
+                if (i == 17)
                 {
                     int p = 9;
                 }
@@ -67,7 +67,7 @@ namespace Cadastre
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                     test = new Property(id, "nicnicnicnicnic", gps);
-                    if(!properties.Insert(test))
+                    if (!properties.Insert(test))
                     {
                         label5.Text = "Duplicate, id:" + id;
                         return;
@@ -82,7 +82,7 @@ namespace Cadastre
                     {
                         int idf = rand.Next(availableProperties.Count);
                         Property dummy = availableProperties[idf];
-                        if(properties.FindItem(dummy) == null)
+                        if (properties.FindItem(dummy) == null)
                         {
                             label5.Text = "Couldnt find item id:" + idf;
                             return;
@@ -96,10 +96,6 @@ namespace Cadastre
                         int idf = rand.Next(availableProperties.Count);
                         Property toDelete = availableProperties[idf];
                         availableProperties.RemoveAt(idf);
-                        if(i == 170)
-                        {
-                            int a = 5;
-                        }
                         if (!properties.DeleteItem(toDelete))
                         {
                             label5.Text = "Error deleting item with id:" + toDelete.Id;
@@ -116,10 +112,10 @@ namespace Cadastre
                         textBox1.AppendText(line + Environment.NewLine);
                     }
                 }*/
-                
+
             }
 
-            for(int i = 0; i < availableProperties.Count; i++)
+            for (int i = 0; i < availableProperties.Count; i++)
             {
 
                 if (properties.Find(availableProperties[i]) == null)
@@ -129,14 +125,17 @@ namespace Cadastre
                 }
             }
             label5.Text = "Test successful";
-            string[] content = properties.FileExtract();
-            
-            textBox1.Clear();
-            foreach (string line in content)
+            if (checkBox1.Checked)
             {
-                if (line != null)
+                string[] content = properties.FileExtract();
+
+                textBox1.Clear();
+                foreach (string line in content)
                 {
-                    textBox1.AppendText(line + Environment.NewLine);
+                    if (line != null)
+                    {
+                        textBox1.AppendText(line + Environment.NewLine);
+                    }
                 }
             }
         }
