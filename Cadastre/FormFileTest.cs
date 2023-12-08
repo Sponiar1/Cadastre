@@ -25,6 +25,7 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
+            properties = null;
             properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
             Random rand = new Random(7);
             double insert = (double)numericUpDown1.Value;
