@@ -80,7 +80,15 @@ namespace Cadastre.CadastreManager
                             && configuration[2] == item.GpsLocation[1].lengthPosition && configuration[3] == item.GpsLocation[1].lengthPosition)
             {
                 item.Id = (int)configuration[4];
-                item.Description = description;
+                if(type == 0)
+                {
+                    ((Land)item).Description = description;
+                }
+                else
+                    if(type == 1)
+                {
+                    ((Property)item).Description = description;
+                }
                 return true;
             }
             else
@@ -100,7 +108,7 @@ namespace Cadastre.CadastreManager
                     gps[1] = new GPSPosition('S', 'W', configuration[2], configuration[3]);
                     item.GpsLocation = gps;
                     item.Id = (int)configuration[4];
-                    item.Description = description;
+                    ((Land)item).Description = description;
 
                     if(!lands.Insert(item))
                     {
@@ -131,7 +139,7 @@ namespace Cadastre.CadastreManager
                     gps[1] = new GPSPosition('S', 'W', configuration[2], configuration[3]);
                     item.GpsLocation = gps;
                     item.Id = (int)configuration[4];
-                    item.Description = description;
+                    ((Property)item).Description = description;
                     if(!properties.Insert(item))
                     {
                         return false;

@@ -107,7 +107,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -121,7 +121,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -186,7 +186,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -200,7 +200,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -276,7 +276,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -290,7 +290,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -361,7 +361,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     availableLands.Add(test);
 
                 }
@@ -490,7 +490,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -504,7 +504,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -569,7 +569,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -583,7 +583,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -650,7 +650,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -662,7 +662,7 @@ namespace Cadastre
                     ybottom = ((sizeOfTree - sizeOfItem) - (sizeOfTree / 2)) * (rand.NextDouble() * (1 - double.Epsilon)) + (sizeOfTree / 2);
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -676,7 +676,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree) * (rand.NextDouble() * (1 - double.Epsilon));
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -688,7 +688,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree / 2) + (sizeOfTree / 2) * rand.NextDouble();
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', rand.NextDouble() * (sizeOfTree - xbottom) + xbottom, rand.NextDouble() * (sizeOfTree - ybottom) + ybottom);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     items.Add(test);
                 }
@@ -822,7 +822,7 @@ namespace Cadastre
                     ybottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
                     gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                     gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                    Area test = new Area(i, "nic", gps);
+                    Area test = new Area(i, gps);
                     tree.Insert(test);
                     reorganizedTree.Insert(test);
             }
@@ -833,7 +833,7 @@ namespace Cadastre
                 ybottom = ((sizeOfTree / 2) - sizeOfItem) * rand.NextDouble();
                 gps[0] = new GPSPosition('N', 'E', xbottom + (sizeOfTree/2), ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + (sizeOfTree / 2) + sizeOfItem, ybottom + sizeOfItem);
-                Area test = new Area(i + 600000, "nic", gps);
+                Area test = new Area(i + 600000, gps);
                 tree.Insert(test);
                 reorganizedTree.Insert(test);
             }
@@ -861,7 +861,7 @@ namespace Cadastre
                 ybottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                Area test = new Area(i+ 1000000, "nic", gps);
+                Area test = new Area(i+ 1000000, gps);
 
                 stopwatchInsert.Start();
                 tree.Insert(test);
@@ -895,7 +895,7 @@ namespace Cadastre
                 ybottom = (sizeOfTree - sizeOfItem) * rand.NextDouble();
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
-                Area test = new Area(i + 1000000, "nic", gps);
+                Area test = new Area(i + 1000000, gps);
                 stopwatchInsert.Start();
                 tree.Insert(test);
                 stopwatchInsert.Stop();

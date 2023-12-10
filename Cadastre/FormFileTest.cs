@@ -25,9 +25,8 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            properties = null;
             properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
-            Random rand = new Random(7);
+            Random rand = new Random(8); //7 100
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
             double remove = (double)numericUpDown3.Value;
@@ -39,7 +38,7 @@ namespace Cadastre
             List<Property> availableProperties = new List<Property>();
             int id = 1;
             Property test;
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 50; i++)
             {
                 GPSPosition[] gpss = new GPSPosition[2];
                 xbottom = 10000 * rand.NextDouble();
@@ -47,15 +46,15 @@ namespace Cadastre
                 gpss[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gpss[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                 test = new Property(id, "nicnicnicnicnic", gpss);
-                test.LandsId = new List<int>() { -1, -1, -1, -1, -1, -1 };
+                //test.LandsId = new List<int>() { -1, -1, -1, -1, -1, -1 };
                 properties.Insert(test);
                 availableProperties.Add(test);
                 id++;
             }
-            double action; //1909/1910 id 796 blok 39           100 suuc 5  ma predecor | 18
+            double action; //
             for (int i = 0; i < numberOfOperations; i++)
             {
-                if (i == 17)
+                if (i == 20) //1261 niečo zle napíše 1123 sa to pokazí (7/100/191)   i=58(8/100/43)
                 {
                     int p = 9;
                 }
@@ -85,7 +84,7 @@ namespace Cadastre
                         Property dummy = availableProperties[idf];
                         if (properties.FindItem(dummy) == null)
                         {
-                            label5.Text = "Couldnt find item id:" + idf;
+                            label5.Text = "Couldnt find item id:" + dummy.Id;
                             return;
                         }
                     }
@@ -97,7 +96,11 @@ namespace Cadastre
                         int idf = rand.Next(availableProperties.Count);
                         Property toDelete = availableProperties[idf];
                         availableProperties.RemoveAt(idf);
-                        if (!properties.DeleteItem(toDelete))
+                        if(toDelete.Id == 41)
+                        {
+                            int z = 4;
+                        }
+                        if (properties.DeleteItem(toDelete) == null)
                         {
                             label5.Text = "Error deleting item with id:" + toDelete.Id;
                             return;
@@ -138,6 +141,7 @@ namespace Cadastre
                         textBox1.AppendText(line + Environment.NewLine);
                     }
                 }
+                textBox1.AppendText("NewBlock: " + properties.newBlock);
             }
         }
     }

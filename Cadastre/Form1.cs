@@ -49,7 +49,7 @@ namespace Cadastre
                     {
                         foreach (var property in lastSearchItem)
                         {
-                            dataGridView1.Rows.Add(property.Id, property.Description, property.GetCoordinates(), property.GetListOfAreas());
+                            dataGridView1.Rows.Add(property.Id, ((Property)property).Description, property.GetCoordinates(), property.GetListOfAreas());
                         }
                     }
                     lastSearch = 1;
@@ -71,7 +71,7 @@ namespace Cadastre
                     {
                         foreach (var land in lastSearchItem)
                         {
-                            dataGridView1.Rows.Add(land.Id, land.Description, land.GetCoordinates(), land.GetListOfAreas());
+                            dataGridView1.Rows.Add(land.Id, ((Land)land).Description, land.GetCoordinates(), land.GetListOfAreas());
                         }
                     }
                     lastSearch = 0;
@@ -94,14 +94,14 @@ namespace Cadastre
                     {
                         foreach (var area in result[0])
                         {
-                            dataGridView1.Rows.Add("Land", area.Id, area.Description, area.GetCoordinates(), area.GetListOfAreas());
+                            dataGridView1.Rows.Add("Land", area.Id, ((Land)area).Description, area.GetCoordinates(), area.GetListOfAreas());
                         }
                     }
                     if (result[1].Count != 0)
                     {
                         foreach (var area in result[1])
                         {
-                            dataGridView1.Rows.Add("Property", area.Id, area.Description, area.GetCoordinates(), area.GetListOfAreas());
+                            dataGridView1.Rows.Add("Property", area.Id, ((Property)area).Description, area.GetCoordinates(), area.GetListOfAreas());
                         }
                     }
                     lastSearchItem = result[0].Concat(result[1]).ToList();

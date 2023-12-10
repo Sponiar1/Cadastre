@@ -48,6 +48,19 @@ namespace Cadastre
             this.Text = "Edit item";
         }
 
+        public InsertForm(int id, string description, double x0, double y0, double x1, double y1) : this()
+        {
+            comboBox1.Visible = false;
+            numericUpDown1.Value = (decimal)x0;
+            numericUpDown2.Value = (decimal)y0;
+            numericUpDown3.Value = (decimal)x1;
+            numericUpDown4.Value = (decimal)y1;
+            numericUpDown5.Value = (decimal)id;
+            textBox1.Text = description;
+
+            this.Text = "Edit item";
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             double number1 = (double)numericUpDown1.Value;

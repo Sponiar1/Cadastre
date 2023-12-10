@@ -11,11 +11,9 @@ namespace Cadastre.DataItems
 {
     public class Area : QuadTreeData, IComparator<Area>, IData<Area>
     {
-        public string Description { get; set; }
         public GPSPosition[] GpsLocation { get; set; }
-        public Area(int id, string description, GPSPosition[] gpsLocation) : base(id)
+        public Area(int id, GPSPosition[] gpsLocation) : base(id)
         {
-            this.Description = description;
             this.GpsLocation = gpsLocation;
         }
 
@@ -60,7 +58,10 @@ namespace Cadastre.DataItems
         {
             return "";
         }
-
+        virtual public string GetListOfAreasID()
+        {
+            return "";
+        }
         public double GetSizeArea()
         {
             return GpsLocation[1].lengthPosition - GpsLocation[0].lengthPosition;
@@ -73,7 +74,7 @@ namespace Cadastre.DataItems
 
         public BitArray GetHash()
         {//7919, 3, 191, 1123
-            int hashCode = Id % 191;
+            int hashCode = Id % 19;
             BitArray hash = new BitArray(BitConverter.GetBytes(hashCode));
             BitArray reversedHash = new BitArray(hash.Count);
             for (int i = 0; i < hash.Count; i++)
@@ -137,12 +138,12 @@ namespace Cadastre.DataItems
         public Area CreateInstance()
         {
             GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
-            return new Area(-1, "", gps);
+            return new Area(-1, gps);
         }
 
         public string ExtractInfo()
         {
-            return "Id: " + Id + ", Description: " + Description + ", GPS: [" + GpsLocation[0].lengthPosition + ", " + GpsLocation[0].widthPosition + "][" + GpsLocation[1].lengthPosition + ", " + GpsLocation[1].widthPosition + "]";
+            return "Id: " + Id + ", GPS: [" + GpsLocation[0].lengthPosition + ", " + GpsLocation[0].widthPosition + "][" + GpsLocation[1].lengthPosition + ", " + GpsLocation[1].widthPosition + "]";
         }
     }
 }

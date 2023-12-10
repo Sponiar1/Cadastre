@@ -40,6 +40,9 @@
             buttonEditLand = new Button();
             buttonEditProperty = new Button();
             buttonGenerate = new Button();
+            buttonDeleteLand = new Button();
+            dataGridView1 = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // buttonSave
@@ -133,7 +136,7 @@
             // 
             // buttonEditLand
             // 
-            buttonEditLand.Location = new Point(24, 266);
+            buttonEditLand.Location = new Point(24, 295);
             buttonEditLand.Name = "buttonEditLand";
             buttonEditLand.Size = new Size(102, 23);
             buttonEditLand.TabIndex = 9;
@@ -143,7 +146,7 @@
             // 
             // buttonEditProperty
             // 
-            buttonEditProperty.Location = new Point(24, 295);
+            buttonEditProperty.Location = new Point(24, 324);
             buttonEditProperty.Name = "buttonEditProperty";
             buttonEditProperty.Size = new Size(102, 25);
             buttonEditProperty.TabIndex = 10;
@@ -161,11 +164,32 @@
             buttonGenerate.UseVisualStyleBackColor = true;
             buttonGenerate.Click += buttonGenerate_Click;
             // 
+            // buttonDeleteLand
+            // 
+            buttonDeleteLand.Location = new Point(24, 266);
+            buttonDeleteLand.Name = "buttonDeleteLand";
+            buttonDeleteLand.Size = new Size(102, 23);
+            buttonDeleteLand.TabIndex = 12;
+            buttonDeleteLand.Text = "Delete land";
+            buttonDeleteLand.UseVisualStyleBackColor = true;
+            buttonDeleteLand.Click += buttonDeleteLand_Click;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(295, 32);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(859, 479);
+            dataGridView1.TabIndex = 13;
+            // 
             // FormBinary
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1187, 564);
+            Controls.Add(dataGridView1);
+            Controls.Add(buttonDeleteLand);
             Controls.Add(buttonGenerate);
             Controls.Add(buttonEditProperty);
             Controls.Add(buttonEditLand);
@@ -180,6 +204,7 @@
             Controls.Add(buttonSave);
             Name = "FormBinary";
             Text = "FormBinary";
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -198,5 +223,7 @@
         private Button buttonEditLand;
         private Button buttonEditProperty;
         private Button buttonGenerate;
+        private Button buttonDeleteLand;
+        private DataGridView dataGridView1;
     }
 }

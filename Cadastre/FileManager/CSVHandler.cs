@@ -45,7 +45,7 @@ namespace Cadastre.FileManager
                 {
                     writer.Write(area.Id);
                     writer.Write(";");
-                    writer.Write(area.Description);
+                    writer.Write(((Land)area).Description);
                     writer.Write(";");
                     writer.Write(area.GpsLocation[0].lengthPosition);
                     writer.Write(";");

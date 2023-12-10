@@ -12,16 +12,18 @@ namespace Cadastre.DataItems
 {
     public class Property : Area, IComparator<Property>, IData<Property>
     {
+        public string Description { get; set; }
         public int RegisterNumber {  get; set; }
         public List<Land> Lands { get; set; }
         public List<int> LandsId { get; set; }
-        public Property(int id, string description, GPSPosition[] gpsLocation) : base(id, description, gpsLocation)
+        public Property(int id, string description, GPSPosition[] gpsLocation) : base(id, gpsLocation)
         {
+            this.Description = description;
             Lands = new List<Land>();
             LandsId = new List<int>(6) { -1,-1,-1,-1,-1,-1};
             RegisterNumber = 11;
         }
-        public Property() : base(-1,"",null)
+        public Property() : base(-1,null)
         {
             
         }
@@ -41,6 +43,19 @@ namespace Cadastre.DataItems
             return listOfAreas;
         }
 
+        override
+        public string GetListOfAreasID()
+        {
+            string listOfAreas = "";
+            for (int i = 0; i < LandsId.Count; i++)
+            {
+                if (LandsId[i] != -1)
+                {
+                    listOfAreas += LandsId[i] + ", ";
+                }
+            }
+            return listOfAreas;
+        }
         public bool Equals(Property obj)
         {
             return base.Equals(obj);
@@ -63,7 +78,7 @@ namespace Cadastre.DataItems
             byte[] parent = base.ToByteArray();
             int totalLength = parent.Length;
             Array.Copy(parent, 0, bytes, 0, parent.Length);
-            
+
             Description = Description.PadRight(15, ' ');
             byte[] descArray = Encoding.UTF8.GetBytes(Description);
             Array.Copy(descArray, 0, bytes, totalLength, descArray.Length);
@@ -80,6 +95,7 @@ namespace Cadastre.DataItems
                 Array.Copy(idArray, 0, bytes, totalLength, idArray.Length);
                 totalLength += idArray.Length;
             }
+
             return bytes;
         }
 
@@ -87,6 +103,7 @@ namespace Cadastre.DataItems
         {
             base.FromByteArray(byteArray);
             int offset = base.GetSize();
+
 
             Description = Encoding.UTF8.GetString(byteArray, offset, 15);
             //Description = Description.TrimEnd('#');
@@ -98,8 +115,8 @@ namespace Cadastre.DataItems
             for (int i = 0; i < 6; i++)
             {
                 byte[] idArray = new byte[4];
-                Array.Copy(idArray, 0, byteArray, offset, idArray.Length);
-                LandsId[i] = BitConverter.ToInt32(byteArray, offset);
+                Array.Copy(byteArray, offset, idArray, 0, idArray.Length);
+                LandsId[i] = BitConverter.ToInt32(idArray, 0);
                 offset += sizeof(int);
             }
         }
@@ -118,7 +135,7 @@ namespace Cadastre.DataItems
         }
         public string ExtractInfo()
         {
-            string baseInfo = base.ExtractInfo() + "Register number: " + RegisterNumber + " Related Lands: ";
+            string baseInfo = base.ExtractInfo() + "Description: " + Description + ", Register number: " + RegisterNumber + " Related Lands: ";
             for (int i = 0; i < 6; i++)
             {
                 baseInfo += LandsId[i] + ", ";
