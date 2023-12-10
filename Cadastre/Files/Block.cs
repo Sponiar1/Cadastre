@@ -118,7 +118,7 @@ namespace Cadastre.Files
             ValidCount++;
             return true;
         }
-        public bool RemoveRecord(T item)
+        public T RemoveRecord(T item)
         {
             for (int i = 0; i < ValidCount; i++)
             {
@@ -128,10 +128,10 @@ namespace Cadastre.Files
                     Records[i] = Records[ValidCount - 1];
                     Records[ValidCount - 1] = removedItem;
                     ValidCount--;
-                    return true;
+                    return removedItem;
                 }
             }
-            return false;
+            return default(T);
         }
         public T FindRecord(T item)
         {
@@ -155,7 +155,7 @@ namespace Cadastre.Files
         }
         public bool CheckOriginality(T item)
         {
-            for(int i = 0; i < ValidCount - 1; i++)
+            for(int i = 0; i < ValidCount; i++)
             {
                 if (item.Equals(Records[i]))
                 {

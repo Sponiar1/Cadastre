@@ -17,7 +17,8 @@ namespace Cadastre
 {
     public partial class FormFileTest : Form
     {
-        DynamicHash<Property> properties;
+        //DynamicHash<Property> properties;
+        Hash<Property> properties;
         public FormFileTest()
         {
             InitializeComponent();
@@ -25,7 +26,8 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
+            //properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
+            properties = new Hash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
             Random rand = new Random(8); //7 100
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
@@ -38,7 +40,7 @@ namespace Cadastre
             List<Property> availableProperties = new List<Property>();
             int id = 1;
             Property test;
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 100; i++)
             {
                 GPSPosition[] gpss = new GPSPosition[2];
                 xbottom = 10000 * rand.NextDouble();
@@ -54,7 +56,7 @@ namespace Cadastre
             double action; //
             for (int i = 0; i < numberOfOperations; i++)
             {
-                if (i == 20) //1261 niečo zle napíše 1123 sa to pokazí (7/100/191)   i=58(8/100/43)
+                if (i == 4) //1261 niečo zle napíše 1123 sa to pokazí (7/100/191)   i=58(8/100/43)
                 {
                     int p = 9;
                 }
@@ -118,16 +120,17 @@ namespace Cadastre
                 }*/
 
             }
-
+            
             for (int i = 0; i < availableProperties.Count; i++)
             {
 
-                if (properties.Find(availableProperties[i]) == null)
+                if (properties.FindItem(availableProperties[i]) == null)
                 {
-                    label5.Text = "Missing item id:" + i;
+                    label5.Text = "Missing item id:" + availableProperties[i].Id;
                     return;
                 }
             }
+
             label5.Text = "Test successful";
             if (checkBox1.Checked)
             {
@@ -141,7 +144,7 @@ namespace Cadastre
                         textBox1.AppendText(line + Environment.NewLine);
                     }
                 }
-                textBox1.AppendText("NewBlock: " + properties.newBlock);
+                //textBox1.AppendText("NewBlock: " + properties.newBlock);
             }
         }
     }
