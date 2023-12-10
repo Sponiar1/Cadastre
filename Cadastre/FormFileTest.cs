@@ -18,7 +18,7 @@ namespace Cadastre
     public partial class FormFileTest : Form
     {
         //DynamicHash<Property> properties;
-        OldHash<Property> properties;
+        DynamicHash<Property> properties;
         public FormFileTest()
         {
             InitializeComponent();
@@ -27,7 +27,7 @@ namespace Cadastre
         private void button1_Click(object sender, EventArgs e)
         {
             //properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
-            properties = new OldHash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
+            properties = new DynamicHash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
             Random rand = new Random(8); //7 100
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;

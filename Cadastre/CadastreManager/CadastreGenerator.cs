@@ -57,6 +57,33 @@ namespace Cadastre.CadastreManager
             trees[1] = properties;
             return trees;
         }
+
+        public void GenerateBinaryData(double[] configuration, DynamicHash<Land> lands, DynamicHash<Property> properties, 
+                                        QuadTree<Area> landsTree, QuadTree<Area> propertiesTree, CadastreBinaryManager manager)
+        {
+            double xbottom = 0;
+            double ybottom = 0;
+            Random rand = new Random();
+
+            for (int i = 0; i < (int)configuration[4]; i++)
+            {
+                xbottom = (configuration[2] - configuration[6] - configuration[0]) * rand.NextDouble() + configuration[0];
+                ybottom = (configuration[3] - configuration[6] - configuration[1]) * rand.NextDouble() + configuration[1];
+                double[] conf = { xbottom, ybottom, xbottom + configuration[7], ybottom + configuration[7],
+                                                (double)i};
+                manager.AddItem(conf, GenerateSpecificString(11), 0);
+            };
+
+            for (int i = 0; i < (int)configuration[4] * 2; i++)
+            {
+                xbottom = (configuration[2] - configuration[7] - configuration[0]) * rand.NextDouble() + configuration[0];
+                ybottom = (configuration[3] - configuration[7] - configuration[1]) * rand.NextDouble() + configuration[1];
+                double[] conf = { xbottom, ybottom, xbottom + configuration[7], ybottom + configuration[7],
+                                                (double)i, rand.Next()};
+                
+                manager.AddItem(conf, GenerateSpecificString(15), 1);
+            };
+        }
         private string GenerateString()
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -76,6 +103,23 @@ namespace Cadastre.CadastreManager
             return randomString;
         }
 
-        
+        private string GenerateSpecificString(int maxLength)
+        {
+            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            Random random = new Random();
+
+            int length = random.Next(1, maxLength);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < length; i++)
+            {
+                int index = random.Next(characters.Length);
+                sb.Append(characters[index]);
+            }
+
+            string randomString = sb.ToString();
+            return randomString;
+        }
     }
 }

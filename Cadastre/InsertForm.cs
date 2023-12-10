@@ -68,8 +68,9 @@ namespace Cadastre
             double number3 = (double)numericUpDown3.Value;
             double number4 = (double)numericUpDown4.Value;
             double number5 = (double)numericUpDown5.Value;
+            double number6 = (double)numericUpDown6.Value;
             Description = (string)textBox1.Text;
-            EnteredNumbers = new double[] { number1, number2, number3, number4, number5 };
+            EnteredNumbers = new double[] { number1, number2, number3, number4, number5, number6 };
 
             switch (comboBox1.SelectedIndex)
             {
@@ -83,6 +84,22 @@ namespace Cadastre
             DialogResult = DialogResult.OK;
             Close();
 
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch(comboBox1.SelectedIndex)
+            {
+                case 0:
+                    labelRegister.Enabled = false;
+                    numericUpDown6.Enabled = false;
+                    break;
+                case 1:
+                    labelRegister.Enabled = true;
+                    numericUpDown6.Enabled = true;
+                    break;
+
+            }
         }
     }
 }

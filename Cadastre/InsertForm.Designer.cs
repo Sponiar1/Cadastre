@@ -42,11 +42,14 @@
             label4 = new Label();
             label5 = new Label();
             label6 = new Label();
+            numericUpDown6 = new NumericUpDown();
+            labelRegister = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown6).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -121,6 +124,7 @@
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(121, 23);
             comboBox1.TabIndex = 7;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // label1
             // 
@@ -176,11 +180,29 @@
             label6.TabIndex = 13;
             label6.Text = "Description of Item";
             // 
+            // numericUpDown6
+            // 
+            numericUpDown6.Location = new Point(276, 156);
+            numericUpDown6.Name = "numericUpDown6";
+            numericUpDown6.Size = new Size(120, 23);
+            numericUpDown6.TabIndex = 14;
+            // 
+            // labelRegister
+            // 
+            labelRegister.AutoSize = true;
+            labelRegister.Location = new Point(148, 158);
+            labelRegister.Name = "labelRegister";
+            labelRegister.Size = new Size(96, 15);
+            labelRegister.TabIndex = 15;
+            labelRegister.Text = "Register Number";
+            // 
             // InsertForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(labelRegister);
+            Controls.Add(numericUpDown6);
             Controls.Add(label6);
             Controls.Add(label5);
             Controls.Add(label4);
@@ -202,6 +224,7 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown3).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown4).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown6).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -222,5 +245,7 @@
         private Label label4;
         private Label label5;
         private Label label6;
+        private NumericUpDown numericUpDown6;
+        private Label labelRegister;
     }
 }

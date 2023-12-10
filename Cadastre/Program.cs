@@ -12,7 +12,7 @@ namespace Cadastre
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             //Application.Run(new FormMainMenu());
-            Application.Run(new FormFileTest());
+            Application.Run(new FormBinary());
         }
     }
 }

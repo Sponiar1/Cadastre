@@ -55,6 +55,10 @@ namespace Cadastre
         private void buttonFindProperty_Click(object sender, EventArgs e)
         {
             string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter Property ID:", "Enter ID", "");
+            if(userInput == "")
+            {
+                return;
+            }
             List<Area> result = manager.GetProperty(int.Parse(userInput));
             if(result == null)
             {
@@ -65,9 +69,10 @@ namespace Cadastre
                 dataGridView1.Columns.Clear();
                 dataGridView1.Rows.Clear();
                 InitializeTables();
-                foreach (var area in result)
+                dataGridView1.Rows.Add("Property", result[0].Id, ((Property)result[0]).RegisterNumber, ((Property)result[0]).Description, result[0].GetCoordinates(), result[0].GetListOfAreasID());
+                for (int i = 1; i < result.Count; i++)
                 {
-                    dataGridView1.Rows.Add("property",area.Id, ((Land)area).Description, area.GetCoordinates(), area.GetListOfAreasID());
+                    dataGridView1.Rows.Add("Land", result[i].Id, "", ((Land)result[i]).Description, result[i].GetCoordinates(), result[i].GetListOfAreasID());
                 }
             }
         }
@@ -85,9 +90,10 @@ namespace Cadastre
                 dataGridView1.Columns.Clear();
                 dataGridView1.Rows.Clear();
                 InitializeTables();
-                foreach (var area in result)
+                dataGridView1.Rows.Add("Land", result[0].Id, "", ((Land)result[0]).Description, result[0].GetCoordinates(), result[0].GetListOfAreasID());
+                for(int i = 1; i< result.Count; i++)
                 {
-                    dataGridView1.Rows.Add("Land", area.Id, ((Land)area).Description, area.GetCoordinates(), area.GetListOfAreasID());
+                    dataGridView1.Rows.Add("Property", result[i].Id, ((Property)result[i]).RegisterNumber, ((Property)result[i]).Description, result[i].GetCoordinates(), result[i].GetListOfAreasID());
                 }
             }
         }
@@ -209,12 +215,20 @@ namespace Cadastre
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
-
+            using (var numberInputForm = new GenerateTreeForm())
+            {
+                if (numberInputForm.ShowDialog() == DialogResult.OK)
+                {
+                    double[] size = numberInputForm.EnteredNumbers;
+                    manager.GenerateData(size);
+                }
+            }
         }
         private void InitializeTables()
         {
             dataGridView1.Columns.Add("Type", "Type");
             dataGridView1.Columns.Add("Id", "ID");
+            dataGridView1.Columns.Add("Register", "Register");
             dataGridView1.Columns.Add("Description", "Description");
             dataGridView1.Columns.Add("Location", "Location");
             dataGridView1.Columns.Add("List", "List of related area");
