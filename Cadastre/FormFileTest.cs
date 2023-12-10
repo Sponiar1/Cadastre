@@ -18,7 +18,7 @@ namespace Cadastre
     public partial class FormFileTest : Form
     {
         //DynamicHash<Property> properties;
-        Hash<Property> properties;
+        OldHash<Property> properties;
         public FormFileTest()
         {
             InitializeComponent();
@@ -27,7 +27,7 @@ namespace Cadastre
         private void button1_Click(object sender, EventArgs e)
         {
             //properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
-            properties = new Hash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
+            properties = new OldHash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
             Random rand = new Random(8); //7 100
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
@@ -40,7 +40,7 @@ namespace Cadastre
             List<Property> availableProperties = new List<Property>();
             int id = 1;
             Property test;
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 GPSPosition[] gpss = new GPSPosition[2];
                 xbottom = 10000 * rand.NextDouble();
@@ -56,7 +56,7 @@ namespace Cadastre
             double action; //
             for (int i = 0; i < numberOfOperations; i++)
             {
-                if (i == 4) //1261 niečo zle napíše 1123 sa to pokazí (7/100/191)   i=58(8/100/43)
+                if (i == 3166) //1261 niečo zle napíše 1123 sa to pokazí (7/100/191)   i=58(8/100/43)  1849
                 {
                     int p = 9;
                 }

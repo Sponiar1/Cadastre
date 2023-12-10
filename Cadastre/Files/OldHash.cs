@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cadastre.Files
 {
-    internal class Hash<T> where T : IData<T>
+    internal class OldHash<T> where T : IData<T>
     {
         private TrieNode<T> root;
         private int blockFactor;
@@ -27,7 +27,7 @@ namespace Cadastre.Files
         BinaryWriter overflowWriter;
         BinaryReader overflowReader;
 
-        public Hash(int blockFactor, string fileName, int blocckFactorOverload, string fileNameOverflow) 
+        public OldHash(int blockFactor, string fileName, int blocckFactorOverload, string fileNameOverflow) 
         {
             this.root = new ExternalTrieNode<T>(null, 0);
             this.blockFactor = blockFactor;
@@ -42,7 +42,7 @@ namespace Cadastre.Files
             overflowWriter = new BinaryWriter(overflowFile);
         }
 
-        public Hash (string fileName, string fileNameOverflow, string trieFile)
+        public OldHash (string fileName, string fileNameOverflow, string trieFile)
         {
             this.fileName = fileName;
             this.fileNameOverflow = fileNameOverflow;
@@ -227,8 +227,12 @@ namespace Cadastre.Files
                     mergeBlock.AddRecord(myBlock.Records[i]);
                 }
                 myBlock.ValidCount = 0;
-                FreeBlock(myBlock, node.Address, fileName);
+                //FreeBlock(myBlock, node.Address, fileName);
                 address = node.Address;
+                if(brotherAddress != -1)
+                {
+                    FreeBlock(myBlock, node.Address, fileName);
+                }
             }
             if(brotherAddress != -1)
             {
@@ -238,10 +242,11 @@ namespace Cadastre.Files
                     mergeBlock.AddRecord(brotherBlock.Records[i]);
                 }
                 brotherBlock.ValidCount = 0;
-                FreeBlock(brotherBlock, brotherAddress, fileName);
+                //FreeBlock(brotherBlock, brotherAddress, fileName);
                 address = brotherAddress;
             }
             node.Count = mergeBlock.ValidCount;
+            node.Address = address; //ja som ho uvolnil a potom som to tam dal na adresu
             WriteBlock(fileName, address, mergeBlock);
 
 
@@ -434,7 +439,7 @@ namespace Cadastre.Files
                 {
                     Shake(destination);
                 }
-                //Merge(destination);
+                Merge(destination);
                 return removedItem;
             }
             else
