@@ -23,6 +23,8 @@ namespace Cadastre.CadastreManager
         string indexLand;
         string propertyTreeFile;
         string landTreeFile;
+        string indexPropertiesPropertiesFile;
+        string indexLandPropertiesFile;
         QuadTree<Area> PropertyTree;
         QuadTree<Area> LandTree;
 
@@ -36,6 +38,8 @@ namespace Cadastre.CadastreManager
             indexLand = "LandIndex.csv";
             propertyTreeFile = "PropertyTree.csv";
             landTreeFile = "LandTree.csv";
+            indexPropertiesPropertiesFile = "PropertyProperty.txt";
+            indexLandPropertiesFile = "LandProperty.txt";
             PropertyTree = new QuadTree<Area>(0, 0, double.MaxValue, double.MaxValue, 20);
             LandTree = new QuadTree<Area>(0, 0, double.MaxValue, double.MaxValue, 20);
         }
@@ -48,20 +52,15 @@ namespace Cadastre.CadastreManager
         public void Save()
         {
             CSVHandler csvHandler = new CSVHandler();
-            Properties.SaveIndex(indexProperty);
-            Lands.SaveIndex(indexLand);
+            Properties.SaveIndex(indexProperty, indexPropertiesPropertiesFile);
+            Lands.SaveIndex(indexLand, indexLandPropertiesFile);
             csvHandler.SaveMinimalAreaToCSV(PropertyTree, landTreeFile);
             csvHandler.SaveMinimalAreaToCSV(LandTree, landTreeFile);
         }
         public void Load()
         {
-            Properties = new DynamicHash<Property>(propertyFileName, propertyOverflowName, indexProperty);
-            Properties.LoadIndex(propertyFileName);
-            Properties.LoadIndex(landFileName);
-
-            Lands = new DynamicHash<Land>(landFileName, landOverflowName, indexLand);
-            Lands.LoadIndex(propertyFileName);
-            Lands.LoadIndex(landFileName);
+            Properties = new DynamicHash<Property>(propertyFileName, propertyOverflowName, indexProperty, indexLandPropertiesFile);
+            Lands = new DynamicHash<Land>(landFileName, landOverflowName, indexLand, indexLandPropertiesFile);
             CSVHandler csvHandler = new CSVHandler();
             QuadTree<Area>[] trees = csvHandler.LoadMinimalAreaFromCSV(landTreeFile, landTreeFile);
             LandTree = trees[0];

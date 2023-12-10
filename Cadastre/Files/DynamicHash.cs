@@ -1,5 +1,6 @@
 ﻿using Cadastre.Files.Templates;
 using System.Collections;
+using System.IO;
 using System.Windows.Forms.Design;
 
 namespace Cadastre.Files
@@ -38,7 +39,7 @@ namespace Cadastre.Files
             overflowWriter = new BinaryWriter(overflowFile);
         }
 
-        public DynamicHash(string fileName, string fileNameOverflow, string trieFile)
+        public DynamicHash(string fileName, string fileNameOverflow, string trieFile, string indexPropertiesFile)
         {
             this.fileName = fileName;
             this.fileNameOverflow = fileNameOverflow;
@@ -50,18 +51,8 @@ namespace Cadastre.Files
             overflowWriter = new BinaryWriter(overflowFile);
             mainWriter = new BinaryWriter(mainFile);
 
-            mainFile.Seek(0, SeekOrigin.Begin);
 
-            blockFactor = mainReader.ReadInt32();
-            usedBlocks = mainReader.ReadInt32();
-
-            //preplnovaci subor
-            overflowFile.Seek(0, SeekOrigin.Begin);
-
-            blockFactorOverflow = overflowReader.ReadInt32();
-            usedBlocksOverflow = overflowReader.ReadInt32();
-
-            //LoadIndex(trieFile);
+            LoadIndex(trieFile, indexPropertiesFile);
         }
 
         public int GetEmptyBlock()
@@ -711,11 +702,10 @@ namespace Cadastre.Files
             WriteBlock(fileName, node.Address, mainBlock);
             FreeBlock(blockToDelete, deleteAddress, fileNameOverflow);
         }
-        public void SaveIndex(string fileName)
+        public void SaveIndex(string fileName, string indexProperties)
         {
             List<string> list = new List<string>();
             string filePath = Path.Combine(Application.StartupPath, fileName);
-
             Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
             TrieNode<T> currentNode = root;
             ExternalTrieNode<T> externalTrieNode;
@@ -728,6 +718,7 @@ namespace Cadastre.Files
                     {
                         externalTrieNode = (ExternalTrieNode<T>)currentNode;
                         list.Add("1;" + externalTrieNode.Depth + ";" + externalTrieNode.Address + ";" + externalTrieNode.Count + ";");
+                        currentNode = null;
                     }
                     else
                     {
@@ -736,9 +727,11 @@ namespace Cadastre.Files
                         currentNode = ((InternalTrieNode<T>)currentNode).LeftSon;
                     }
                 }
-
-                currentNode = stack.Pop();
-                currentNode = ((InternalTrieNode<T>)currentNode).RightSon;
+                if (stack.Count != 0)
+                {
+                    currentNode = stack.Pop();
+                    currentNode = ((InternalTrieNode<T>)currentNode).RightSon;
+                }
             }
             using (StreamWriter writer = new StreamWriter(filePath))
             {
@@ -747,8 +740,19 @@ namespace Cadastre.Files
                     writer.WriteLine(list[i]);
                 }
             }
+
+            filePath = Path.Combine(Application.StartupPath, indexProperties);
+            using (StreamWriter textWriter = new StreamWriter(filePath))
+            {
+                textWriter.WriteLine(blockFactor);
+                textWriter.WriteLine(usedBlocks);
+                textWriter.WriteLine(emptyBlock);
+                textWriter.WriteLine(blockFactorOverflow);
+                textWriter.WriteLine(usedBlocksOverflow);
+                textWriter.WriteLine(emptyOverflowBlock);
+            }
         }
-        public void LoadIndex(string fileName)
+        public void LoadIndex(string fileName, string indexPropertiesName)
         {
             string filePath = Path.Combine(Application.StartupPath, fileName);
             int type;
@@ -823,11 +827,25 @@ namespace Cadastre.Files
                             //currentNode = stack.Pop();
                             while (((InternalTrieNode<T>)currentNode).RightSon != null)
                             {
+                                if(stack.Count == 0)
+                                {
+                                    break;
+                                }
                                 currentNode = stack.Pop();
                             }
                         }
                     }
                 }
+            }
+            filePath = Path.Combine(Application.StartupPath, indexPropertiesName);
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                blockFactor = int.Parse(reader.ReadLine());
+                usedBlocks = int.Parse(reader.ReadLine());
+                emptyBlock = int.Parse(reader.ReadLine());
+                blockFactorOverflow = int.Parse(reader.ReadLine());
+                usedBlocksOverflow = int.Parse(reader.ReadLine());
+                emptyOverflowBlock = int.Parse(reader.ReadLine());
             }
         }
         public string[] FileExtract()
