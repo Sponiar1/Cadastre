@@ -391,7 +391,8 @@ namespace Cadastre.CadastreManager
                 }
             }
             PropertyTree.Remove(itemBefore);
-            PropertyTree.Insert(itemAfter);
+            Area area = new Area(itemAfter.Id, itemAfter.GpsLocation);
+            PropertyTree.Insert(area);
             //davam nove
             for (int i = 0; i < relatedAreas.Count; i++)
             {
@@ -402,6 +403,7 @@ namespace Cadastre.CadastreManager
                     if (related.PropertiesId[j] == -1)
                     {
                         related.PropertiesId[j] = itemAfter.Id;
+                        itemAfter.LandsId[itemAfter.LandsId.IndexOf(itemAfter.LandsId.Min())] = related.Id;
                         Lands.UpdateItem(related);
                         break;
                     }
@@ -466,7 +468,8 @@ namespace Cadastre.CadastreManager
                 }
             }
             LandTree.Remove(itemBefore);
-            LandTree.Insert(itemAfter);
+            Area area = new Area(itemAfter.Id, itemAfter.GpsLocation);
+            LandTree.Insert(area);
             //davam nove
             for (int i = 0; i < relatedAreas.Count; i++)
             {
@@ -477,6 +480,7 @@ namespace Cadastre.CadastreManager
                     if (related.LandsId[j] == -1)
                     {
                         related.LandsId[j] = itemAfter.Id;
+                        itemAfter.PropertiesId[itemAfter.PropertiesId.IndexOf(itemAfter.PropertiesId.Min())] = related.Id;
                         Properties.UpdateItem(related);
                         break;
                     }
@@ -496,6 +500,18 @@ namespace Cadastre.CadastreManager
         {
             CadastreGenerator generator = new CadastreGenerator();
             generator.GenerateBinaryData(configuration, Lands, Properties, LandTree, PropertyTree, this);
+        }
+
+        public string[] FileExtract(int type)
+        {
+            if(type == 0)
+            {
+                return Lands.FileExtract();
+            }
+            else
+            {
+                return Properties.FileExtract();
+            }
         }
 
     }

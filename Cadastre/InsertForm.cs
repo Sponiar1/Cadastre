@@ -26,7 +26,7 @@ namespace Cadastre
             this.Text = "New Item";
         }
 
-        public InsertForm(int id, string description, double x0, double y0, double x1, double y1, int type) : this()
+        public InsertForm(int id, string description, double x0, double y0, double x1, double y1, int type, int register) : this()
         {
             comboBox1.Visible = false;
             numericUpDown1.Value = (decimal)x0;
@@ -39,9 +39,14 @@ namespace Cadastre
             {
                 case 0:
                     TypeOfItem = 0;
+                    labelRegister.Enabled = false;
+                    numericUpDown6.Enabled = false;
                     break;
                 case 1:
                     TypeOfItem = 1;
+                    labelRegister.Enabled = true;
+                    numericUpDown6.Enabled = true;
+                    numericUpDown6.Value = (decimal)register;
                     break;
             }
 
@@ -88,7 +93,7 @@ namespace Cadastre
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch(comboBox1.SelectedIndex)
+            switch (comboBox1.SelectedIndex)
             {
                 case 0:
                     labelRegister.Enabled = false;

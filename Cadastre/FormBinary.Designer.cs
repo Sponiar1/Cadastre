@@ -42,7 +42,18 @@
             buttonGenerate = new Button();
             buttonDeleteLand = new Button();
             dataGridView1 = new DataGridView();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
+            textBox1 = new TextBox();
+            tabPage3 = new TabPage();
+            textBox2 = new TextBox();
+            buttonFileExtract = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
+            tabPage3.SuspendLayout();
             SuspendLayout();
             // 
             // buttonSave
@@ -177,18 +188,91 @@
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(295, 32);
+            dataGridView1.Location = new Point(6, 6);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(859, 479);
+            dataGridView1.Size = new Size(1058, 558);
             dataGridView1.TabIndex = 13;
+            // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Controls.Add(tabPage3);
+            tabControl1.Location = new Point(211, 12);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1078, 598);
+            tabControl1.TabIndex = 14;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(dataGridView1);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1070, 570);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Search";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(textBox1);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1070, 570);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Land file";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(6, 6);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.ScrollBars = ScrollBars.Vertical;
+            textBox1.Size = new Size(1058, 558);
+            textBox1.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            tabPage3.Controls.Add(textBox2);
+            tabPage3.Location = new Point(4, 24);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1070, 570);
+            tabPage3.TabIndex = 2;
+            tabPage3.Text = "Property file";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(6, 6);
+            textBox2.Multiline = true;
+            textBox2.Name = "textBox2";
+            textBox2.ScrollBars = ScrollBars.Vertical;
+            textBox2.Size = new Size(1058, 558);
+            textBox2.TabIndex = 0;
+            // 
+            // buttonFileExtract
+            // 
+            buttonFileExtract.Location = new Point(24, 395);
+            buttonFileExtract.Name = "buttonFileExtract";
+            buttonFileExtract.Size = new Size(102, 27);
+            buttonFileExtract.TabIndex = 15;
+            buttonFileExtract.Text = "File extract";
+            buttonFileExtract.UseVisualStyleBackColor = true;
+            buttonFileExtract.Click += buttonFileExtract_Click;
             // 
             // FormBinary
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1187, 564);
-            Controls.Add(dataGridView1);
+            ClientSize = new Size(1301, 622);
+            Controls.Add(buttonFileExtract);
+            Controls.Add(tabControl1);
             Controls.Add(buttonDeleteLand);
             Controls.Add(buttonGenerate);
             Controls.Add(buttonEditProperty);
@@ -205,6 +289,12 @@
             Name = "FormBinary";
             Text = "FormBinary";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
+            tabPage3.ResumeLayout(false);
+            tabPage3.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -225,5 +315,12 @@
         private Button buttonGenerate;
         private Button buttonDeleteLand;
         private DataGridView dataGridView1;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private TextBox textBox1;
+        private TabPage tabPage3;
+        private TextBox textBox2;
+        private Button buttonFileExtract;
     }
 }

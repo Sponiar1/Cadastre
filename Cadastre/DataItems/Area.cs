@@ -16,7 +16,6 @@ namespace Cadastre.DataItems
         {
             this.GpsLocation = gpsLocation;
         }
-
         public int CompareTo(QuadTreeRectangle other)
         {
             if (GpsLocation[0].IsInside(other) && GpsLocation[1].IsInside(other))
@@ -25,7 +24,6 @@ namespace Cadastre.DataItems
             }
             return -1;
         }
-
         public int CompareIntersections(QuadTreeRectangle other)
         {
             if (GpsLocation[1].lengthPosition < other.BottomLeftX || other.UpperRightX < GpsLocation[0].lengthPosition)
@@ -44,7 +42,6 @@ namespace Cadastre.DataItems
         {
             return CompareById(otherItem);
         }
-
         public string GetCoordinates()
         {
             double x0 = Math.Round(GpsLocation[0].lengthPosition, 2);
@@ -53,7 +50,6 @@ namespace Cadastre.DataItems
             double y1 = Math.Round(GpsLocation[1].widthPosition, 2);
             return "[" + x0 + " , " + y0 + "] [" + x1 + " , " + y1 + "]";
         }
-
         virtual public string GetListOfAreas()
         {
             return "";
@@ -66,15 +62,13 @@ namespace Cadastre.DataItems
         {
             return GpsLocation[1].lengthPosition - GpsLocation[0].lengthPosition;
         }
-
         public bool Equals(Area obj)
         {
             return base.Equals(obj);
         }
-
         public BitArray GetHash()
         {//7919, 3, 191, 1123
-            int hashCode = Id % 191;
+            int hashCode = Id % 1123;
             BitArray hash = new BitArray(BitConverter.GetBytes(hashCode));
             BitArray reversedHash = new BitArray(hash.Count);
             for (int i = 0; i < hash.Count; i++)
@@ -83,12 +77,10 @@ namespace Cadastre.DataItems
             }
             return reversedHash;
         }
-
         public int GetSize()
         {
             return 4 * sizeof(double) + sizeof(int);
         }
-
         public byte[] ToByteArray()
         {
             byte[] bytes = new byte[GetSize()];
@@ -115,7 +107,6 @@ namespace Cadastre.DataItems
 
             return bytes;
         }
-
         public void FromByteArray(byte[] byteArray)
         {
             int offset = 0;
@@ -134,13 +125,11 @@ namespace Cadastre.DataItems
             GpsLocation[1].widthPosition = BitConverter.ToDouble(byteArray, offset);
 
         }
-
         public Area CreateInstance()
         {
             GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(int.MaxValue, int.MaxValue, 0), new GPSPosition(int.MaxValue, int.MaxValue, 1) };
             return new Area(-1, gps);
         }
-
         public string ExtractInfo()
         {
             return "Id: " + Id + ", GPS: [" + GpsLocation[0].lengthPosition + ", " + GpsLocation[0].widthPosition + "][" + GpsLocation[1].lengthPosition + ", " + GpsLocation[1].widthPosition + "]";

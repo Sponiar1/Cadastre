@@ -145,7 +145,7 @@ namespace Cadastre
                 double x1 = item.GpsLocation[1].lengthPosition;
                 double y1 = item.GpsLocation[1].widthPosition;
 
-                using (var numberInputForm = new InsertForm(id, description, x0, y0, x1, y1, lastSearch))
+                using (var numberInputForm = new InsertForm(id, description, x0, y0, x1, y1, lastSearch,0))
                 {
                     if (numberInputForm.ShowDialog() == DialogResult.OK)
                     {

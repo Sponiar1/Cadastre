@@ -125,7 +125,7 @@ namespace Cadastre.DataItems
             string baseInfo = base.ExtractInfo() + "Description: " + Description + ", Related Properties: ";
             for(int i = 0; i < 5; i++)
             {
-                baseInfo += PropertiesId + ", ";
+                baseInfo += PropertiesId[i] + ", ";
             }
             return baseInfo;
         }

@@ -28,8 +28,8 @@ namespace Cadastre.CadastreManager
             for (int i = 0; i < (int)size[4]; i++)
             {
                 GPSPosition[] gps = new GPSPosition[2];
-                xbottom = (size[2] - size[6] - size[0]) * rand.NextDouble() + size[0];
-                ybottom = (size[3] - size[6] - size[1]) * rand.NextDouble() + size[1];
+                xbottom = (size[2] - size[6] - size[0]) * Math.Round(rand.NextDouble(),3) + size[0];
+                ybottom = (size[3] - size[6] - size[1]) * Math.Round(rand.NextDouble(), 3) + size[1];
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + size[6], ybottom + size[6]);
                 Land land = new Land(i, GenerateString(), gps);
@@ -40,8 +40,8 @@ namespace Cadastre.CadastreManager
             for (int i = 0; i < (int)size[4] * 10; i++)
             {
                 GPSPosition[] gps = new GPSPosition[2];
-                xbottom = (size[2] - size[7] - size[0]) * rand.NextDouble() + size[0];
-                ybottom = (size[3] - size[7] - size[1]) * rand.NextDouble() + size[1];
+                xbottom = (size[2] - size[7] - size[0]) * Math.Round(rand.NextDouble(), 3) + size[0];
+                ybottom = (size[3] - size[7] - size[1]) * Math.Round(rand.NextDouble(), 3) + size[1];
                 gps[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gps[1] = new GPSPosition('S', 'W', xbottom + size[7], ybottom + size[7]);
                 Property property = new Property(i, GenerateString(), gps);
@@ -67,8 +67,9 @@ namespace Cadastre.CadastreManager
 
             for (int i = 0; i < (int)configuration[4]; i++)
             {
-                xbottom = (configuration[2] - configuration[6] - configuration[0]) * rand.NextDouble() + configuration[0];
-                ybottom = (configuration[3] - configuration[6] - configuration[1]) * rand.NextDouble() + configuration[1];
+                xbottom = Math.Round((configuration[2] - configuration[6] - configuration[0]) * rand.NextDouble() + configuration[0],3);
+                ybottom = Math.Round((configuration[3] - configuration[6] - configuration[1]) * Math.Round(rand.NextDouble(), 4) + configuration[1],3);
+                
                 double[] conf = { xbottom, ybottom, xbottom + configuration[7], ybottom + configuration[7],
                                                 (double)i};
                 manager.AddItem(conf, GenerateSpecificString(11), 0);
@@ -76,8 +77,8 @@ namespace Cadastre.CadastreManager
 
             for (int i = 0; i < (int)configuration[4] * 2; i++)
             {
-                xbottom = (configuration[2] - configuration[7] - configuration[0]) * rand.NextDouble() + configuration[0];
-                ybottom = (configuration[3] - configuration[7] - configuration[1]) * rand.NextDouble() + configuration[1];
+                xbottom = Math.Round((configuration[2] - configuration[7] - configuration[0]) * rand.NextDouble() + configuration[0], 3);
+                ybottom = Math.Round((configuration[3] - configuration[7] - configuration[1]) * Math.Round(rand.NextDouble(), 3) + configuration[1],3);
                 double[] conf = { xbottom, ybottom, xbottom + configuration[7], ybottom + configuration[7],
                                                 (double)i, rand.Next()};
                 

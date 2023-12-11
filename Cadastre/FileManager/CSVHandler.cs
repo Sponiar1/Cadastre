@@ -219,6 +219,7 @@ namespace Cadastre.FileManager
             int height;
             Queue<Area> queue = new Queue<Area>();
             QuadTree<Area>[] trees = new QuadTree<Area>[2];
+
             string filePath = Path.Combine(Application.StartupPath, fileNameLands);
             using (StreamReader reader = new StreamReader(filePath))
             {
@@ -248,8 +249,7 @@ namespace Cadastre.FileManager
             QuadTree<Area> lands = new QuadTree<Area>(x0, y0, x1, y1, height, queue);
             trees[0] = lands;
 
-            List<Area> landsWithProperty;
-            Property item;
+
             filePath = Path.Combine(Application.StartupPath, fileNameProperties);
             using (StreamReader reader = new StreamReader(filePath))
             {

@@ -50,8 +50,6 @@ namespace Cadastre.Files
             overflowReader = new BinaryReader(overflowFile);
             overflowWriter = new BinaryWriter(overflowFile);
             mainWriter = new BinaryWriter(mainFile);
-
-
             LoadIndex(trieFile, indexPropertiesFile);
         }
 
@@ -622,6 +620,38 @@ namespace Cadastre.Files
                 if (address == usedBlocks - 1)
                 {
                     usedBlocks--;
+                    //mainFile.SetLength(address * block.GetSize());
+                    bool empty = true;
+                    Block<T> helpBlock;
+                    while(empty)
+                    {
+                        block = ReadBlock(fileName, usedBlocks - 1);
+                        if(block.ValidCount == 0)
+                        {
+                            usedBlocks--;
+                            address -= 1;
+                            if(block.Predecessor != -1)
+                            {
+                                helpBlock = ReadBlock(fileName, block.Predecessor);
+                                helpBlock.Successor = block.Successor;
+                                WriteBlock(fileName, block.Predecessor, helpBlock);
+                            }
+                            else
+                            {
+                                emptyBlock = block.Successor;
+                            }
+                            if(block.Successor != -1)
+                            {
+                                helpBlock = ReadBlock(fileName, block.Successor);
+                                helpBlock.Predecessor = block.Predecessor;
+                                WriteBlock(fileName, block.Successor, helpBlock);
+                            }
+                        }
+                        else
+                        {
+                            empty = false;
+                        }
+                    }
                     mainFile.SetLength(address * block.GetSize());
                 }
                 else
@@ -640,12 +670,41 @@ namespace Cadastre.Files
             }
             else
             {
-                if (address == usedBlocksOverflow - 1) //dorobiť ak je uprostred zreťazenia?
+                if (address == usedBlocksOverflow - 1)
                 {
-                    int i = block.GetSize();
-                    int t = address * block.GetSize();
-                    overflowFile.SetLength(address * block.GetSize());
                     usedBlocksOverflow--;
+                    bool empty = true;
+                    Block<T> helpBlock;
+                    while (empty)
+                    {
+                        block = ReadBlock(fileNameOverflow, usedBlocks - 1);
+                        if (block.ValidCount == 0)
+                        {
+                            usedBlocksOverflow--;
+                            address -= 1;
+                            if (block.Predecessor != -1)
+                            {
+                                helpBlock = ReadBlock(fileNameOverflow, block.Predecessor);
+                                helpBlock.Successor = block.Successor;
+                                WriteBlock(fileNameOverflow, block.Predecessor, helpBlock);
+                            }
+                            else
+                            {
+                                emptyOverflowBlock = block.Successor;
+                            }
+                            if (block.Successor != -1)
+                            {
+                                helpBlock = ReadBlock(fileNameOverflow, block.Successor);
+                                helpBlock.Predecessor = block.Predecessor;
+                                WriteBlock(fileNameOverflow, block.Successor, helpBlock);
+                            }
+                        }
+                        else
+                        {
+                            empty = false;
+                        }
+                    }
+                    overflowFile.SetLength(address * block.GetSize());
                 }
                 else
                 {
