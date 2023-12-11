@@ -80,6 +80,10 @@ namespace Cadastre
         private void buttonFindLand_Click(object sender, EventArgs e)
         {
             string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter land ID:", "Enter ID", "");
+            if (userInput == "")
+            {
+                return;
+            }
             List<Area> result = manager.GetLand(int.Parse(userInput));
             if (result == null)
             {
@@ -122,6 +126,10 @@ namespace Cadastre
         private void buttonDeleteProperty_Click(object sender, EventArgs e)
         {
             string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter Property ID to delete:", "Enter ID", "");
+            if (userInput == "")
+            {
+                return;
+            }
             bool result = manager.DeleteProperty(int.Parse(userInput));
             if (result)
             {
@@ -136,6 +144,10 @@ namespace Cadastre
         private void buttonDeleteLand_Click(object sender, EventArgs e)
         {
             string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter Property ID to delete:", "Enter ID", "");
+            if (userInput == "")
+            {
+                return;
+            }
             bool result = manager.DeleteLand(int.Parse(userInput));
             if (result)
             {

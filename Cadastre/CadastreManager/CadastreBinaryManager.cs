@@ -82,14 +82,13 @@ namespace Cadastre.CadastreManager
                 Land dummy = new Land();
                 dummy = dummy.CreateInstance();
                 dummy.Id = target.LandsId[i];
-                if (dummy.Id == -1)
+                if (dummy.Id != -1)
                 {
-                    return result;
-                }
-                dummy = Lands.FindItem(dummy);
-                if (dummy != null)
-                {
-                    result.Add(dummy);
+                    dummy = Lands.FindItem(dummy);
+                    if (dummy != null)
+                    {
+                        result.Add(dummy);
+                    }
                 }
             }
             return result;
@@ -110,14 +109,13 @@ namespace Cadastre.CadastreManager
                 Property dummy = new Property();
                 dummy = dummy.CreateInstance();
                 dummy.Id = target.PropertiesId[i];
-                if (dummy.Id == -1)
+                if (dummy.Id != -1)
                 {
-                    return result;
-                }
-                dummy = Properties.FindItem(dummy);
-                if (dummy != null)
-                {
-                    result.Add(dummy);
+                    dummy = Properties.FindItem(dummy);
+                    if (dummy != null)
+                    {
+                        result.Add(dummy);
+                    }
                 }
             }
             return result;
@@ -270,17 +268,21 @@ namespace Cadastre.CadastreManager
                 for (int i = 0; i < deletedItem.LandsId.Count; i++)
                 {
                     dummy.Id = deletedItem.LandsId[i];
-                    dummy = Lands.FindItem(dummy);
-                    for (int j = 0; j < dummy.PropertiesId.Count; j++)
+                    if (dummy.Id != -1)
                     {
-                        if (dummy.PropertiesId[j] == deletedItem.Id)
+                        dummy = Lands.FindItem(dummy);
+                        for (int j = 0; j < dummy.PropertiesId.Count; j++)
                         {
-                            dummy.PropertiesId[j] = -1;
-                            Lands.UpdateItem(dummy);
-                            break;
+                            if (dummy.PropertiesId[j] == deletedItem.Id)
+                            {
+                                dummy.PropertiesId[j] = -1;
+                                Lands.UpdateItem(dummy);
+                                break;
+                            }
                         }
                     }
                 }
+                PropertyTree.Remove(deletedItem);
                 return true;
             }
             else
@@ -299,14 +301,17 @@ namespace Cadastre.CadastreManager
                 for (int i = 0; i < deletedItem.PropertiesId.Count; i++)
                 {
                     dummy.Id = deletedItem.PropertiesId[i];
-                    dummy = Properties.FindItem(dummy);
-                    for (int j = 0; j < dummy.LandsId.Count; j++)
+                    if (dummy.Id != -1)
                     {
-                        if (dummy.LandsId[j] == deletedItem.Id)
+                        dummy = Properties.FindItem(dummy);
+                        for (int j = 0; j < dummy.LandsId.Count; j++)
                         {
-                            dummy.LandsId[j] = -1;
-                            Properties.UpdateItem(dummy);
-                            break;
+                            if (dummy.LandsId[j] == deletedItem.Id)
+                            {
+                                dummy.LandsId[j] = -1;
+                                Properties.UpdateItem(dummy);
+                                break;
+                            }
                         }
                     }
                 }
@@ -385,6 +390,8 @@ namespace Cadastre.CadastreManager
                     }
                 }
             }
+            PropertyTree.Remove(itemBefore);
+            PropertyTree.Insert(itemAfter);
             //davam nove
             for (int i = 0; i < relatedAreas.Count; i++)
             {
@@ -458,6 +465,8 @@ namespace Cadastre.CadastreManager
                     }
                 }
             }
+            LandTree.Remove(itemBefore);
+            LandTree.Insert(itemAfter);
             //davam nove
             for (int i = 0; i < relatedAreas.Count; i++)
             {
