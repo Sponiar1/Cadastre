@@ -210,7 +210,7 @@ namespace Cadastre.FileManager
             }
 
         }
-        public QuadTree<Area>[] LoadMinimalAreaFromCSV(string fileNameLands, string fileNameProperties)
+        public QuadTree<Area> LoadMinimalAreaFromCSV(string fileName)
         {
             double x0;
             double y0;
@@ -218,9 +218,8 @@ namespace Cadastre.FileManager
             double y1;
             int height;
             Queue<Area> queue = new Queue<Area>();
-            QuadTree<Area>[] trees = new QuadTree<Area>[2];
 
-            string filePath = Path.Combine(Application.StartupPath, fileNameLands);
+            string filePath = Path.Combine(Application.StartupPath, fileName);
             using (StreamReader reader = new StreamReader(filePath))
             {
                 var line = reader.ReadLine();
@@ -246,39 +245,9 @@ namespace Cadastre.FileManager
                     queue.Enqueue(new Area(id, gps));
                 }
             }
-            QuadTree<Area> lands = new QuadTree<Area>(x0, y0, x1, y1, height, queue);
-            trees[0] = lands;
+            QuadTree<Area> area = new QuadTree<Area>(x0, y0, x1, y1, height, queue);
+            return area;
 
-
-            filePath = Path.Combine(Application.StartupPath, fileNameProperties);
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(';');
-                x0 = double.Parse(values[0]);
-                y0 = double.Parse(values[1]);
-                x1 = double.Parse(values[2]);
-                y1 = double.Parse(values[3]);
-                height = int.Parse(values[4]);
-
-                while (!reader.EndOfStream)
-                {
-                    line = reader.ReadLine();
-                    values = line.Split(';');
-
-                    int id = int.Parse(values[0]);
-                    double itemX0 = double.Parse(values[1]);
-                    double itemY0 = double.Parse(values[2]);
-                    double itemX1 = double.Parse(values[3]);
-                    double itemY1 = double.Parse(values[4]);
-                    GPSPosition[] gps = new GPSPosition[2] { new GPSPosition(itemX0, itemY0, 0), new GPSPosition(itemX1, itemY1, 1) };
-
-                    queue.Enqueue(new Area(id, gps));
-                }
-            }
-            QuadTree<Area> properties = new QuadTree<Area>(x0, y0, x1, y1, height, queue);
-            trees[1] = properties;
-            return trees;
         }
     }
 }

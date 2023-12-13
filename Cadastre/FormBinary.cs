@@ -106,20 +106,21 @@ namespace Cadastre
 
         private void buttonAddpropland_Click(object sender, EventArgs e)
         {
-            using (var numberInputForm = new InsertForm())
+            using (var numberInputForm = new InsertForm(1))
             {
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
                     double[] enteredNumbers = numberInputForm.EnteredNumbers;
                     string description = numberInputForm.Description;
                     int type = numberInputForm.TypeOfItem;
-                    if (manager.AddItem(enteredNumbers, description, type))
+                    int result = manager.AddItem(enteredNumbers, description, type);
+                    if (result != -1)
                     {
-                        MessageBox.Show("Item was inserted into register", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Item was inserted into register with ID" + result, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Item is too big", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Item is too big and cannot cover related areas", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }

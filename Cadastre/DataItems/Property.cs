@@ -25,7 +25,6 @@ namespace Cadastre.DataItems
         }
         public Property() : base(-1,null)
         {
-            
         }
         int IComparator<Property>.CompareById(Property otherItem)
         {

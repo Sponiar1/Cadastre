@@ -25,6 +25,9 @@ namespace Cadastre.CadastreManager
         string landTreeFile;
         string indexPropertiesPropertiesFile;
         string indexLandPropertiesFile;
+        int maxIndexLand;
+        int maxIndexProperty;
+        string managerProperties;
         QuadTree<Area> PropertyTree;
         QuadTree<Area> LandTree;
 
@@ -42,29 +45,44 @@ namespace Cadastre.CadastreManager
             indexLandPropertiesFile = "LandProperty.txt";
             PropertyTree = new QuadTree<Area>(0, 0, double.MaxValue, double.MaxValue, 20);
             LandTree = new QuadTree<Area>(0, 0, double.MaxValue, double.MaxValue, 20);
+            managerProperties = "ManagerID.txt";
         }
 
         public void NewFile()
         {
             Properties = new DynamicHash<Property>(2, propertyFileName, 8, propertyOverflowName);
             Lands = new DynamicHash<Land>(2, landFileName, 8, landOverflowName);
+            maxIndexLand = 1;
+            maxIndexProperty = 1;
         }
         public void Save()
         {
             CSVHandler csvHandler = new CSVHandler();
             Properties.SaveIndex(indexProperty, indexPropertiesPropertiesFile);
             Lands.SaveIndex(indexLand, indexLandPropertiesFile);
-            csvHandler.SaveMinimalAreaToCSV(PropertyTree, landTreeFile);
+            csvHandler.SaveMinimalAreaToCSV(PropertyTree, propertyTreeFile);
             csvHandler.SaveMinimalAreaToCSV(LandTree, landTreeFile);
+
+            string filePath = Path.Combine(Application.StartupPath, managerProperties);
+            using (StreamWriter textWriter = new StreamWriter(filePath))
+            {
+                textWriter.WriteLine(maxIndexLand);
+                textWriter.WriteLine(maxIndexProperty);
+            }
         }
         public void Load()
         {
-            Properties = new DynamicHash<Property>(propertyFileName, propertyOverflowName, indexProperty, indexLandPropertiesFile);
+            Properties = new DynamicHash<Property>(propertyFileName, propertyOverflowName, indexProperty, indexPropertiesPropertiesFile);
             Lands = new DynamicHash<Land>(landFileName, landOverflowName, indexLand, indexLandPropertiesFile);
             CSVHandler csvHandler = new CSVHandler();
-            QuadTree<Area>[] trees = csvHandler.LoadMinimalAreaFromCSV(landTreeFile, landTreeFile);
-            LandTree = trees[0];
-            PropertyTree = trees[1];
+            LandTree = csvHandler.LoadMinimalAreaFromCSV(landTreeFile);
+            PropertyTree = csvHandler.LoadMinimalAreaFromCSV(propertyTreeFile);
+            string filePath = Path.Combine(Application.StartupPath, managerProperties);
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                maxIndexLand = int.Parse(reader.ReadLine());
+                maxIndexProperty = int.Parse(reader.ReadLine());
+            }
         }
         public List<Area> GetProperty(int id)
         {
@@ -120,7 +138,7 @@ namespace Cadastre.CadastreManager
             }
             return result;
         }
-        public bool AddItem(double[] configuration, string description, int type)
+        public int AddItem(double[] configuration, string description, int type)
         {
             bool relatedGood = true;
             GPSPosition[] gps = new GPSPosition[2];
@@ -129,6 +147,7 @@ namespace Cadastre.CadastreManager
             //Land
             if (type == 0)
             {
+                configuration[4] = maxIndexLand;
                 Land item = new Land((int)configuration[4], description, gps);
                 List<Area> relatedAreas;
                 relatedAreas = PropertyTree.Find(new QuadTreeRectangle(item.GpsLocation[0].lengthPosition, item.GpsLocation[0].widthPosition,
@@ -156,12 +175,12 @@ namespace Cadastre.CadastreManager
                     }
                     if (!relatedGood)
                     {
-                        return false;
+                        return -1;
                     }
                 }
                 else
                 {
-                    return false;
+                    return -1;
                 }
                 if (Lands.TryInsert(item))
                 {
@@ -183,16 +202,18 @@ namespace Cadastre.CadastreManager
                     Lands.Insert(item);
                     Area newItem = new Area((int)configuration[4], gps);
                     LandTree.Insert(newItem);
-                    return true;
+                    maxIndexLand++;
+                    return item.Id;
                 }
                 else
                 {
-                    return false;
+                    return -1;
                 }
             }
             else
             {
                 //Property
+                configuration[4] = maxIndexProperty;
                 Property item = new Property((int)configuration[4], description, gps);
                 item.RegisterNumber = (int)configuration[5];
                 List<Area> relatedAreas;
@@ -221,12 +242,12 @@ namespace Cadastre.CadastreManager
                     }
                     if (!relatedGood)
                     {
-                        return false;
+                        return -1;
                     }
                 }
                 else
                 {
-                    return false;
+                    return -1;
                 }
                 if (Properties.TryInsert(item))
                 {
@@ -246,14 +267,14 @@ namespace Cadastre.CadastreManager
                         }
                     }
                     Properties.Insert(item);
-                    //pridat do quadstromu
                     Area newItem = new Area((int)configuration[4], gps);
                     PropertyTree.Insert(newItem);
-                    return true;
+                    maxIndexProperty++;
+                    return item.Id;
                 }
                 else
                 {
-                    return false;
+                    return -1;
                 }
             }
         }
@@ -501,10 +522,9 @@ namespace Cadastre.CadastreManager
             CadastreGenerator generator = new CadastreGenerator();
             generator.GenerateBinaryData(configuration, Lands, Properties, LandTree, PropertyTree, this);
         }
-
         public string[] FileExtract(int type)
         {
-            if(type == 0)
+            if (type == 0)
             {
                 return Lands.FileExtract();
             }

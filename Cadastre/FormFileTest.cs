@@ -28,7 +28,7 @@ namespace Cadastre
         {
             //properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
             properties = new DynamicHash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
-            Random rand = new Random(8); //7 100
+            Random rand = new Random(735494); //7 100 8
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
             double remove = (double)numericUpDown3.Value;
@@ -40,7 +40,7 @@ namespace Cadastre
             List<Property> availableProperties = new List<Property>();
             int id = 1;
             Property test;
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 GPSPosition[] gpss = new GPSPosition[2];
                 xbottom = 10000 * rand.NextDouble();
@@ -56,7 +56,7 @@ namespace Cadastre
             double action; //
             for (int i = 0; i < numberOfOperations; i++)
             {
-                if (i == 3166) //1261 niečo zle napíše 1123 sa to pokazí (7/100/191)   i=58(8/100/43)  1849
+                if (i == 33877) 
                 {
                     int p = 9;
                 }

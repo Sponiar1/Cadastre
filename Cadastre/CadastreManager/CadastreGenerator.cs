@@ -75,7 +75,7 @@ namespace Cadastre.CadastreManager
                 manager.AddItem(conf, GenerateSpecificString(11), 0);
             };
 
-            for (int i = 0; i < (int)configuration[4] * 2; i++)
+            for (int i = 0; i < (int)configuration[8]; i++)
             {
                 xbottom = Math.Round((configuration[2] - configuration[7] - configuration[0]) * rand.NextDouble() + configuration[0], 3);
                 ybottom = Math.Round((configuration[3] - configuration[7] - configuration[1]) * Math.Round(rand.NextDouble(), 3) + configuration[1],3);

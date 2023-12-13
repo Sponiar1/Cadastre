@@ -44,8 +44,8 @@ namespace Cadastre
             double number6 = (double)numericUpDown6.Value;
             double number7 = (double)numericUpDown7.Value;
             double number8 = (double)numericUpDown8.Value;
-
-            EnteredNumbers = new double[] { number1, number2, number3, number4, number5, number6, number7, number8 };
+            double number9 = (double)numericUpDown9.Value;
+            EnteredNumbers = new double[] { number1, number2, number3, number4, number5, number6, number7, number8, number9 };
             if (number1 > number3)
             {
                 MessageBox.Show("Bottom X is bigger than Upper X", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);

@@ -153,12 +153,16 @@ namespace Cadastre.Files
             node.Depth++;
             newParent.LeftSon = node;
             node.Parent = newParent;
+            ExternalTrieNode<T> rightSon = new ExternalTrieNode<T>(newParent, node.Depth);
+            newParent.RightSon = rightSon;
+            rightSon.Parent = newParent;
             if (node.Count > 0)
             {
                 WriteBlock(fileName, node.Address, leftBlock);
             }
             else
             {
+                /*
                 if (emptyBlock != -1)
                 {
                     leftBlock.Successor = emptyBlock;
@@ -169,27 +173,27 @@ namespace Cadastre.Files
                 }
                 emptyBlock = node.Address;
                 WriteBlock(fileName, node.Address, leftBlock);
+                node.Address = -1;*/
+                rightSon.Address = node.Address;
                 node.Address = -1;
+
             }
 
-            ExternalTrieNode<T> rightSon = new ExternalTrieNode<T>(newParent, node.Depth);
-            newParent.RightSon = rightSon;
             if (rightBlock.ValidCount > 0)
             {
                 rightSon.Count = rightBlock.ValidCount;
-                rightSon.Address = GetEmptyBlock();
+                if (rightSon.Address == -1)
+                {
+                    rightSon.Address = GetEmptyBlock();
+                }
                 WriteBlock(fileName, rightSon.Address, rightBlock);
             }
-            else
-            {
-                rightSon.Address = -1;
-            }
         }
-        public void Merge(ExternalTrieNode<T> node)
+        public int Merge(ExternalTrieNode<T> node)
         {
             if (node.Parent == null || !((InternalTrieNode<T>)node.Parent).CanMerge(blockFactor))
             {
-                return;
+                return 0;
             }
             int brotherAddress;
             if (node.whichSon() == 1)
@@ -249,9 +253,10 @@ namespace Cadastre.Files
             else
             {
                 root = node;
+                node.Parent = null;
             }
             node.Depth--;
-
+            return 1;
         }
         public bool Insert(T item)
         {
@@ -439,6 +444,10 @@ namespace Cadastre.Files
         {
             int address = -1;
             ExternalTrieNode<T> destination = FindNode(item);
+            if(destination.Address == -1)
+            {
+                return default;
+            }
             Block<T> block = ReadBlock(fileName, destination.Address);
             int totalBlocks = block.UsedOverflowBlocks + 1;
             T removedItem = block.RemoveRecord(item);
@@ -455,7 +464,11 @@ namespace Cadastre.Files
                 {
                     Shake(destination);
                 }
-                Merge(destination);
+                int merge = 1;
+                while (merge == 1)
+                {
+                    merge = Merge(destination);
+                }
                 return removedItem;
             }
             else
@@ -545,7 +558,7 @@ namespace Cadastre.Files
                             {
                                 if (item.Equals(block.Records[i]))
                                 {
-                                    block.Records[i] = foundItem;
+                                    block.Records[i] = item;
                                     break;
                                 }
                             }
@@ -623,7 +636,7 @@ namespace Cadastre.Files
                     //mainFile.SetLength(address * block.GetSize());
                     bool empty = true;
                     Block<T> helpBlock;
-                    while(empty)
+                    while(empty && usedBlocks != 0)
                     {
                         block = ReadBlock(fileName, usedBlocks - 1);
                         if(block.ValidCount == 0)
@@ -675,9 +688,9 @@ namespace Cadastre.Files
                     usedBlocksOverflow--;
                     bool empty = true;
                     Block<T> helpBlock;
-                    while (empty)
+                    while (empty && usedBlocksOverflow != 0)
                     {
-                        block = ReadBlock(fileNameOverflow, usedBlocks - 1);
+                        block = ReadBlock(fileNameOverflow, usedBlocksOverflow - 1);
                         if (block.ValidCount == 0)
                         {
                             usedBlocksOverflow--;
@@ -734,7 +747,7 @@ namespace Cadastre.Files
                     mainBlock.AddRecord(blockToDelete.Records[blockToDelete.ValidCount - 1]);
                     blockToDelete.RemoveRecord(blockToDelete.Records[blockToDelete.ValidCount - 1]);
                 }
-                WriteBlock(fileName, node.Address, mainBlock);
+                //WriteBlock(fileName, node.Address, mainBlock);
             }
             if (blockToDelete.ValidCount != 0)
             {

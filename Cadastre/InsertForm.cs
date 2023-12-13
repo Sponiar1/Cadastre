@@ -26,6 +26,15 @@ namespace Cadastre
             this.Text = "New Item";
         }
 
+        public InsertForm(int type)
+        {
+            InitializeComponent();
+            comboBox1.Items.Add("Land");
+            comboBox1.Items.Add("Property");
+            numericUpDown5.Visible = false;
+            this.Text = "New Item";
+        }
+
         public InsertForm(int id, string description, double x0, double y0, double x1, double y1, int type, int register) : this()
         {
             comboBox1.Visible = false;
@@ -34,6 +43,7 @@ namespace Cadastre
             numericUpDown3.Value = (decimal)x1;
             numericUpDown4.Value = (decimal)y1;
             numericUpDown5.Value = (decimal)id;
+            numericUpDown5.Enabled = false;
             textBox1.Text = description;
             switch (type)
             {

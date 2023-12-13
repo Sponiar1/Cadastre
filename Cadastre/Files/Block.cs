@@ -62,7 +62,6 @@ namespace Cadastre.Files
                 Array.Copy(recordBytes, 0, bytes, totalLength, recordBytes.Length);
                 totalLength += Records[i].GetSize();
             }
-            string result = Encoding.UTF8.GetString(bytes);
             return bytes;
         }
         public void FromByteArray(byte[] byteArray)
