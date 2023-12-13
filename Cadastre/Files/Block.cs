@@ -92,18 +92,6 @@ namespace Cadastre.Files
             }
 
         }
-        public int GetUsedBlocksPosition()
-        {
-            return sizeof(int);
-        }
-        public int GetSuccessorPosition()
-        {
-            return 2 * sizeof(int);
-        }
-        public int GetPredeccessorPosition()
-        {
-            return 3 * sizeof(int);
-        }
         public bool AddRecord(T item)
         {
             for(int i = 0; i < ValidCount; i++)
