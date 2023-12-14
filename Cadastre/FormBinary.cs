@@ -157,7 +157,7 @@ namespace Cadastre
 
         private void buttonDeleteLand_Click(object sender, EventArgs e)
         {
-            string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter Property ID to delete:", "Enter ID", "");
+            string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter Land ID to delete:", "Enter ID", "");
             if (userInput == "")
             {
                 return;
