@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace Cadastre.Files.Templates
 {
-    internal class InternalTrieNode<T> : TrieNode<T>
+    internal class InternalTrieNode : TrieNode
     {
-        public TrieNode<T> LeftSon { get; set; }
-        public TrieNode<T> RightSon { get; set; }
-        public InternalTrieNode(TrieNode<T> paParent, int depth) : base(paParent, depth)
+        public TrieNode LeftSon { get; set; }
+        public TrieNode RightSon { get; set; }
+        public InternalTrieNode(TrieNode paParent, int depth) : base(paParent, depth)
         {
 
         }
 
         public bool CanMerge(int blockFactor)
         {
-            if(LeftSon == null || LeftSon.GetType() == typeof(InternalTrieNode<T>) /*|| ((ExternalTrieNode<T>)LeftSon).Address == -1*/) 
+            if(LeftSon == null || LeftSon.GetType() == typeof(InternalTrieNode) /*|| ((ExternalTrieNode<T>)LeftSon).Address == -1*/) 
                 return false;
-            if(RightSon == null || RightSon.GetType() == typeof(InternalTrieNode<T>) /*|| ((ExternalTrieNode<T>)RightSon).Address == -1*/) 
+            if(RightSon == null || RightSon.GetType() == typeof(InternalTrieNode) /*|| ((ExternalTrieNode<T>)RightSon).Address == -1*/) 
                 return false;
-            if(((ExternalTrieNode<T>)LeftSon).Count + ((ExternalTrieNode<T>)RightSon).Count <= blockFactor)
+            if(((ExternalTrieNode)LeftSon).Count + ((ExternalTrieNode)RightSon).Count <= blockFactor)
             {
                 return true;
             }
@@ -33,7 +33,7 @@ namespace Cadastre.Files.Templates
             {
                 return -1;
             }
-            else if (((InternalTrieNode<T>)Parent).LeftSon == this)
+            else if (((InternalTrieNode)Parent).LeftSon == this)
             {
                 return 0;
             }

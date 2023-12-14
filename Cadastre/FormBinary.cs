@@ -49,8 +49,19 @@ namespace Cadastre
 
         private void buttonNew_Click(object sender, EventArgs e)
         {
+            string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter block factor:", "Enter factor", "");
+            if (userInput == "")
+            {
+                return;
+            }
+            int blockFactor = int.Parse(userInput);
+            userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter block factor overflow:", "Enter factor", "");
+            if (userInput == "")
+            {
+                return;
+            }
             manager = new CadastreBinaryManager();
-            manager.NewFile();
+            manager.NewFile(blockFactor, int.Parse(userInput));
             label1.Text = "New database created";
         }
 

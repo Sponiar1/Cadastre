@@ -48,10 +48,10 @@ namespace Cadastre.CadastreManager
             managerProperties = "ManagerID.txt";
         }
 
-        public void NewFile()
+        public void NewFile(int blockFactor, int blockFactorOverflow)
         {
-            Properties = new DynamicHash<Property>(2, propertyFileName, 8, propertyOverflowName);
-            Lands = new DynamicHash<Land>(2, landFileName, 8, landOverflowName);
+            Properties = new DynamicHash<Property>(blockFactor, propertyFileName, blockFactorOverflow, propertyOverflowName);
+            Lands = new DynamicHash<Land>(blockFactor, landFileName, blockFactorOverflow, landOverflowName);
             maxIndexLand = 1;
             maxIndexProperty = 1;
         }

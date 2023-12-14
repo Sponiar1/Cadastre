@@ -17,7 +17,6 @@ namespace Cadastre
 {
     public partial class FormFileTest : Form
     {
-        //DynamicHash<Property> properties;
         DynamicHash<Property> properties;
         public FormFileTest()
         {
@@ -26,9 +25,8 @@ namespace Cadastre
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //properties = new DynamicHash<Property>(2, "Properties_test.bin", 2, "PropertiesOverflow_test.bin");
             properties = new DynamicHash<Property>(2, "Properties_test.bin", 3, "PropertiesOverflow_test.bin");
-            Random rand = new Random(735494); //7 100 8
+            Random rand = new Random(); 
             double insert = (double)numericUpDown1.Value;
             double find = (double)numericUpDown2.Value;
             double remove = (double)numericUpDown3.Value;
@@ -40,7 +38,7 @@ namespace Cadastre
             List<Property> availableProperties = new List<Property>();
             int id = 1;
             Property test;
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 GPSPosition[] gpss = new GPSPosition[2];
                 xbottom = 10000 * rand.NextDouble();
@@ -48,18 +46,13 @@ namespace Cadastre
                 gpss[0] = new GPSPosition('N', 'E', xbottom, ybottom);
                 gpss[1] = new GPSPosition('S', 'W', xbottom + sizeOfItem, ybottom + sizeOfItem);
                 test = new Property(id, "nicnicnicnicnic", gpss);
-                //test.LandsId = new List<int>() { -1, -1, -1, -1, -1, -1 };
                 properties.Insert(test);
                 availableProperties.Add(test);
                 id++;
             }
-            double action; //
+            double action; 
             for (int i = 0; i < numberOfOperations; i++)
             {
-                if (i == 33877) 
-                {
-                    int p = 9;
-                }
                 action = rand.NextDouble();
                 if (action < insert)
                 {
@@ -98,27 +91,13 @@ namespace Cadastre
                         int idf = rand.Next(availableProperties.Count);
                         Property toDelete = availableProperties[idf];
                         availableProperties.RemoveAt(idf);
-                        if(toDelete.Id == 41)
-                        {
-                            int z = 4;
-                        }
                         if (properties.DeleteItem(toDelete) == null)
                         {
                             label5.Text = "Error deleting item with id:" + toDelete.Id;
                             return;
                         }
                     }
-                }/*
-                string[] contenta = properties.FileExtract();
-                
-                foreach (string line in contenta)
-                {
-                    if (line != null)
-                    {
-                        textBox1.AppendText(line + Environment.NewLine);
-                    }
-                }*/
-
+                }
             }
             
             for (int i = 0; i < availableProperties.Count; i++)
@@ -144,7 +123,6 @@ namespace Cadastre
                         textBox1.AppendText(line + Environment.NewLine);
                     }
                 }
-                //textBox1.AppendText("NewBlock: " + properties.newBlock);
             }
         }
     }

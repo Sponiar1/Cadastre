@@ -70,12 +70,12 @@ namespace Cadastre.DataItems
         {//7919, 3, 191, 1123
             int hashCode = Id % 1123;
             BitArray hash = new BitArray(BitConverter.GetBytes(hashCode));
-            BitArray reversedHash = new BitArray(hash.Count);
+            /*BitArray reversedHash = new BitArray(hash.Count);
             for (int i = 0; i < hash.Count; i++)
             {
                 reversedHash[i] = hash[hash.Count - i - 1];
-            }
-            return reversedHash;
+            }*/
+            return hash;
         }
         public int GetSize()
         {

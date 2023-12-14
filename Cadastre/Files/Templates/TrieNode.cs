@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Cadastre.Files.Templates
 {
-    internal class TrieNode<T>
+    internal class TrieNode
     {
-        public TrieNode<T> Parent {get; set;}
+        public TrieNode Parent {get; set;}
         public int Depth { get; set; }
-        public TrieNode(TrieNode<T> paParent, int depth)
+        public TrieNode(TrieNode paParent, int depth)
         {
             Parent = paParent;
             Depth = depth;

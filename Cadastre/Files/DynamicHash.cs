@@ -7,7 +7,7 @@ namespace Cadastre.Files
 {
     internal class DynamicHash<T> where T : IData<T>
     {
-        private TrieNode<T> root;
+        private TrieNode root;
         private int blockFactor;
         private string fileName;
         private int blockFactorOverflow;
@@ -16,7 +16,7 @@ namespace Cadastre.Files
         private int usedBlocksOverflow = 0;
         private int emptyBlock = -1;
         private int emptyOverflowBlock = -1;
-        private int maxDepth = 32;
+        private int maxDepth = 10;
         FileStream mainFile;
         FileStream overflowFile;
         BinaryWriter mainWriter;
@@ -26,7 +26,7 @@ namespace Cadastre.Files
 
         public DynamicHash(int blockFactor, string fileName, int blocckFactorOverload, string fileNameOverflow)
         {
-            this.root = new ExternalTrieNode<T>(null, 0);
+            this.root = new ExternalTrieNode(null, 0);
             this.blockFactor = blockFactor;
             this.fileName = fileName;
             this.blockFactorOverflow = blocckFactorOverload;
@@ -53,7 +53,7 @@ namespace Cadastre.Files
             LoadIndex(trieFile, indexPropertiesFile);
         }
 
-        public int GetEmptyBlock()
+        private int GetEmptyBlock()
         {
             int address = emptyBlock;
 
@@ -76,7 +76,7 @@ namespace Cadastre.Files
             }
             return address;
         }
-        public int GetEmptyOverflowBlock()
+        private int GetEmptyOverflowBlock()
         {
             int address = emptyOverflowBlock;
             if (address == -1)
@@ -98,34 +98,34 @@ namespace Cadastre.Files
             }
             return address;
         }
-        public ExternalTrieNode<T> FindNode(T item)
+        private ExternalTrieNode FindNode(T item)
         {
             BitArray hash = item.GetHash();
-            TrieNode<T> currentNode = this.root;
-            while (currentNode.GetType() != typeof(ExternalTrieNode<T>))
+            TrieNode currentNode = this.root;
+            while (currentNode.GetType() != typeof(ExternalTrieNode))
             {
                 if (hash[currentNode.Depth] == false)
                 {
-                    currentNode = ((InternalTrieNode<T>)currentNode).LeftSon;
+                    currentNode = ((InternalTrieNode)currentNode).LeftSon;
                 }
                 else
                 {
-                    currentNode = ((InternalTrieNode<T>)currentNode).RightSon;
+                    currentNode = ((InternalTrieNode)currentNode).RightSon;
                 }
             }
-            return (ExternalTrieNode<T>)currentNode;
+            return (ExternalTrieNode)currentNode;
         }
-        public void Divide(ExternalTrieNode<T> node)
+        private void Divide(ExternalTrieNode node)
         {
-            InternalTrieNode<T> newParent = new InternalTrieNode<T>(node.Parent, node.Depth);
+            InternalTrieNode newParent = new InternalTrieNode(node.Parent, node.Depth);
             int parent = node.whichSon();
             switch (parent)
             {
                 case 0:
-                    ((InternalTrieNode<T>)newParent.Parent).LeftSon = newParent;
+                    ((InternalTrieNode)newParent.Parent).LeftSon = newParent;
                     break;
                 case 1:
-                    ((InternalTrieNode<T>)newParent.Parent).RightSon = newParent;
+                    ((InternalTrieNode)newParent.Parent).RightSon = newParent;
                     break;
                 case -1:
                     root = newParent;
@@ -153,7 +153,7 @@ namespace Cadastre.Files
             node.Depth++;
             newParent.LeftSon = node;
             node.Parent = newParent;
-            ExternalTrieNode<T> rightSon = new ExternalTrieNode<T>(newParent, node.Depth);
+            ExternalTrieNode rightSon = new ExternalTrieNode(newParent, node.Depth);
             newParent.RightSon = rightSon;
             rightSon.Parent = newParent;
             if (node.Count > 0)
@@ -162,18 +162,6 @@ namespace Cadastre.Files
             }
             else
             {
-                /*
-                if (emptyBlock != -1)
-                {
-                    leftBlock.Successor = emptyBlock;
-                    oldContent = ReadBlock(fileName, emptyBlock);
-                    oldContent.Predecessor = node.Address;
-                    WriteBlock(fileName, emptyBlock, oldContent);
-
-                }
-                emptyBlock = node.Address;
-                WriteBlock(fileName, node.Address, leftBlock);
-                node.Address = -1;*/
                 rightSon.Address = node.Address;
                 node.Address = -1;
 
@@ -189,20 +177,20 @@ namespace Cadastre.Files
                 WriteBlock(fileName, rightSon.Address, rightBlock);
             }
         }
-        public int Merge(ExternalTrieNode<T> node)
+        private int Merge(ExternalTrieNode node)
         {
-            if (node.Parent == null || !((InternalTrieNode<T>)node.Parent).CanMerge(blockFactor))
+            if (node.Parent == null || !((InternalTrieNode)node.Parent).CanMerge(blockFactor))
             {
                 return 0;
             }
             int brotherAddress;
             if (node.whichSon() == 1)
             {
-                brotherAddress = ((ExternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).LeftSon).Address;
+                brotherAddress = ((ExternalTrieNode)((InternalTrieNode)node.Parent).LeftSon).Address;
             }
             else
             {
-                brotherAddress = ((ExternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).RightSon).Address;
+                brotherAddress = ((ExternalTrieNode)((InternalTrieNode)node.Parent).RightSon).Address;
             }
             Block<T> myBlock;
             Block<T> brotherBlock;
@@ -216,7 +204,6 @@ namespace Cadastre.Files
                     mergeBlock.AddRecord(myBlock.Records[i]);
                 }
                 myBlock.ValidCount = 0;
-                //FreeBlock(myBlock, node.Address, fileName);
                 address = node.Address;
                 if (brotherAddress != -1)
                 {
@@ -231,24 +218,23 @@ namespace Cadastre.Files
                     mergeBlock.AddRecord(brotherBlock.Records[i]);
                 }
                 brotherBlock.ValidCount = 0;
-                //FreeBlock(brotherBlock, brotherAddress, fileName);
                 address = brotherAddress;
             }
             node.Count = mergeBlock.ValidCount;
-            node.Address = address; //ja som ho uvolnil a potom som to tam dal na adresu
+            node.Address = address;
             WriteBlock(fileName, address, mergeBlock);
 
 
-            if (((InternalTrieNode<T>)node.Parent).whichSon() == 0)
+            if (((InternalTrieNode)node.Parent).whichSon() == 0)
             {
-                ((InternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).Parent).LeftSon = node;
-                node.Parent = (InternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).Parent;
+                ((InternalTrieNode)((InternalTrieNode)node.Parent).Parent).LeftSon = node;
+                node.Parent = (InternalTrieNode)((InternalTrieNode)node.Parent).Parent;
 
             }
-            else if (((InternalTrieNode<T>)node.Parent).whichSon() == 1)
+            else if (((InternalTrieNode)node.Parent).whichSon() == 1)
             {
-                ((InternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).Parent).RightSon = node;
-                node.Parent = (InternalTrieNode<T>)((InternalTrieNode<T>)node.Parent).Parent;
+                ((InternalTrieNode)((InternalTrieNode)node.Parent).Parent).RightSon = node;
+                node.Parent = (InternalTrieNode)((InternalTrieNode)node.Parent).Parent;
             }
             else
             {
@@ -260,7 +246,7 @@ namespace Cadastre.Files
         }
         public bool Insert(T item)
         {
-            ExternalTrieNode<T> destination = FindNode(item);
+            ExternalTrieNode destination = FindNode(item);
             while (destination.Count == blockFactor && destination.Depth != maxDepth)
             {
                 Divide(destination);
@@ -363,7 +349,6 @@ namespace Cadastre.Files
                     block.UsedOverflowBlocks++;
                     WriteBlock(fileName, destination.Address, block);
                     destination.Count++;
-                    //možno chýba ak neexistuje predchodca
                     return true;
                 }
                 else
@@ -381,7 +366,7 @@ namespace Cadastre.Files
         }
         public bool TryInsert(T item)
         {
-            ExternalTrieNode<T> destination = FindNode(item);
+            ExternalTrieNode destination = FindNode(item);
             Block<T> block;
             int address = destination.Address;
             if (address == -1) //ak block neexistuje
@@ -412,7 +397,7 @@ namespace Cadastre.Files
         }
         public T FindItem(T item)
         {
-            ExternalTrieNode<T> destination = FindNode(item);
+            ExternalTrieNode destination = FindNode(item);
             if (destination.Address == -1)
             {
                 return default;
@@ -443,7 +428,7 @@ namespace Cadastre.Files
         public T DeleteItem(T item)
         {
             int address = -1;
-            ExternalTrieNode<T> destination = FindNode(item);
+            ExternalTrieNode destination = FindNode(item);
             if(destination.Address == -1)
             {
                 return default;
@@ -455,7 +440,7 @@ namespace Cadastre.Files
             {
                 destination.Count--;
                 WriteBlock(fileName, destination.Address, block);
-                if (destination.Count == 0)
+                if (destination.Count == 0 && block.Successor == -1)
                 {
                     FreeBlock(block, destination.Address, fileName);
                     destination.Address = -1;
@@ -518,6 +503,11 @@ namespace Cadastre.Files
                         {
                             Shake(destination);
                         }
+                        int merge = 1;
+                        while (merge == 1)
+                        {
+                            merge = Merge(destination);
+                        }
                         return removedItem;
                     }
                 }
@@ -527,7 +517,7 @@ namespace Cadastre.Files
         public bool UpdateItem(T item)
         {
             int address;
-            ExternalTrieNode<T> destination = FindNode(item);
+            ExternalTrieNode destination = FindNode(item);
             Block<T> block = ReadBlock(fileName, destination.Address);
             T foundItem = block.FindRecord(item);
             if (foundItem != null)
@@ -570,7 +560,7 @@ namespace Cadastre.Files
                 return false;
             }
         }
-        public Block<T> ReadBlock(string nameOfFile, int address)
+        private Block<T> ReadBlock(string nameOfFile, int address)
         {
             if (nameOfFile == fileName)
             {
@@ -589,7 +579,7 @@ namespace Cadastre.Files
                 return block;
             }
         }
-        public void WriteBlock(string nameOfFile, int address, Block<T> block)
+        private void WriteBlock(string nameOfFile, int address, Block<T> block)
         {
             address = address * block.GetSize();
             if (nameOfFile == fileName)
@@ -603,7 +593,7 @@ namespace Cadastre.Files
                 overflowWriter.Write(block.ToByteArray());
             }
         }
-        public bool CheckShake(int totalItems, int totalBlocks, int mainItems)
+        private bool CheckShake(int totalItems, int totalBlocks, int mainItems)
         {
             if (totalBlocks == 1)
             {
@@ -626,14 +616,13 @@ namespace Cadastre.Files
                 return false;
             }
         }
-        public void FreeBlock(Block<T> block, int address, string file)
+        private void FreeBlock(Block<T> block, int address, string file)
         {
             if (file == fileName)
             {
                 if (address == usedBlocks - 1)
                 {
                     usedBlocks--;
-                    //mainFile.SetLength(address * block.GetSize());
                     bool empty = true;
                     Block<T> helpBlock;
                     while(empty && usedBlocks != 0)
@@ -734,7 +723,7 @@ namespace Cadastre.Files
                 }
             }
         }
-        public void Shake(ExternalTrieNode<T> node)
+        private void Shake(ExternalTrieNode node)
         {
             Block<T> mainBlock = ReadBlock(fileName, node.Address);
             int deleteAddress = mainBlock.Successor;
@@ -747,7 +736,6 @@ namespace Cadastre.Files
                     mainBlock.AddRecord(blockToDelete.Records[blockToDelete.ValidCount - 1]);
                     blockToDelete.RemoveRecord(blockToDelete.Records[blockToDelete.ValidCount - 1]);
                 }
-                //WriteBlock(fileName, node.Address, mainBlock);
             }
             if (blockToDelete.ValidCount != 0)
             {
@@ -778,17 +766,16 @@ namespace Cadastre.Files
         {
             List<string> list = new List<string>();
             string filePath = Path.Combine(Application.StartupPath, fileName);
-            Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
-            TrieNode<T> currentNode = root;
-            ExternalTrieNode<T> externalTrieNode;
-            //stack.Push(currentNode);
+            Stack<TrieNode> stack = new Stack<TrieNode>();
+            TrieNode currentNode = root;
+            ExternalTrieNode externalTrieNode;
             while (currentNode != null || stack.Count != 0)
             {
                 while (currentNode != null)
                 {
-                    if (currentNode.GetType() == typeof(ExternalTrieNode<T>))
+                    if (currentNode.GetType() == typeof(ExternalTrieNode))
                     {
-                        externalTrieNode = (ExternalTrieNode<T>)currentNode;
+                        externalTrieNode = (ExternalTrieNode)currentNode;
                         list.Add("1;" + externalTrieNode.Depth + ";" + externalTrieNode.Address + ";" + externalTrieNode.Count + ";");
                         currentNode = null;
                     }
@@ -796,13 +783,13 @@ namespace Cadastre.Files
                     {
                         list.Add("0;" + currentNode.Depth + ";");
                         stack.Push(currentNode);
-                        currentNode = ((InternalTrieNode<T>)currentNode).LeftSon;
+                        currentNode = ((InternalTrieNode)currentNode).LeftSon;
                     }
                 }
                 if (stack.Count != 0)
                 {
                     currentNode = stack.Pop();
-                    currentNode = ((InternalTrieNode<T>)currentNode).RightSon;
+                    currentNode = ((InternalTrieNode)currentNode).RightSon;
                 }
             }
             using (StreamWriter writer = new StreamWriter(filePath))
@@ -832,10 +819,9 @@ namespace Cadastre.Files
             int address;
             int count;
             int lineNumber = 0;
-            Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
-            TrieNode<T> currentNode = null;
-            TrieNode<T> newNode = null;
-            // možno vložiť dummy na začiatok
+            Stack<TrieNode> stack = new Stack<TrieNode>();
+            TrieNode currentNode = null;
+            TrieNode newNode = null;
             using (StreamReader reader = new StreamReader(filePath))
             {
                 lineNumber++;
@@ -845,16 +831,16 @@ namespace Cadastre.Files
                 depth = int.Parse(values[1]);
                 if (type == 0)
                 {
-                    newNode = new InternalTrieNode<T>(null, depth);
+                    newNode = new InternalTrieNode(null, depth);
                     root = newNode;
                 }
                 else
                 {
                     address = int.Parse(values[2]);
                     count = int.Parse(values[3]);
-                    newNode = new ExternalTrieNode<T>(null, depth);
-                    ((ExternalTrieNode<T>)newNode).Count = count;
-                    ((ExternalTrieNode<T>)newNode).Address = address;
+                    newNode = new ExternalTrieNode(null, depth);
+                    ((ExternalTrieNode)newNode).Count = count;
+                    ((ExternalTrieNode)newNode).Address = address;
                     root = newNode;
                     return;
                 }
@@ -870,16 +856,16 @@ namespace Cadastre.Files
                     if (type == 0)
                     {
                         depth = int.Parse(values[1]);
-                        newNode = new InternalTrieNode<T>(currentNode, depth);
-                        if (((InternalTrieNode<T>)currentNode).LeftSon == null)
+                        newNode = new InternalTrieNode(currentNode, depth);
+                        if (((InternalTrieNode)currentNode).LeftSon == null)
                         {
-                            ((InternalTrieNode<T>)currentNode).LeftSon = newNode;
+                            ((InternalTrieNode)currentNode).LeftSon = newNode;
                             stack.Push(newNode);
                             currentNode = newNode;
                         }
-                        else if (((InternalTrieNode<T>)currentNode).RightSon == null)
+                        else if (((InternalTrieNode)currentNode).RightSon == null)
                         {
-                            ((InternalTrieNode<T>)currentNode).RightSon = newNode;
+                            ((InternalTrieNode)currentNode).RightSon = newNode;
                             stack.Push(newNode);
                             currentNode = newNode;
                         }
@@ -889,13 +875,12 @@ namespace Cadastre.Files
                         depth = int.Parse(values[1]);
                         address = int.Parse(values[2]);
                         count = int.Parse(values[3]);
-                        newNode = new ExternalTrieNode<T>(currentNode, depth);
-                        ((ExternalTrieNode<T>)newNode).Count = count;
-                        ((ExternalTrieNode<T>)newNode).Address = address;
-                        if (((InternalTrieNode<T>)currentNode).LeftSon == null)
+                        newNode = new ExternalTrieNode(currentNode, depth);
+                        ((ExternalTrieNode)newNode).Count = count;
+                        ((ExternalTrieNode)newNode).Address = address;
+                        if (((InternalTrieNode)currentNode).LeftSon == null)
                         {
-                            ((InternalTrieNode<T>)currentNode).LeftSon = newNode;
-                            //currentNode = stack.Pop();
+                            ((InternalTrieNode)currentNode).LeftSon = newNode;
                         }
                         else
                         {
@@ -903,9 +888,8 @@ namespace Cadastre.Files
                             {
                                 int i = 5;
                             }
-                            ((InternalTrieNode<T>)currentNode).RightSon = newNode;
-                            //currentNode = stack.Pop();
-                            while (((InternalTrieNode<T>)currentNode).RightSon != null)
+                            ((InternalTrieNode)currentNode).RightSon = newNode;
+                            while (((InternalTrieNode)currentNode).RightSon != null)
                             {
                                 if(stack.Count == 0)
                                 {
@@ -978,159 +962,6 @@ namespace Cadastre.Files
             return content;
         }
 
-        public void SaveIndexLevel(string fileName, string indexProperties)
-        {
-            List<string> list = new List<string>();
-            string filePath = Path.Combine(Application.StartupPath, fileName);
-            Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
-            TrieNode<T> currentNode = root;
-            TrieNode<T> leftSon = null;
-            TrieNode<T> rightSon = null;
-
-            ExternalTrieNode<T> externalTrieNode;
-            if(currentNode.GetType() == typeof(InternalTrieNode<T>))
-            {
-                list.Add("0;" + leftSon.Depth + ";");
-                stack.Push(currentNode);
-            }
-            while (stack.Count != 0)
-            {
-                currentNode = stack.Pop();;
-                leftSon = ((InternalTrieNode<T>)currentNode).LeftSon;
-                rightSon = ((InternalTrieNode<T>)currentNode).RightSon;
-                if (leftSon.GetType() == typeof(ExternalTrieNode<T>))
-                {
-                    externalTrieNode = (ExternalTrieNode<T>)leftSon;
-                    list.Add("1;" + externalTrieNode.Depth + ";" + externalTrieNode.Address + ";" + externalTrieNode.Count + ";");
-                }
-                else
-                {
-                    list.Add("0;" + leftSon.Depth + ";");
-                    stack.Push(leftSon);
-                }
-                if (rightSon.GetType() == typeof(ExternalTrieNode<T>))
-                {
-                    externalTrieNode = (ExternalTrieNode<T>)rightSon;
-                    list.Add("1;" + externalTrieNode.Depth + ";" + externalTrieNode.Address + ";" + externalTrieNode.Count + ";");
-                }
-                else
-                {
-                    list.Add("0;" + rightSon.Depth + ";");
-                    stack.Push(rightSon);
-                }
-            }
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                for (int i = 0; i < list.Count; i++)
-                {
-                    writer.WriteLine(list[i]);
-                }
-            }
-
-            filePath = Path.Combine(Application.StartupPath, indexProperties);
-            using (StreamWriter textWriter = new StreamWriter(filePath))
-            {
-                textWriter.WriteLine(blockFactor);
-                textWriter.WriteLine(usedBlocks);
-                textWriter.WriteLine(emptyBlock);
-                textWriter.WriteLine(blockFactorOverflow);
-                textWriter.WriteLine(usedBlocksOverflow);
-                textWriter.WriteLine(emptyOverflowBlock);
-            }
-        }
-
-        public void LoadIndexLevel(string fileName, string indexPropertiesName)
-        {
-            string filePath = Path.Combine(Application.StartupPath, fileName);
-            int type;
-            int depth;
-            int address;
-            int count;
-            int lineNumber = 0;
-            Stack<TrieNode<T>> stack = new Stack<TrieNode<T>>();
-            TrieNode<T> currentNode = null;
-            TrieNode<T> newNode = null;
-            // možno vložiť dummy na začiatok
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                lineNumber++;
-                var line = reader.ReadLine();
-                var values = line.Split(';');
-                type = int.Parse(values[0]);
-                depth = int.Parse(values[1]);
-                if (type == 0)
-                {
-                    newNode = new InternalTrieNode<T>(null, depth);
-                    root = newNode;
-                }
-                else
-                {
-                    address = int.Parse(values[2]);
-                    count = int.Parse(values[3]);
-                    newNode = new ExternalTrieNode<T>(null, depth);
-                    ((ExternalTrieNode<T>)newNode).Count = count;
-                    ((ExternalTrieNode<T>)newNode).Address = address;
-                    root = newNode;
-                    
-                }
-                stack.Push(newNode);
-                currentNode = newNode;
-
-                while (!reader.EndOfStream)
-                {
-                    currentNode = stack.Pop();
-                    lineNumber++;
-                    line = reader.ReadLine();
-                    values = line.Split(';');
-                    type = int.Parse(values[0]);
-                    depth = int.Parse(values[1]);
-                    if (type == 0)
-                    {
-                        newNode = new InternalTrieNode<T>(currentNode, depth);
-                        ((InternalTrieNode<T>)currentNode).LeftSon = newNode;
-                        stack.Push(newNode);
-                    }
-                    else
-                    {
-                        address = int.Parse(values[2]);
-                        count = int.Parse(values[3]);
-                        newNode = new ExternalTrieNode<T>(currentNode, depth);
-                        ((ExternalTrieNode<T>)newNode).Count = count;
-                        ((ExternalTrieNode<T>)newNode).Address = address;
-                        ((InternalTrieNode<T>)currentNode).LeftSon = newNode;
-                    }
-
-                    line = reader.ReadLine();
-                    values = line.Split(';');
-                    type = int.Parse(values[0]);
-                    depth = int.Parse(values[1]);
-                    if (type == 0)
-                    {
-                        newNode = new InternalTrieNode<T>(currentNode, depth);
-                        ((InternalTrieNode<T>)currentNode).RightSon = newNode;
-                        stack.Push(newNode);
-                    }
-                    else
-                    {
-                        address = int.Parse(values[2]);
-                        count = int.Parse(values[3]);
-                        newNode = new ExternalTrieNode<T>(currentNode, depth);
-                        ((ExternalTrieNode<T>)newNode).Count = count;
-                        ((ExternalTrieNode<T>)newNode).Address = address;
-                        ((InternalTrieNode<T>)currentNode).RightSon = newNode;
-                    }
-                }
-            }
-            filePath = Path.Combine(Application.StartupPath, indexPropertiesName);
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                blockFactor = int.Parse(reader.ReadLine());
-                usedBlocks = int.Parse(reader.ReadLine());
-                emptyBlock = int.Parse(reader.ReadLine());
-                blockFactorOverflow = int.Parse(reader.ReadLine());
-                usedBlocksOverflow = int.Parse(reader.ReadLine());
-                emptyOverflowBlock = int.Parse(reader.ReadLine());
-            }
-        }
+        
     }
 }
