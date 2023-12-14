@@ -181,6 +181,10 @@ namespace Cadastre
                 return;
             }
             Land result = manager.FindLand(int.Parse(userInput));
+            if (result == null)
+            {
+                return;
+            }
             int id = result.Id;
             string description = result.Description;
             double x0 = result.GpsLocation[0].lengthPosition;
@@ -188,7 +192,7 @@ namespace Cadastre
             double x1 = result.GpsLocation[1].lengthPosition;
             double y1 = result.GpsLocation[1].widthPosition;
             bool success = false;
-            using (var numberInputForm = new InsertForm(id, description, x0, y0, x1, y1,0,0))
+            using (var numberInputForm = new InsertForm(id, description, x0, y0, x1, y1, 0, 0))
             {
                 if (numberInputForm.ShowDialog() == DialogResult.OK)
                 {
@@ -223,7 +227,15 @@ namespace Cadastre
         private void buttonEditProperty_Click(object sender, EventArgs e)
         {
             string userInput = Microsoft.VisualBasic.Interaction.InputBox("Enter property ID you wish to edit:", "Enter ID", "");
+            if (userInput == "")
+            {
+                return;
+            }
             Property result = manager.FindProperty(int.Parse(userInput));
+            if(result == null)
+            {
+                return;
+            }
             int id = result.Id;
             string description = result.Description;
             double x0 = result.GpsLocation[0].lengthPosition;
@@ -241,7 +253,7 @@ namespace Cadastre
                     double pi = double.Epsilon;
                     if (si > pi)
                     {
-                        double sip = si-pi;
+                        double sip = si - pi;
                     }
                     if (Math.Abs(x0 - configuration[0]) < precision && Math.Abs(y0 - configuration[1]) < precision
                         && Math.Abs(x1 - configuration[2]) < precision && Math.Abs(y1 - configuration[3]) < precision)

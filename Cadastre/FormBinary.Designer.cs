@@ -69,11 +69,10 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(151, 32);
+            label1.Location = new Point(142, 24);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(0, 15);
             label1.TabIndex = 1;
-            label1.Text = "label1";
             // 
             // button2
             // 
@@ -199,10 +198,10 @@
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tabPage3);
-            tabControl1.Location = new Point(211, 12);
+            tabControl1.Location = new Point(263, 24);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1078, 598);
+            tabControl1.Size = new Size(1026, 586);
             tabControl1.TabIndex = 14;
             // 
             // tabPage1
@@ -211,7 +210,7 @@
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1070, 570);
+            tabPage1.Size = new Size(1018, 558);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Search";
             tabPage1.UseVisualStyleBackColor = true;
